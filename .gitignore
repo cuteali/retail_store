@@ -20,5 +20,3 @@
 .rvmrc
 /config/database.yml
 .env
-/bin/rails
-/bin/rake
