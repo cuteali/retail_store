@@ -3,6 +3,7 @@ source 'https://ruby.taobao.org'
 ruby '2.3.0'
 
 gem 'coffee-rails', '~> 4.1.0'
+gem 'dotenv-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'jquery-rails'
 gem 'mysql2'

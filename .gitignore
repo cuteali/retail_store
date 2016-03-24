@@ -19,3 +19,4 @@
 /public/assets
 .rvmrc
 /config/database.yml
+.env
