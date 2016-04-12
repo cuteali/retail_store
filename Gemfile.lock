@@ -186,7 +186,7 @@ DEPENDENCIES
   mysql2
   pry-rails
   rails (= 4.2.6)
-  rake
+  rake (= 10.5.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring
