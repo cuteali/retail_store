@@ -3,6 +3,7 @@ lock '3.4.0'
 
 set :application, 'retail_store'
 set :deploy_user, 'qingyun'
+set :deploy_to, "/home/#{fetch :deploy_user}/retail_store"
 set :repo_url, 'git@github.com:cuteali/retail_store.git'
 
 # Default branch is :master
@@ -47,8 +48,8 @@ set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/sys
 #   end
 
 # end
-set :unicorn_config, "#{current_path}/config/unicorn.rb"
-set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
+set :unicorn_config, "#{fetch :deploy_to}/config/unicorn.rb"
+set :unicorn_pid, "#{fetch :deploy_to}/tmp/pids/unicorn.pid"
 
 namespace :deploy do
   after :finishing, "deploy:cleanup"
@@ -58,21 +59,21 @@ namespace :deploy do
   desc 'Start application'
   task :start do
     on roles(:app) do
-      execute "cd #{current_path} && RAILS_ENV=production bundle exec bin/unicorn -c #{unicorn_config} -E production -D"
+      execute "cd #{fetch :deploy_to} && RAILS_ENV=production bundle exec bin/unicorn -c #{fetch :unicorn_config} -E production -D"
     end
   end
 
   desc 'Stop application'
   task :stop do
     on roles(:app) do
-      execute "if [ -f #{unicorn_pid} ]; then kill -QUIT `cat #{unicorn_pid}`; fi"
+      execute "if [ -f #{fetch :unicorn_pid} ]; then kill -QUIT `cat #{fetch :unicorn_pid}`; fi"
     end
   end
 
   desc 'Restart application'
   task :restart do
     on roles(:app) do
-      execute "if [ -f #{unicorn_pid} ]; then kill -s USR2 `cat #{unicorn_pid}`; fi"
+      execute "if [ -f #{fetch :unicorn_pid} ]; then kill -s USR2 `cat #{fetch :unicorn_pid}`; fi"
     end
   end
 end
