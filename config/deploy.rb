@@ -24,10 +24,10 @@ set :repo_url, 'git@github.com:cuteali/retail_store.git'
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
+set :linked_files, %w{config/database.yml config/secrets.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -35,17 +35,46 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-namespace :deploy do
+# namespace :deploy do
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
+#   after :restart, :clear_cache do
+#     on roles(:web), in: :groups, limit: 3, wait: 10 do
+#       # Here we can do anything such as:
+#       # within release_path do
+#       #   execute :rake, 'cache:clear'
+#       # end
+#     end
+#   end
+
+# end
+set :unicorn_config, "#{current_path}/config/unicorn.rb"
+set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
+
+namespace :deploy do
+  after :finishing, "deploy:cleanup"
+
+  after :publishing, :restart
+
+  desc 'Start application'
+  task :start do
+    on roles(:app) do
+      execute "cd #{current_path} && RAILS_ENV=production bundle exec bin/unicorn -c #{unicorn_config} -E production -D"
     end
   end
 
+  desc 'Stop application'
+  task :stop do
+    on roles(:app) do
+      execute "if [ -f #{unicorn_pid} ]; then kill -QUIT `cat #{unicorn_pid}`; fi"
+    end
+  end
+
+  desc 'Restart application'
+  task :restart do
+    on roles(:app) do
+      execute "if [ -f #{unicorn_pid} ]; then kill -s USR2 `cat #{unicorn_pid}`; fi"
+    end
+  end
 end
 
 
