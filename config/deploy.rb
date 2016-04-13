@@ -33,8 +33,8 @@ namespace :deploy do
 
   desc 'Restart application'
   task :restart do
-    on roles(:app) do
-      execute "if [ -f #{fetch :unicorn_pid} ]; then kill -s USR2 `cat #{fetch :unicorn_pid}`; fi"
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'unicorn:legacy_restart'
     end
   end
 end
