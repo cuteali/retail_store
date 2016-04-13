@@ -2,7 +2,7 @@ rails_env = ENV['RAILS_ENV'] || 'production'
 
 worker_processes(rails_env == 'production' ? 8 : 1)
 
-app_root = File.expand_path(File.join(File.dirname(__FILE__),'..',".."))
+app_root = File.expand_path(File.join(File.dirname(__FILE__),'..','..','current'))
 working_directory app_root
 
 # Listen on fs socket for better performance
