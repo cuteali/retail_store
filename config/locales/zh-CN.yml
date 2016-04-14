@@ -1,0 +1,5 @@
+zh-cn:
+  enums:
+    status:
+      normal: 正常
+      deleted: 已删除

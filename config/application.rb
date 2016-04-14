@@ -27,6 +27,16 @@ module RetailStore
 
     config.autoload_paths +=  %W(#{config.root}/lib)
 
+    config.generators do |generate|
+      generate.helper false
+      generate.javascript_engine false
+      generate.request_specs false
+      generate.routing_specs false
+      generate.stylesheets false
+      generate.test_framework :rspec
+      generate.view_specs false
+    end
+
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
   end

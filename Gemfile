@@ -9,6 +9,7 @@ gem 'jquery-rails'
 gem 'mysql2'
 gem 'rails', '4.2.6'
 gem 'rake', '10.5.0'
+gem 'redis'
 gem 'sass-rails', '~> 5.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'turbolinks'

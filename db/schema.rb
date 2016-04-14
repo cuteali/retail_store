@@ -11,6 +11,216 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20160414062335) do
+
+  create_table "addresses", force: :cascade do |t|
+    t.integer  "shopper_id",    limit: 4
+    t.string   "area",          limit: 255
+    t.string   "detail",        limit: 255
+    t.string   "receive_name",  limit: 255
+    t.string   "receive_phone", limit: 255
+    t.integer  "status",        limit: 1,   default: 0, null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
+  add_index "addresses", ["receive_name"], name: "index_addresses_on_receive_name", using: :btree
+  add_index "addresses", ["receive_phone"], name: "index_addresses_on_receive_phone", using: :btree
+  add_index "addresses", ["shopper_id"], name: "index_addresses_on_shopper_id", using: :btree
+
+  create_table "carts", force: :cascade do |t|
+    t.integer  "shopper_id",      limit: 4
+    t.integer  "shop_product_id", limit: 4
+    t.integer  "product_num",     limit: 4
+    t.integer  "status",          limit: 1, default: 0, null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
+  add_index "carts", ["shop_product_id"], name: "index_carts_on_shop_product_id", using: :btree
+  add_index "carts", ["shopper_id"], name: "index_carts_on_shopper_id", using: :btree
+
+  create_table "categories", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "sort",       limit: 4,   default: 1, null: false
+    t.integer  "status",     limit: 1,   default: 0, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "categories", ["name"], name: "index_categories_on_name", using: :btree
+
+  create_table "detail_categories", force: :cascade do |t|
+    t.integer  "category_id",     limit: 4
+    t.integer  "sub_category_id", limit: 4
+    t.string   "name",            limit: 255
+    t.integer  "sort",            limit: 4,   default: 1, null: false
+    t.integer  "status",          limit: 1,   default: 0, null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+  end
+
+  add_index "detail_categories", ["category_id"], name: "index_detail_categories_on_category_id", using: :btree
+  add_index "detail_categories", ["name"], name: "index_detail_categories_on_name", using: :btree
+  add_index "detail_categories", ["sub_category_id"], name: "index_detail_categories_on_sub_category_id", using: :btree
+
+  create_table "images", force: :cascade do |t|
+    t.string   "key",            limit: 255
+    t.integer  "imageable_id",   limit: 4
+    t.string   "imageable_type", limit: 255
+    t.integer  "sort",           limit: 4,   default: 1, null: false
+    t.integer  "status",         limit: 1,   default: 0, null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "images", ["imageable_id", "imageable_type"], name: "imageable_index", using: :btree
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "shopper_id",  limit: 4
+    t.integer  "shop_id",     limit: 4
+    t.integer  "address_id",  limit: 4
+    t.string   "order_no",    limit: 255
+    t.decimal  "total_price",             precision: 12, scale: 2, default: 0.0
+    t.integer  "payment",     limit: 1,                            default: 0,   null: false
+    t.integer  "status",      limit: 1,                            default: 0,   null: false
+    t.datetime "created_at",                                                     null: false
+    t.datetime "updated_at",                                                     null: false
+  end
+
+  add_index "orders", ["address_id"], name: "index_orders_on_address_id", using: :btree
+  add_index "orders", ["order_no"], name: "index_orders_on_order_no", using: :btree
+  add_index "orders", ["shop_id"], name: "index_orders_on_shop_id", using: :btree
+  add_index "orders", ["shopper_id"], name: "index_orders_on_shopper_id", using: :btree
+
+  create_table "orders_shop_products", force: :cascade do |t|
+    t.integer  "order_id",        limit: 4
+    t.integer  "shop_product_id", limit: 4
+    t.integer  "product_num",     limit: 4
+    t.decimal  "product_price",             precision: 12, scale: 2, default: 0.0
+    t.integer  "status",          limit: 1,                          default: 0,   null: false
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+  end
+
+  add_index "orders_shop_products", ["order_id"], name: "index_orders_shop_products_on_order_id", using: :btree
+  add_index "orders_shop_products", ["shop_product_id"], name: "index_orders_shop_products_on_shop_product_id", using: :btree
+
+  create_table "products", force: :cascade do |t|
+    t.integer  "category_id",        limit: 4
+    t.integer  "sub_category_id",    limit: 4
+    t.integer  "detail_category_id", limit: 4
+    t.integer  "unit_id",            limit: 4
+    t.string   "name",               limit: 255
+    t.decimal  "price",                          precision: 12, scale: 2, default: 0.0
+    t.decimal  "old_price",                      precision: 12, scale: 2, default: 0.0
+    t.string   "key",                limit: 255
+    t.string   "desc",               limit: 255
+    t.string   "info",               limit: 255
+    t.string   "spec",               limit: 255
+    t.integer  "sort",               limit: 4,                            default: 1,   null: false
+    t.integer  "status",             limit: 1,                            default: 0,   null: false
+    t.datetime "created_at",                                                            null: false
+    t.datetime "updated_at",                                                            null: false
+  end
+
+  add_index "products", ["category_id"], name: "index_products_on_category_id", using: :btree
+  add_index "products", ["detail_category_id"], name: "index_products_on_detail_category_id", using: :btree
+  add_index "products", ["name"], name: "index_products_on_name", using: :btree
+  add_index "products", ["sub_category_id"], name: "index_products_on_sub_category_id", using: :btree
+  add_index "products", ["unit_id"], name: "index_products_on_unit_id", using: :btree
+
+  create_table "shop_models", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "status",     limit: 1,   default: 0, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "shop_models", ["name"], name: "index_shop_models_on_name", using: :btree
+
+  create_table "shop_products", force: :cascade do |t|
+    t.integer  "shop_id",            limit: 4
+    t.integer  "product_id",         limit: 4
+    t.integer  "category_id",        limit: 4
+    t.integer  "sub_category_id",    limit: 4
+    t.integer  "detail_category_id", limit: 4
+    t.integer  "unit_id",            limit: 4
+    t.string   "name",               limit: 255
+    t.decimal  "price",                          precision: 12, scale: 2, default: 0.0
+    t.decimal  "old_price",                      precision: 12, scale: 2, default: 0.0
+    t.integer  "stock_volume",       limit: 4
+    t.integer  "sales_volume",       limit: 4
+    t.string   "key",                limit: 255
+    t.string   "desc",               limit: 255
+    t.string   "info",               limit: 255
+    t.string   "spec",               limit: 255
+    t.integer  "sort",               limit: 4,                            default: 1,   null: false
+    t.integer  "status",             limit: 1,                            default: 0,   null: false
+    t.datetime "created_at",                                                            null: false
+    t.datetime "updated_at",                                                            null: false
+  end
+
+  add_index "shop_products", ["category_id"], name: "index_shop_products_on_category_id", using: :btree
+  add_index "shop_products", ["detail_category_id"], name: "index_shop_products_on_detail_category_id", using: :btree
+  add_index "shop_products", ["name"], name: "index_shop_products_on_name", using: :btree
+  add_index "shop_products", ["product_id"], name: "index_shop_products_on_product_id", using: :btree
+  add_index "shop_products", ["shop_id"], name: "index_shop_products_on_shop_id", using: :btree
+  add_index "shop_products", ["sub_category_id"], name: "index_shop_products_on_sub_category_id", using: :btree
+  add_index "shop_products", ["unit_id"], name: "index_shop_products_on_unit_id", using: :btree
+
+  create_table "shoppers", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "phone",      limit: 255
+    t.string   "token",      limit: 255
+    t.string   "key",        limit: 255
+    t.integer  "level",      limit: 1,   default: 0, null: false
+    t.integer  "status",     limit: 1,   default: 0, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "shoppers", ["name"], name: "index_shoppers_on_name", using: :btree
+  add_index "shoppers", ["phone"], name: "index_shoppers_on_phone", using: :btree
+  add_index "shoppers", ["token"], name: "index_shoppers_on_token", using: :btree
+
+  create_table "shops", force: :cascade do |t|
+    t.integer  "shop_model_id", limit: 4
+    t.string   "name",          limit: 255
+    t.string   "address",       limit: 255
+    t.string   "position",      limit: 255
+    t.string   "tel",           limit: 255
+    t.string   "phone",         limit: 255
+    t.string   "director",      limit: 255
+    t.integer  "status",        limit: 1,   default: 0, null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
+  add_index "shops", ["director"], name: "index_shops_on_director", using: :btree
+  add_index "shops", ["name"], name: "index_shops_on_name", using: :btree
+  add_index "shops", ["phone"], name: "index_shops_on_phone", using: :btree
+  add_index "shops", ["position"], name: "index_shops_on_position", using: :btree
+
+  create_table "sub_categories", force: :cascade do |t|
+    t.integer  "category_id", limit: 4
+    t.string   "name",        limit: 255
+    t.integer  "sort",        limit: 4,   default: 1, null: false
+    t.integer  "status",      limit: 1,   default: 0, null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "sub_categories", ["category_id"], name: "index_sub_categories_on_category_id", using: :btree
+  add_index "sub_categories", ["name"], name: "index_sub_categories_on_name", using: :btree
+
+  create_table "units", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "status",     limit: 1,   default: 0, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "units", ["name"], name: "index_units_on_name", using: :btree
 
 end
