@@ -26,6 +26,15 @@ module RetailStore
     config.encoding = 'utf-8'
 
     config.autoload_paths +=  %W(#{config.root}/lib)
+    #api
+    config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+    config.autoload_paths += Dir[Rails.root.join('lib')]
+
+    #jbuilder
+    config.middleware.use(Rack::Config) do |env|
+        env['api.tilt.root'] = Rails.root.join 'app', 'views', 'api'
+    end
 
     config.generators do |generate|
       generate.helper false

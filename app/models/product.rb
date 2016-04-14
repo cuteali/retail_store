@@ -1,4 +1,6 @@
 class Product < ActiveRecord::Base
+  mount_uploader :key, AvatarUploader
+  
   belongs_to :category
   belongs_to :sub_category
   belongs_to :detail_category

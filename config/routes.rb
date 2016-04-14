@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
 
+  mount API => '/'
+
   resources :home, only: :index
 
   # Example of regular route:
