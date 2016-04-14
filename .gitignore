@@ -19,6 +19,7 @@
 /public/assets
 .rvmrc
 /config/database.yml
+/config/unicorn.rb
 .env
 
 /shared
