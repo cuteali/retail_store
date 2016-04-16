@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160414062335) do
+ActiveRecord::Schema.define(version: 20160416101627) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -28,6 +28,18 @@ ActiveRecord::Schema.define(version: 20160414062335) do
   add_index "addresses", ["receive_phone"], name: "index_addresses_on_receive_phone", using: :btree
   add_index "addresses", ["shopper_id"], name: "index_addresses_on_shopper_id", using: :btree
 
+  create_table "adverts", force: :cascade do |t|
+    t.integer  "shop_id",         limit: 4
+    t.integer  "shop_product_id", limit: 4
+    t.string   "key",             limit: 255
+    t.integer  "status",          limit: 1,   default: 0, null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+  end
+
+  add_index "adverts", ["shop_id"], name: "index_adverts_on_shop_id", using: :btree
+  add_index "adverts", ["shop_product_id"], name: "index_adverts_on_shop_product_id", using: :btree
+
   create_table "carts", force: :cascade do |t|
     t.integer  "shopper_id",      limit: 4
     t.integer  "shop_product_id", limit: 4
@@ -42,6 +54,7 @@ ActiveRecord::Schema.define(version: 20160414062335) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name",       limit: 255
+    t.string   "key",        limit: 255
     t.integer  "sort",       limit: 4,   default: 1, null: false
     t.integer  "status",     limit: 1,   default: 0, null: false
     t.datetime "created_at",                         null: false
@@ -54,6 +67,7 @@ ActiveRecord::Schema.define(version: 20160414062335) do
     t.integer  "category_id",     limit: 4
     t.integer  "sub_category_id", limit: 4
     t.string   "name",            limit: 255
+    t.string   "key",             limit: 255
     t.integer  "sort",            limit: 4,   default: 1, null: false
     t.integer  "status",          limit: 1,   default: 0, null: false
     t.datetime "created_at",                              null: false

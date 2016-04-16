@@ -1,4 +1,6 @@
 class Category < ActiveRecord::Base
+  mount_uploader :key, AvatarUploader
+  
   has_many :sub_categories
   has_many :detail_categories
   has_many :products, -> { order "products.sort DESC, products.updated_at DESC" }

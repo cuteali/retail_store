@@ -10,11 +10,12 @@ class ShopProduct < ActiveRecord::Base
   has_many :images, as: :menuable
   has_many :orders_shop_products
   has_many :carts
+  has_many :adverts
 
   scope :sorted, -> { order('sort DESC') }
 
   validates :sort, presence: true
   validates :sort, numericality: { only_integer: true, greater_than_or_equal_to: 1}
 
-  enum status: [ :normal, :deleted ]
+  enum status: [ :normal, :deleted, :app_index ]
 end
