@@ -1,0 +1,12 @@
+development:
+  database_username: ''
+  database_password: ''
+  secret_key_base: ''
+  alipay_pid: ''
+  alipay_key: ''
+production:
+  database_username: ''
+  database_password: ''
+  secret_key_base: ''
+  alipay_pid: ''
+  alipay_key: ''

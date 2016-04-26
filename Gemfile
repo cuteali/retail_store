@@ -2,10 +2,10 @@ source 'https://ruby.taobao.org'
 
 ruby '2.3.0'
 
+gem 'alipay', '~> 0.12.0'
 gem 'carrierwave'
 gem 'carrierwave-qiniu','~> 0.2.0'
 gem 'coffee-rails', '~> 4.1.0'
-gem 'dotenv-rails'
 gem 'grape'
 gem 'grape-jbuilder'
 gem 'jbuilder', '~> 2.0'
