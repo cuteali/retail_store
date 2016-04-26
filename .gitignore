@@ -17,6 +17,7 @@
 /tmp
 
 /public/assets
+/public/uploads
 .rvmrc
 /config/database.yml
 /config/unicorn.rb

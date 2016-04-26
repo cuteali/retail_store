@@ -20,6 +20,7 @@ module ImportXls
       # @product2 = detail_category.shop_products.where(name: '商品2').first_or_create(shop_id: 3, category_id: category.id, sub_category_id: sub_category.id, unit_id: 1,
       #   price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, key: '食品2.jpg', desc: '商品描述2', info: '商品简介2', spec: '200g*12/箱', is_app_index: true)
     end
+    update_qiniu_key
     # advert1 = @product1.adverts.where(key: '广告1.jpg').first_or_create(shop_id: 3)
     # advert2 = @product2.adverts.where(key: '广告2.jpg').first_or_create(shop_id: 3)
     # advert3 = @product1.adverts.where(key: '广告3.jpg').first_or_create(shop_id: 3)
@@ -32,6 +33,21 @@ module ImportXls
     when '.xls' then Roo::Excel.new(file, packed: false, file_warning: :ignore)
     when '.xlsx' then Roo::Excelx.new(file, packed: false, file_warning: :ignore)
     else raise "Unknown file type: #{file}"
+    end
+  end
+
+  def self.update_qiniu_key
+    Category.all.each do |c|
+      name_as, key, logo_key, is_app_index = get_name_as_and_key(c.name)
+      options = {}
+      options[:shop_id] = nil
+      options[:key] = key if key
+      options[:logo_key] = logo_key if logo_key
+      c.update_columns(options)
+    end
+    DetailCategory.all.each do |dc|
+      detail_category_key = get_detail_category_key(dc.name, dc.sub_category.name)
+      dc.update_columns(shop_id: nil, key: detail_category_key)
     end
   end
 
