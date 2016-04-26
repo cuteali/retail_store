@@ -7,7 +7,7 @@ set :deploy_to, "/home/#{fetch :deploy_user}/retail_store"
 set :repo_url, 'git@github.com:cuteali/retail_store.git'
 set :scm, :git
 set :branch, "master"
-set :linked_files, %w{config/database.yml config/secrets.yml config/unicorn/production.rb}
+set :linked_files, %w{config/database.yml config/secrets.yml config/local_env.yml config/unicorn/production.rb}
 set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 set :unicorn_config, "#{fetch :deploy_to}/shared/config/unicorn.rb"
 set :unicorn_pid, "#{fetch :deploy_to}/shared/tmp/pids/unicorn.pid"
