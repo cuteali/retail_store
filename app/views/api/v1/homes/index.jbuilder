@@ -1,6 +1,6 @@
 json.errcode 0
 json.errmsg '获取基本信息'
-json.data do
+json.obj do
   json.version 1
   if @version == '0'
     json.send_price 0

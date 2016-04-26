@@ -4,7 +4,7 @@ if @erruser
 else
   json.errcode 0
   json.errmsg '用户信息获取成功'
-  json.data do
+  json.obj do
     json.id @current_user.id
     json.name @current_user.name
     json.image @current_user.key.try(:url).to_s

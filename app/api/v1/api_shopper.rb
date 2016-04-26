@@ -36,7 +36,7 @@ module V1
       end
       put '', jbuilder: "v1/shoppers/update" do 
         authenticate!
-        if !@erruser    
+        if !@erruser
           declared_params = declared(params, include_missing: false)
           @result = @current_user.update_columns(declared_params)
         end

@@ -7,8 +7,11 @@ Rails.application.routes.draw do
 
   mount API => '/'
 
-  resources :home, only: :index
-
+  resources :home, only: :index do
+    collection do
+      post :upload_xls
+    end
+  end
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

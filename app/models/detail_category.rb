@@ -1,6 +1,7 @@
 class DetailCategory < ActiveRecord::Base
   mount_uploader :key, AvatarUploader
   
+  belongs_to :shop
   belongs_to :category
   belongs_to :sub_category
   has_many :products, -> { order "products.sort DESC, products.updated_at DESC" }

@@ -4,6 +4,7 @@ class Shopper < ActiveRecord::Base
   has_many :addresses
   has_many :carts
   has_many :orders
+  has_many :favorites
 
   enum status: [ :normal, :deleted ]
 

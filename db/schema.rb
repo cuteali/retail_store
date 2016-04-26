@@ -11,17 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160416101627) do
+ActiveRecord::Schema.define(version: 20160425071855) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
     t.string   "area",          limit: 255
     t.string   "detail",        limit: 255
+    t.string   "lat",           limit: 255
+    t.string   "lng",           limit: 255
     t.string   "receive_name",  limit: 255
     t.string   "receive_phone", limit: 255
-    t.integer  "status",        limit: 1,   default: 0, null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.boolean  "is_default",                default: false, null: false
+    t.integer  "status",        limit: 1,   default: 0,     null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
   end
 
   add_index "addresses", ["receive_name"], name: "index_addresses_on_receive_name", using: :btree
@@ -41,6 +44,7 @@ ActiveRecord::Schema.define(version: 20160416101627) do
   add_index "adverts", ["shop_product_id"], name: "index_adverts_on_shop_product_id", using: :btree
 
   create_table "carts", force: :cascade do |t|
+    t.integer  "shop_id",         limit: 4
     t.integer  "shopper_id",      limit: 4
     t.integer  "shop_product_id", limit: 4
     t.integer  "product_num",     limit: 4
@@ -49,21 +53,28 @@ ActiveRecord::Schema.define(version: 20160416101627) do
     t.datetime "updated_at",                            null: false
   end
 
+  add_index "carts", ["shop_id"], name: "index_carts_on_shop_id", using: :btree
   add_index "carts", ["shop_product_id"], name: "index_carts_on_shop_product_id", using: :btree
   add_index "carts", ["shopper_id"], name: "index_carts_on_shopper_id", using: :btree
 
   create_table "categories", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "key",        limit: 255
-    t.integer  "sort",       limit: 4,   default: 1, null: false
-    t.integer  "status",     limit: 1,   default: 0, null: false
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.integer  "shop_id",      limit: 4
+    t.string   "name",         limit: 255
+    t.string   "name_as",      limit: 255
+    t.string   "key",          limit: 255
+    t.string   "logo_key",     limit: 255
+    t.integer  "sort",         limit: 4,   default: 1,     null: false
+    t.boolean  "is_app_index",             default: false, null: false
+    t.integer  "status",       limit: 1,   default: 0,     null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
   end
 
   add_index "categories", ["name"], name: "index_categories_on_name", using: :btree
+  add_index "categories", ["shop_id"], name: "index_categories_on_shop_id", using: :btree
 
   create_table "detail_categories", force: :cascade do |t|
+    t.integer  "shop_id",         limit: 4
     t.integer  "category_id",     limit: 4
     t.integer  "sub_category_id", limit: 4
     t.string   "name",            limit: 255
@@ -76,7 +87,21 @@ ActiveRecord::Schema.define(version: 20160416101627) do
 
   add_index "detail_categories", ["category_id"], name: "index_detail_categories_on_category_id", using: :btree
   add_index "detail_categories", ["name"], name: "index_detail_categories_on_name", using: :btree
+  add_index "detail_categories", ["shop_id"], name: "index_detail_categories_on_shop_id", using: :btree
   add_index "detail_categories", ["sub_category_id"], name: "index_detail_categories_on_sub_category_id", using: :btree
+
+  create_table "favorites", force: :cascade do |t|
+    t.integer  "shop_id",         limit: 4
+    t.integer  "shopper_id",      limit: 4
+    t.integer  "shop_product_id", limit: 4
+    t.integer  "status",          limit: 1, default: 0, null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
+  add_index "favorites", ["shop_id"], name: "index_favorites_on_shop_id", using: :btree
+  add_index "favorites", ["shop_product_id"], name: "index_favorites_on_shop_product_id", using: :btree
+  add_index "favorites", ["shopper_id"], name: "index_favorites_on_shopper_id", using: :btree
 
   create_table "images", force: :cascade do |t|
     t.string   "key",            limit: 255
@@ -91,15 +116,21 @@ ActiveRecord::Schema.define(version: 20160416101627) do
   add_index "images", ["imageable_id", "imageable_type"], name: "imageable_index", using: :btree
 
   create_table "orders", force: :cascade do |t|
-    t.integer  "shopper_id",  limit: 4
-    t.integer  "shop_id",     limit: 4
-    t.integer  "address_id",  limit: 4
-    t.string   "order_no",    limit: 255
-    t.decimal  "total_price",             precision: 12, scale: 2, default: 0.0
-    t.integer  "payment",     limit: 1,                            default: 0,   null: false
-    t.integer  "status",      limit: 1,                            default: 0,   null: false
-    t.datetime "created_at",                                                     null: false
-    t.datetime "updated_at",                                                     null: false
+    t.integer  "shopper_id",    limit: 4
+    t.integer  "shop_id",       limit: 4
+    t.integer  "address_id",    limit: 4
+    t.string   "receive_name",  limit: 255
+    t.string   "receive_phone", limit: 255
+    t.string   "area",          limit: 255
+    t.string   "detail",        limit: 255
+    t.string   "order_no",      limit: 255
+    t.decimal  "total_price",               precision: 12, scale: 2, default: 0.0
+    t.integer  "payment",       limit: 1,                            default: 0,   null: false
+    t.integer  "status",        limit: 1,                            default: 0,   null: false
+    t.datetime "delivery_at"
+    t.datetime "complete_at"
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
   end
 
   add_index "orders", ["address_id"], name: "index_orders_on_address_id", using: :btree
@@ -169,10 +200,11 @@ ActiveRecord::Schema.define(version: 20160416101627) do
     t.string   "desc",               limit: 255
     t.string   "info",               limit: 255
     t.string   "spec",               limit: 255
-    t.integer  "sort",               limit: 4,                            default: 1,   null: false
-    t.integer  "status",             limit: 1,                            default: 0,   null: false
-    t.datetime "created_at",                                                            null: false
-    t.datetime "updated_at",                                                            null: false
+    t.integer  "sort",               limit: 4,                            default: 1,     null: false
+    t.boolean  "is_app_index",                                            default: false, null: false
+    t.integer  "status",             limit: 1,                            default: 0,     null: false
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
   end
 
   add_index "shop_products", ["category_id"], name: "index_shop_products_on_category_id", using: :btree
@@ -202,7 +234,8 @@ ActiveRecord::Schema.define(version: 20160416101627) do
     t.integer  "shop_model_id", limit: 4
     t.string   "name",          limit: 255
     t.string   "address",       limit: 255
-    t.string   "position",      limit: 255
+    t.string   "lat",           limit: 255
+    t.string   "lng",           limit: 255
     t.string   "tel",           limit: 255
     t.string   "phone",         limit: 255
     t.string   "director",      limit: 255
@@ -214,9 +247,9 @@ ActiveRecord::Schema.define(version: 20160416101627) do
   add_index "shops", ["director"], name: "index_shops_on_director", using: :btree
   add_index "shops", ["name"], name: "index_shops_on_name", using: :btree
   add_index "shops", ["phone"], name: "index_shops_on_phone", using: :btree
-  add_index "shops", ["position"], name: "index_shops_on_position", using: :btree
 
   create_table "sub_categories", force: :cascade do |t|
+    t.integer  "shop_id",     limit: 4
     t.integer  "category_id", limit: 4
     t.string   "name",        limit: 255
     t.integer  "sort",        limit: 4,   default: 1, null: false
@@ -227,6 +260,7 @@ ActiveRecord::Schema.define(version: 20160416101627) do
 
   add_index "sub_categories", ["category_id"], name: "index_sub_categories_on_category_id", using: :btree
   add_index "sub_categories", ["name"], name: "index_sub_categories_on_name", using: :btree
+  add_index "sub_categories", ["shop_id"], name: "index_sub_categories_on_shop_id", using: :btree
 
   create_table "units", force: :cascade do |t|
     t.string   "name",       limit: 255

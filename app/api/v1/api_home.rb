@@ -7,7 +7,8 @@ module V1
       def category_products(shop, categories)
         products = {}
         categories.each do |category|
-          products[category.name] = shop.shop_products.app_index.where(category_id: category.id)
+          key = category.logo_key.try(:url) || category.name
+          products[key] = shop.shop_products.normal.is_index.where(category_id: category.id).take(6)
         end
         products
       end
@@ -36,7 +37,7 @@ module V1
         @shop ||= Shop.normal.first
         if @shop
           @adverts = @shop.adverts.normal
-          @categories = Category.normal.sorted
+          @categories = @shop.categories.normal.is_index.sorted
           @products = category_products(@shop, @categories)
         end
       end

@@ -1,1 +1,8 @@
 <h1>Hello World!</h1>
+
+<h2>Import Categories</h2>
+
+<%= form_tag upload_xls_home_index_path, multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Import" %>
+<% end %>
