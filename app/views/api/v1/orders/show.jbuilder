@@ -4,7 +4,7 @@ if @order
   json.obj do
     json.id @order.id
     json.order_no @order.order_no
-    json.payment @order.payment_name
+    json.state @order.state_name
     json.area @order.address.area
     json.detail @order.address.detail
     json.receive_name @order.address.receive_name

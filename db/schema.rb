@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160425071855) do
+ActiveRecord::Schema.define(version: 20160426080706) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -124,8 +124,9 @@ ActiveRecord::Schema.define(version: 20160425071855) do
     t.string   "area",          limit: 255
     t.string   "detail",        limit: 255
     t.string   "order_no",      limit: 255
+    t.string   "trade_no",      limit: 255
     t.decimal  "total_price",               precision: 12, scale: 2, default: 0.0
-    t.integer  "payment",       limit: 1,                            default: 0,   null: false
+    t.string   "state",         limit: 255,                          default: "0", null: false
     t.integer  "status",        limit: 1,                            default: 0,   null: false
     t.datetime "delivery_at"
     t.datetime "complete_at"
@@ -137,6 +138,8 @@ ActiveRecord::Schema.define(version: 20160425071855) do
   add_index "orders", ["order_no"], name: "index_orders_on_order_no", using: :btree
   add_index "orders", ["shop_id"], name: "index_orders_on_shop_id", using: :btree
   add_index "orders", ["shopper_id"], name: "index_orders_on_shopper_id", using: :btree
+  add_index "orders", ["state"], name: "index_orders_on_state", using: :btree
+  add_index "orders", ["trade_no"], name: "index_orders_on_trade_no", using: :btree
 
   create_table "orders_shop_products", force: :cascade do |t|
     t.integer  "order_id",        limit: 4

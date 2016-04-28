@@ -5,6 +5,8 @@ if @addresses
     json.id address.id
     json.area address.area
     json.detail address.detail
+    json.lng address.lng
+    json.lat address.lat
     json.receive_name address.receive_name
     json.receive_phone address.receive_phone
     json.default address.is_default_to_i

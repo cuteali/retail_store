@@ -12,6 +12,12 @@ Rails.application.routes.draw do
       post :upload_xls
     end
   end
+
+  resources :orders do
+    collection do
+      post :alipay_notify
+    end
+  end
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

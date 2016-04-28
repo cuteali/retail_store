@@ -19,14 +19,14 @@ module V1
       params do 
         requires :token, type: String
         requires :shop_id, type: String
-        optional :payment, type: String
+        optional :state, type: String
         optional :page_num, type: String
       end
       get '', jbuilder: 'v1/orders/index' do
         authenticate!
         if !@erruser
           shop = Shop.normal.find_by(id: params[:shop_id])
-          @orders = @current_user.orders.normal.where(shop_id: shop.id).by_payment(params[:payment]).latest.by_page(params[:page_num])
+          @orders = @current_user.orders.normal.where(shop_id: shop.id).by_state(params[:state]).latest.by_page(params[:page_num])
         end
       end
 

@@ -11,11 +11,61 @@ class Order < ActiveRecord::Base
   before_create :generate_order_no
 
   enum status: [ :normal, :deleted ]
-  enum payment: [ :paying, :receipt, :finished, :refund ]
 
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :latest, -> { order('created_at DESC') }
-  scope :by_payment, -> (payment) { send(payment) if payment }
+  scope :by_state, -> (state) { where(state: state) if state }
+
+  STATE = %w(opening pending paid completed canceled refund)
+  validates_inclusion_of :state, :in => STATE
+
+  STATE.each do |state|
+    define_method "#{state}?" do
+      self.state == state
+    end
+  end
+
+  def pend
+    if opening?
+      update_column :state, 'pending'
+    end
+  end
+
+  def pay
+    if pending?
+      update_column :state, 'paid'
+    end
+  end
+
+  def complete
+    if pendding? or paid?
+      update_column :state, 'completed'
+    end
+  end
+
+  def cancel
+    if pendding? or paid?
+      update_column :state, 'canceled'
+    end
+  end
+
+  def send_good
+    Alipay::Service.send_goods_confirm_by_platform(
+      :trade_no => trade_no,
+      :logistics_name => 'jinhuola.cc',
+      :transport_type => 'DIRECT' # 无需物流
+    )
+  end
+
+  def pay_url
+    Alipay::Mobile::Service.mobile_securitypay_pay_string(
+      out_trade_no: order_no,
+      notify_url: alipay_notify_orders_url,
+      subject: 'subject',
+      total_fee: total_price.to_s,
+      body: 'text'
+    )
+  end
 
   def get_address
     area.to_s + detail.to_s
@@ -32,15 +82,19 @@ class Order < ActiveRecord::Base
     result
   end
 
-  def payment_name
-    case payment
-    when 0
+  def state_name
+    case state
+    when 'opening'
       '待付款'
-    when 1
-      '待收货'
-    when 2
+    when 'pending'
+      '付款中'
+    when 'paid'
+      '已付款'
+    when 'completed'
       '已完成'
-    when 3
+    when 'canceled'
+      '已关闭'
+    when 'refund'
       '已退款'
     end
   end
