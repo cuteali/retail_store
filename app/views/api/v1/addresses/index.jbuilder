@@ -9,7 +9,7 @@ if @addresses
     json.lat address.lat
     json.receive_name address.receive_name
     json.receive_phone address.receive_phone
-    json.default address.is_default_to_i
+    json.is_default address.is_default_to_i
   end
 else
   json.errcode 1

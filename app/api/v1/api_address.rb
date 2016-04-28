@@ -41,7 +41,7 @@ module V1
         if !@erruser
           default = is_default(params[:default])
           update_all_default if default
-          @address = @current_user.addresses.create(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], is_default: default)
+          @address = @current_user.addresses.create(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], lng: params[:lng], lat: params[:lat], is_default: default)
         end
       end
 
@@ -60,11 +60,11 @@ module V1
       put '', jbuilder: 'v1/addresses/update' do
         authenticate!
         if !@erruser
-          address = @current_user.addresses.normal.find_by(id: params[:id])
-          if address.present?
+          @address = @current_user.addresses.normal.find_by(id: params[:id])
+          if @address.present?
             default = is_default(params[:default])
             update_all_default if default
-            @address = address.update(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], is_default: default)
+            @is_updated = @address.update(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], lng: params[:lng], lat: params[:lat], is_default: default)
           end
         end
       end

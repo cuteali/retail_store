@@ -1,4 +1,4 @@
-if @address
+if @is_updated
   json.errcode 0
   json.errmsg '修改地址成功'
   json.obj do
@@ -9,7 +9,7 @@ if @address
     json.lat @address.lat
     json.receive_name @address.receive_name
     json.receive_phone @address.receive_phone
-    json.default @address.is_default_to_i
+    json.is_default @address.is_default_to_i
   end
 else
   json.errcode 1
