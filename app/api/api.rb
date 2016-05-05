@@ -20,6 +20,7 @@ class API < Grape::API
   mount V1::ApiFavorite
   mount V1::ApiHome
   mount V1::ApiImage
+  mount V1::ApiMessage
   mount V1::ApiOrder
   mount V1::ApiProduct
   mount V1::ApiShopper

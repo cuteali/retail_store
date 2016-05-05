@@ -11,12 +11,25 @@ class Order < ActiveRecord::Base
   before_create :generate_order_no
 
   enum status: [ :normal, :deleted ]
+  enum order_type: [ :cod, :olp ]
 
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :latest, -> { order('created_at DESC') }
-  scope :by_state, -> (state) { where(state: state) if state }
+  scope :by_state, -> (state = nil) {
+    if state.to_s == '0'
+      where(state: STATE)
+    elsif state.to_s == '1'
+      where(state: ['opening', 'pending'], order_type: 1)
+    elsif state.to_s == '2'
+      where(state: 'paid')
+    elsif state.to_s == '3'
+      where(state: 'completed')
+    elsif state.to_s == '4'
+      where(state: ['canceled', 'refund'])
+    end
+  }
 
-  STATE = %w(opening pending paid completed canceled refund)
+  STATE = %w(opening pending paid completed refund canceled)
   validates_inclusion_of :state, :in => STATE
 
   STATE.each do |state|
@@ -71,10 +84,10 @@ class Order < ActiveRecord::Base
     area.to_s + detail.to_s
   end
 
-  def validate_product_stock_num
+  def validate_product_stock_volume
     result = 0
     orders_shop_products.each do |op|
-      if op.shop_product.stock_num < op.product_num
+      if op.shop_product.stock_volume < op.product_num
         result = 3
         break
       end
@@ -82,31 +95,41 @@ class Order < ActiveRecord::Base
     result
   end
 
-  def state_name
-    case state
-    when 'opening'
-      '待付款'
-    when 'pending'
-      '付款中'
-    when 'paid'
-      '已付款'
-    when 'completed'
-      '已完成'
-    when 'canceled'
-      '已关闭'
-    when 'refund'
-      '已退款'
+  # 0 待付款 1 货到付款 2 已支付待收货 3 交易成功 4 退款中 5 交易关闭
+  def state_type
+    if cod? && state == 'paid'
+      '1'
+    elsif cod? && state == 'completed'
+      '3'
+    elsif olp? && %w(opening pending).include?(state)
+      '0'
+    elsif olp? && state == 'paid'
+      '2'
+    elsif olp? && state == 'completed'
+      '3'
+    elsif olp? && state == 'refund'
+      '4'
+    elsif olp? && state == 'canceled'
+      '5'
+    end
+  end
+
+  def order_type_name
+    if cod?
+      '货到付款'
+    elsif olp?
+      '在线支付'
     end
   end
 
   def create_orders_shop_products(shop, products)
     products.each do |p|
       shop_product = shop.shop_products.find_by(id: p['id'])
-      self.orders_shop_products.where(shop_product_id: shop_product.try(:id), product_num: p['number'], product_price: shop_product.try(:price)).first_or_create
+      orders_shop_products.where(shop_product_id: shop_product.try(:id), product_num: p['number'], product_price: shop_product.try(:price)).first_or_create
     end
   end
 
-  def update_product_stock_num
+  def update_product_stock_volume
     pro_ids = []
     orders_shop_products.each do |op|
       if op.shop_product.stock_volume >= op.product_num
@@ -123,7 +146,7 @@ class Order < ActiveRecord::Base
 
   private
     def generate_order_no
-      max_order_no = Order.maximum(:order_no) || 1603030
+      max_order_no = Order.maximum(:order_no) || 1605040
       self.order_no = max_order_no.succ
     end
 end

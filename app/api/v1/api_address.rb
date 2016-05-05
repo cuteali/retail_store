@@ -105,7 +105,7 @@ module V1
       get 'default/:token', jbuilder: 'v1/addresses/show' do 
         authenticate!
         if !@erruser
-          @address = @current_user.addresses.normal.is_default.first
+          @address = @current_user.addresses.normal.default.first
         end
       end
     end

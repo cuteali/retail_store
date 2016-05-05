@@ -26,7 +26,7 @@ class ShopProduct < ActiveRecord::Base
     is_index? ? '1' : '0'
   end
 
-  def self.validate_stock_num(shop, products)
+  def self.validate_stock_volume(shop, products)
     result = 0
     products.each do |p|
       shop_product = shop.shop_products.find_by(id: p['id'])

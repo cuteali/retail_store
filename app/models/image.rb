@@ -1,7 +1,7 @@
 class Image < ActiveRecord::Base
   mount_uploader :key, AvatarUploader
 
-  belongs_to :menuable, polymorphic: true
+  belongs_to :imageable, polymorphic: true
 
   enum status: [ :normal, :deleted ]
 

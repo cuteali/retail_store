@@ -1,6 +1,6 @@
 set :stage, :production
 
-server '139.196.166.7', user: 'qingyun', roles: %w{web app db}
+server '139.196.166.7', user: 'retail_store', port: 601, roles: %w{web app db}
 
 set :rails_env, :production
 

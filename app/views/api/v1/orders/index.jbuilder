@@ -3,16 +3,19 @@ if @orders
   json.errmsg '获取订单列表成功'
   json.objlist(@orders) do |order|
     json.id order.id
+    json.shop_id order.shop.id
+    json.shop_name order.shop.name
     json.order_no order.order_no
-    json.state order.state_name
-    json.area order.address.area
-    json.detail order.address.detail
-    json.receive_name order.address.receive_name
-    json.receive_phone order.address.receive_phone
+    json.state order.state_type
+    json.area order.area
+    json.detail order.detail
+    json.receive_name order.receive_name
+    json.receive_phone order.receive_phone
     json.created_at order.created_at.strftime("%Y-%m-%d %H:%M:%S")
     json.delivery_at order.delivery_at.present?? order.delivery_at.strftime("%Y-%m-%d %H:%M:%S") : ""
     json.complete_at order.complete_at.present?? order.complete_at.strftime("%Y-%m-%d %H:%M:%S") : ""
-    json.pro_count order.orders_shop_products.count
+    json.pro_count order.orders_shop_products.sum(:product_num)
+    json.total_price order.total_price
     json.products(order.orders_shop_products) do |op|
       json.id op.shop_product_id
       json.number op.product_num

@@ -2,7 +2,7 @@
 lock '3.4.1'
 
 set :application, 'retail_store'
-set :deploy_user, 'qingyun'
+set :deploy_user, 'retail_store'
 set :deploy_to, "/home/#{fetch :deploy_user}/retail_store"
 set :repo_url, 'git@github.com:cuteali/retail_store.git'
 set :scm, :git

@@ -3,8 +3,10 @@ if @order
   json.errmsg '获取订单详情成功'
   json.obj do
     json.id @order.id
+    json.shop_id @order.shop.id
+    json.shop_name @order.shop.name
     json.order_no @order.order_no
-    json.state @order.state_name
+    json.state @order.state_type
     json.area @order.address.area
     json.detail @order.address.detail
     json.receive_name @order.address.receive_name
@@ -12,7 +14,8 @@ if @order
     json.created_at @order.created_at.strftime("%Y-%m-%d %H:%M:%S")
     json.delivery_at @order.delivery_at.present?? @order.delivery_at.strftime("%Y-%m-%d %H:%M:%S") : ""
     json.complete_at @order.complete_at.present?? @order.complete_at.strftime("%Y-%m-%d %H:%M:%S") : ""
-    json.pro_count @order.orders_shop_products.count
+    json.pro_count @order.orders_shop_products.sum(:product_num)
+    json.total_price @order.total_price
     json.productlist(@shop_products) do |op|
       json.product_id op.shop_product_id
       json.number op.product_num

@@ -16,6 +16,15 @@ if @shop_products
 else
   json.errcode 1
   json.errmsg '搜索产品失败'
-  json.objlist do
+  json.objlist(@top_shop_products) do |product|
+    json.id product.id
+    json.name product.name
+    json.image product.key.try(:url)
+    json.unit product.unit.try(:name)
+    json.price product.price
+    json.old_price product.old_price
+    json.stock_volume product.stock_volume
+    json.sales_volume product.sales_volume
+    json.spec product.spec
   end
 end

@@ -60,9 +60,14 @@ module V1
       # http://localhost:3000/api/v1/shoppers/:token
       params do
         requires :token, type: String
+        requires :shop_id, type: String
       end
       get ':token', jbuilder: 'v1/shoppers/show' do
         authenticate!
+        if !@erruser
+          shop = Shop.normal.find_by(id: params[:shop_id])
+          @messages = @current_user.messages.where(shop_id: shop.id).normal.unread
+        end
       end
     end
   end

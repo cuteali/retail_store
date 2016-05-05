@@ -12,8 +12,8 @@ module V1
       end
       get '', jbuilder: 'v1/favorites/index' do
         authenticate!
-        if !@erruser 
-          @favorites = @current_user.favorites.normal.where(shop_id: params[:shop_id]).latest.by_page(params[:page_num])
+        if !@erruser
+          @favorites = @current_user.favorites.joins(:shop_product).where( "shop_products.status = 0" ).normal.where(shop_id: params[:shop_id]).latest.by_page(params[:page_num])
         end
       end
 
@@ -26,7 +26,8 @@ module V1
       post '', jbuilder: 'v1/favorites/create' do
         authenticate!
         if !@erruser
-          @favorite = @current_user.favorites.create(shop_id: params[:shop_id], shop_product_id: params[:shop_product_id])
+          shop = Shop.normal.find_by(id: params[:shop_id])
+          @favorite = @current_user.favorites.create(shop_id: shop.id, shop_product_id: params[:product_id])
         end
       end
 

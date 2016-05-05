@@ -41,6 +41,11 @@ module V1
           @products = category_products(@shop, @categories)
         end
       end
+
+      # http://localhost:3000/api/v1/homes/top_search
+      get 'top_search', jbuilder: 'v1/homes/top_search' do
+        @top_searchs = TopSearch.normal
+      end
     end
   end
 end

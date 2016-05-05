@@ -4,7 +4,7 @@ if @favorites
   json.total_pages @favorites.total_pages if params[:page_num]
   json.objlist(@favorites) do |favorite|
     json.id favorite.id
-    json.product_id favorite.shop_product_id
+    json.product_id favorite.shop_product.id
     json.product_name favorite.shop_product.name
     json.product_image favorite.shop_product.key.try(:url)
     json.product_unit favorite.shop_product.unit.try(:name)

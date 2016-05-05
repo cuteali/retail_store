@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160426080706) do
+ActiveRecord::Schema.define(version: 20160505053204) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -115,6 +115,23 @@ ActiveRecord::Schema.define(version: 20160426080706) do
 
   add_index "images", ["imageable_id", "imageable_type"], name: "imageable_index", using: :btree
 
+  create_table "messages", force: :cascade do |t|
+    t.integer  "shopper_id",       limit: 4
+    t.integer  "shop_id",          limit: 4
+    t.integer  "messageable_id",   limit: 4
+    t.string   "messageable_type", limit: 255
+    t.string   "title",            limit: 255
+    t.string   "info",             limit: 255
+    t.integer  "is_new",           limit: 1,   default: 0, null: false
+    t.integer  "status",           limit: 1,   default: 0, null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "messages", ["messageable_id", "messageable_type"], name: "messageable_index", using: :btree
+  add_index "messages", ["shop_id"], name: "index_messages_on_shop_id", using: :btree
+  add_index "messages", ["shopper_id"], name: "index_messages_on_shopper_id", using: :btree
+
   create_table "orders", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
     t.integer  "shop_id",       limit: 4
@@ -124,14 +141,15 @@ ActiveRecord::Schema.define(version: 20160426080706) do
     t.string   "area",          limit: 255
     t.string   "detail",        limit: 255
     t.string   "order_no",      limit: 255
+    t.integer  "order_type",    limit: 1,                                                null: false
     t.string   "trade_no",      limit: 255
     t.decimal  "total_price",               precision: 12, scale: 2, default: 0.0
-    t.string   "state",         limit: 255,                          default: "0", null: false
-    t.integer  "status",        limit: 1,                            default: 0,   null: false
+    t.string   "state",         limit: 255,                          default: "opening"
+    t.integer  "status",        limit: 1,                            default: 0,         null: false
     t.datetime "delivery_at"
     t.datetime "complete_at"
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.datetime "created_at",                                                             null: false
+    t.datetime "updated_at",                                                             null: false
   end
 
   add_index "orders", ["address_id"], name: "index_orders_on_address_id", using: :btree
@@ -264,6 +282,15 @@ ActiveRecord::Schema.define(version: 20160426080706) do
   add_index "sub_categories", ["category_id"], name: "index_sub_categories_on_category_id", using: :btree
   add_index "sub_categories", ["name"], name: "index_sub_categories_on_name", using: :btree
   add_index "sub_categories", ["shop_id"], name: "index_sub_categories_on_shop_id", using: :btree
+
+  create_table "top_searches", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "status",     limit: 1,   default: 0, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "top_searches", ["name"], name: "index_top_searches_on_name", using: :btree
 
   create_table "units", force: :cascade do |t|
     t.string   "name",       limit: 255

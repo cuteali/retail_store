@@ -57,31 +57,6 @@ module V1
         end
       end
 
-      #http://localhost:3000/api/v1/carts/order_batch_entry
-      params do 
-        requires :token, type: String
-        requires :shop_id, type: String
-        requires :order_id, type: String
-      end
-      post 'order_batch_entry', jbuilder: 'v1/carts/order_batch_entry' do
-        authenticate!
-        if !@erruser
-          order = @current_user.orders.normal.find_by(id: params[:order_id])
-          @stock_num_result = order.validate_product_stock_num
-          if @stock_num_result == 0
-            order.orders_shop_products.each do |op|
-              cart = @current_user.carts.find_by(shop_id: @shop.id, shop_product_id: op.shop_product_id)
-              if cart.present?
-                cart.product_num += op.product_num
-                @cart = cart.save
-              else
-                @cart = @current_user.carts.create(shop_id: @shop.id, shop_product_id: op.shop_product_id, product_num: op.product_num)
-              end
-            end
-          end
-        end
-      end
-
       #http://localhost:3000/api/v1/carts
       params do 
         requires :token, type: String
