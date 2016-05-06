@@ -28,10 +28,10 @@ module ImportXls
       image2 = @product2.images.create.update_columns(key: @product2.key.path)
     end
     update_qiniu_key(shop1.id)
-    advert1 = @product1.adverts.where(key: '广告1.jpg').first_or_create(shop_id: shop1.id)
-    advert2 = @product2.adverts.where(key: '广告2.jpg').first_or_create(shop_id: shop1.id)
-    advert3 = @product1.adverts.where(key: '广告3.jpg').first_or_create(shop_id: shop1.id)
-    advert4 = @product2.adverts.where(key: '广告4.jpg').first_or_create(shop_id: shop1.id)
+    ShopProduct.limit(4).each_with_index do |p, index|
+      advert = shop1.adverts.where(shop_product_id: p.id).first_or_create
+      advert.update_columns(key: "广告#{index + 1}.jpg")
+    end
   end
 
   def self.open_spreadsheet(file)
