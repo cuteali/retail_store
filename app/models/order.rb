@@ -80,19 +80,7 @@ class Order < ActiveRecord::Base
       body: 'text'
     }, {
       sign_type: 'RSA',
-      key: 'MIICXgIBAAKBgQDdxoPNsLM10s71ai6CZcNZEn0IY8CrF+XtBeXJit+7yGO67tna
-TXDFdIaLHmRQDSWKIP2aAvagJHK9yHbWWFu+yEegR/XwUPEg2sqknLcgyU3rrHi9
-eOpT18QAtC0CiDridRr1gm+iJ9I1tSNiwpDMX3tlSpaAEvn5w7D64efHUQIDAQAB
-AoGBALSZaVICeB33mtOdcVx89FS/ypQfb5Gkt3eKWvMCJWotKJHc2gl9EL2rQ7lc
-uYG7Avv2G67khOQqakoESkoI0EQLXYuc69A21yNqAI7EwBptXZKHH8Vrgy45fnX3
-BIB2OBjnRR7rBBTdhA9rb/t13+Dg9WqEXH0z+g+mryF6GsvxAkEA9fTtT8H3ma8+
-vdW7LEiLI7weT6VVYYh3RAihPGSZGGQQcAo534CVYnK+dsWGfMNhOGZFsoXeTYOY
-U+r62kHV3QJBAObUz+u1ypFMdEQR4rZtaJLnvLvLyp7yQr7aD4M+tULXsVyI5YCQ
-lRpApFTBkmSmIk8yWRWqBWJTayf4p0nAYgUCQQCsOfTO67D4kckqXvZw/N9Jh5nm
-BYzy/f8dybk1s++sL61+9votcjmotVZ/jrMsvBdgyeS2LJ1MxAAvixRbLsyVAkBd
-B9YIjIrohmSxbnftyCiGVIlXMqol50OJQb9QyPwqxV2BCtdcOmktXHIeiqlikSZw
-vrzyo0RqPW6JfIiHi9a1AkEApGBnVSAnB2IhqJEYs7T+QdwobL9lpigt9ECZQA7L
-lY63/LUucwRq+kFSSjIqGFcTaXISUO8l2zDZ8ahNCqauow=='
+      key: ENV['rsa_private_key']
     })
   end
 
