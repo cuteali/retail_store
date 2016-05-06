@@ -64,7 +64,7 @@ module V1
           if @address.present?
             default = is_default(params[:default])
             update_all_default if default
-            @is_updated = @address.update(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], lng: params[:lng], lat: params[:lat], is_default: default)
+            @is_updated = @address.update_columns(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], lng: params[:lng], lat: params[:lat], is_default: default)
           end
         end
       end

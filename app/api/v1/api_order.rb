@@ -24,6 +24,13 @@ module V1
         end
         result
       end
+
+      def get_order_type_and_state(order_type)
+        case order_type
+        when '0' then ['paid', 'cod']
+        when '1' then ['opening', 'olp']
+        end
+      end
     end
 
     resources 'orders' do
@@ -65,8 +72,8 @@ module V1
             if total_price == params[:money].gsub(/[^\d\.]/, '').to_f
               @stock_volume_result = validate_stock_volume(shop, product_arr)
               if @stock_volume_result == 0
-                state = params[:order_type] == '0' ? 'paid' : 'opening'
-                @order = @current_user.orders.create(shop_id: shop.id, address_id: address.try(:id), receive_name: address.try(:receive_name), receive_phone: address.try(:receive_phone), area: address.try(:area), detail: address.try(:detail), total_price: total_price, order_type: params[:order_type].to_i, state: state)
+                state, order_type = get_order_type_and_state(params[:order_type])
+                @order = @current_user.orders.create(shop_id: shop.id, address_id: address.try(:id), receive_name: address.try(:receive_name), receive_phone: address.try(:receive_phone), area: address.try(:area), detail: address.try(:detail), total_price: total_price, order_type: order_type, state: state)
                 @order.create_orders_shop_products(shop, product_arr)
                 pro_ids = @order.update_product_stock_volume
                 AppLog.info("pro_ids:      #{pro_ids}")
