@@ -1,30 +1,37 @@
 module ImportXls
   def self.import(file)
+    shop_model = ShopModel.where(name: '模板一').first_or_create
+    shop1 = Shop.where(name: '醉食汇高平路店', address: '上海市闸北区高平路779号', lng: '121.427466', lat: '31.290437', phone: '15026815026', director: '张明', shop_model_id: shop_model.id).first_or_create
+    shop2 = Shop.where(name: '醉食汇大连路店', address: '上海市虹口区大连路1035号', lng: '121.506019', lat: '31.268009', phone: '15026815026', director: '闫康', shop_model_id: shop_model.id).first_or_create
+    unit1 = Unit.where(name: '箱').first_or_create
+    unit2 = Unit.where(name: '包').first_or_create
     spreadsheet = open_spreadsheet(file)
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
       name_as, key, logo_key, is_app_index = get_name_as_and_key(row['大分类'])
       options = {}
-      options[:shop_id] = 3
+      options[:shop_id] = shop1.id
       options[:name_as] = name_as if name_as
-      options[:key] = key if key
       options[:logo_key] = logo_key if logo_key
       options[:is_app_index] = is_app_index if is_app_index
       category = Category.where(name: row['大分类']).first_or_create(options)
-      sub_category = category.sub_categories.where(name: row['小分类']).first_or_create(shop_id: 3)
-      detail_category_key = get_detail_category_key(row['具体分类'], sub_category.name)
-      detail_category = sub_category.detail_categories.where(name: row['具体分类']).first_or_create(shop_id: 3, category_id: category.id, key: detail_category_key)
-      # @product1 = detail_category.shop_products.where(name: '商品1').first_or_create(shop_id: 3, category_id: category.id, sub_category_id: sub_category.id, unit_id: 1,
-      #   price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, key: '食品.jpg', desc: '商品描述1', info: '商品简介1', spec: '110g*18杯/箱', is_app_index: true)
-      # @product2 = detail_category.shop_products.where(name: '商品2').first_or_create(shop_id: 3, category_id: category.id, sub_category_id: sub_category.id, unit_id: 1,
-      #   price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, key: '食品2.jpg', desc: '商品描述2', info: '商品简介2', spec: '200g*12/箱', is_app_index: true)
+      sub_category = category.sub_categories.where(name: row['小分类']).first_or_create(shop_id: shop1.id)
+      detail_category = sub_category.detail_categories.where(name: row['具体分类']).first_or_create(shop_id: shop1.id, category_id: category.id)
+      @product1 = detail_category.shop_products.where(name: '商品1').first_or_create(shop_id: shop1.id, category_id: category.id, sub_category_id: sub_category.id, unit_id: unit1.id,
+        price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, desc: '商品描述1', info: '商品简介1', spec: '110g*18杯/箱', is_app_index: true)
+      @product1.update_columns(key: '食品.jpg')
+      image1 = @product1.images.create.update_columns(key: @product1.key)
+      @product2 = detail_category.shop_products.where(name: '商品2').first_or_create(shop_id: shop1.id, category_id: category.id, sub_category_id: sub_category.id, unit_id: unit1.id,
+        price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, desc: '商品描述2', info: '商品简介2', spec: '200g*12/箱', is_app_index: true)
+      @product2.update_columns(key: '食品2.jpg')
+      image2 = @product2.images.create.update_columns(key: @product2.key)
     end
-    update_qiniu_key
-    # advert1 = @product1.adverts.where(key: '广告1.jpg').first_or_create(shop_id: 3)
-    # advert2 = @product2.adverts.where(key: '广告2.jpg').first_or_create(shop_id: 3)
-    # advert3 = @product1.adverts.where(key: '广告3.jpg').first_or_create(shop_id: 3)
-    # advert4 = @product2.adverts.where(key: '广告4.jpg').first_or_create(shop_id: 3)
+    update_qiniu_key(shop1.id)
+    advert1 = @product1.adverts.where(key: '广告1.jpg').first_or_create(shop_id: shop1.id)
+    advert2 = @product2.adverts.where(key: '广告2.jpg').first_or_create(shop_id: shop1.id)
+    advert3 = @product1.adverts.where(key: '广告3.jpg').first_or_create(shop_id: shop1.id)
+    advert4 = @product2.adverts.where(key: '广告4.jpg').first_or_create(shop_id: shop1.id)
   end
 
   def self.open_spreadsheet(file)
@@ -36,18 +43,18 @@ module ImportXls
     end
   end
 
-  def self.update_qiniu_key
+  def self.update_qiniu_key(shop_id=nil)
     Category.all.each do |c|
       name_as, key, logo_key, is_app_index = get_name_as_and_key(c.name)
       options = {}
-      options[:shop_id] = nil
+      options[:shop_id] = shop_id
       options[:key] = key if key
       options[:logo_key] = logo_key if logo_key
       c.update_columns(options)
     end
     DetailCategory.all.each do |dc|
       detail_category_key = get_detail_category_key(dc.name, dc.sub_category.name)
-      dc.update_columns(shop_id: nil, key: detail_category_key)
+      dc.update_columns(shop_id: shop_id, key: detail_category_key)
     end
   end
 
