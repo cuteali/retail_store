@@ -21,11 +21,11 @@ module ImportXls
       @product1 = detail_category.shop_products.where(name: '商品1').first_or_create(shop_id: shop1.id, category_id: category.id, sub_category_id: sub_category.id, unit_id: unit1.id,
         price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, desc: '商品描述1', info: '商品简介1', spec: '110g*18杯/箱', is_app_index: true)
       @product1.update_columns(key: '食品.jpg')
-      image1 = @product1.images.create.update_columns(key: @product1.key)
+      image1 = @product1.images.create.update_columns(key: @product1.key.path)
       @product2 = detail_category.shop_products.where(name: '商品2').first_or_create(shop_id: shop1.id, category_id: category.id, sub_category_id: sub_category.id, unit_id: unit1.id,
         price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, desc: '商品描述2', info: '商品简介2', spec: '200g*12/箱', is_app_index: true)
       @product2.update_columns(key: '食品2.jpg')
-      image2 = @product2.images.create.update_columns(key: @product2.key)
+      image2 = @product2.images.create.update_columns(key: @product2.key.path)
     end
     update_qiniu_key(shop1.id)
     advert1 = @product1.adverts.where(key: '广告1.jpg').first_or_create(shop_id: shop1.id)

@@ -2,7 +2,7 @@ if @pay_url
   json.errcode 0
   json.errmsg '获取支付宝接口成功'
   json.obj do
-    json.pay_url @pay_url
+    json.order_info @pay_url
   end
 else
   json.errcode 1
