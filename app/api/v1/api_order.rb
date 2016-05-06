@@ -79,16 +79,15 @@ module V1
         end
       end
 
-      #http://localhost:3000/api/v1/orders/:id
+      #http://localhost:3000/api/v1/orders/show/:id
       params do 
         requires :token, type: String
         requires :id, type: String
-        requires :shop_id, type: String
       end
-      get ':id', jbuilder: 'v1/orders/show' do
+      get 'show/:id', jbuilder: 'v1/orders/show' do
         authenticate!
         if !@erruser
-          @order = @current_user.orders.normal.find_by(id: params[:id], shop_id: params[:shop_id])
+          @order = @current_user.orders.normal.find_by(id: params[:id])
           @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC')
         end
       end
@@ -103,6 +102,21 @@ module V1
         if !@erruser
           order = @current_user.orders.normal.find_by(id: params[:id])
           @order = order.update(state: 'completed')
+        end
+      end
+
+      #http://localhost:3000/api/v1/orders
+      params do 
+        requires :token, type: String
+        requires :id, type: String
+      end
+      delete '', jbuilder: 'v1/orders/delete' do
+        authenticate!
+        if !@erruser
+          order = @current_user.orders.normal.can_delete.find_by(id: params[:id])
+          if order.present?
+            @order = order.deleted!
+          end
         end
       end
     end

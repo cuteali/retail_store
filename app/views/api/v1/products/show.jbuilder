@@ -4,7 +4,6 @@ if @shop_product
   json.obj do
     json.id @shop_product.id
     json.name @shop_product.name
-    json.image @shop_product.key.try(:url)
     json.unit @shop_product.unit.try(:name)
     json.price @shop_product.price
     json.old_price @shop_product.old_price
@@ -13,8 +12,22 @@ if @shop_product
     json.desc @shop_product.desc
     json.info @shop_product.info
     json.spec @shop_product.spec
-    json.favorites @favorite.present? ? 0 : 1
+    json.is_favorite @favorite.present? ? 0 : 1
     json.favorite_id @favorite.present? ? @favorite.id : ''
+    json.imagelist(@images) do |image|
+      json.image image.key.try(:url)
+    end
+    json.hotlists(@top_shop_products) do |product|
+      json.id product.id
+      json.name product.name
+      json.image product.key.try(:url)
+      json.unit product.unit.try(:name)
+      json.price product.price
+      json.old_price product.old_price
+      json.stock_volume product.stock_volume
+      json.sales_volume product.sales_volume
+      json.spec product.spec
+    end
   end
 else
   json.errcode 1

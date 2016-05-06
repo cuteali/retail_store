@@ -5,6 +5,8 @@ class Image < ActiveRecord::Base
 
   enum status: [ :normal, :deleted ]
 
+  scope :sorted, -> { order('sort DESC') }
+
   def self.image_upload(image_params, imageable_id, imageable_type)
     image_params.each do |img|
       Image.create(key: img, imageable_id: imageable_id, imageable_type: imageable_type)

@@ -15,7 +15,11 @@ module V1
         authenticate! if params[:token]
         shop = Shop.normal.find_by(id: params[:shop_id])
         @shop_product = shop.shop_products.normal.find_by(id: params[:id])
-        @favorite = shop.favorites.normal.find_by(shopper_id: @current_user.try(:id), shop_product_id: @shop_product.try(:id))
+        @top_shop_products = shop.shop_products.normal.sorted.limit(6)
+        if @shop_product
+          @favorite = shop.favorites.normal.find_by(shopper_id: @current_user.try(:id), shop_product_id: @shop_product.id)
+          @images = @shop_product.images.normal.sorted.to_a.insert(0, @shop_product)
+        end
       end
 
       #http://localhost:3000/api/v1/products/search

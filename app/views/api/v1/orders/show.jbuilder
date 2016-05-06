@@ -6,6 +6,7 @@ if @order
     json.shop_id @order.shop.id
     json.shop_name @order.shop.name
     json.order_no @order.order_no
+    json.order_type Order.order_types[@order.order_type]
     json.state @order.state_type
     json.area @order.address.area
     json.detail @order.address.detail
@@ -16,7 +17,7 @@ if @order
     json.complete_at @order.complete_at.present?? @order.complete_at.strftime("%Y-%m-%d %H:%M:%S") : ""
     json.pro_count @order.orders_shop_products.sum(:product_num)
     json.total_price @order.total_price
-    json.productlist(@shop_products) do |op|
+    json.products(@shop_products) do |op|
       json.product_id op.shop_product_id
       json.number op.product_num
       json.name op.shop_product.name

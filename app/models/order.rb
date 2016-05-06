@@ -15,6 +15,7 @@ class Order < ActiveRecord::Base
 
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :latest, -> { order('created_at DESC') }
+  scope :can_delete, -> { where(state: ['completed', 'canceled']) }
   scope :by_state, -> (state = nil) {
     if state.to_s == '0'
       where(state: STATE)

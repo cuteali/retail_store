@@ -7,7 +7,7 @@ class ShopProduct < ActiveRecord::Base
   belongs_to :sub_category
   belongs_to :detail_category
   belongs_to :unit
-  has_many :images, as: :menuable
+  has_many :images, as: :imageable
   has_many :orders_shop_products
   has_many :carts
   has_many :adverts

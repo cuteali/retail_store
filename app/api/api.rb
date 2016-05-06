@@ -15,6 +15,7 @@ class API < Grape::API
   end
 
   mount V1::ApiAddress
+  mount V1::ApiAlipay
   mount V1::ApiCart
   mount V1::ApiCategory
   mount V1::ApiFavorite
