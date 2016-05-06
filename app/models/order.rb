@@ -74,7 +74,7 @@ class Order < ActiveRecord::Base
   def pay_url
     Alipay::Mobile::Service.mobile_securitypay_pay_string(
       out_trade_no: order_no,
-      notify_url: alipay_notify_orders_url,
+      notify_url: Rails.application.routes.url_helpers.alipay_notify_orders_url(host: 'jinhuola.cc'),
       subject: 'subject',
       total_fee: total_price.to_s,
       body: 'text'
