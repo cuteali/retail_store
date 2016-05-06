@@ -72,13 +72,16 @@ class Order < ActiveRecord::Base
   end
 
   def pay_url
-    Alipay::Mobile::Service.mobile_securitypay_pay_string(
+    Alipay::Mobile::Service.mobile_securitypay_pay_string({
       out_trade_no: order_no,
       notify_url: Rails.application.routes.url_helpers.alipay_notify_orders_url(host: 'jinhuola.cc'),
       subject: 'subject',
       total_fee: total_price.to_s,
       body: 'text'
-    )
+    }, {
+      sign_type: 'RSA',
+      key: ENV['rsa_private_key']
+    })
   end
 
   def get_address
