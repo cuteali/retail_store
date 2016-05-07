@@ -20,13 +20,13 @@ class Order < ActiveRecord::Base
     if state.to_s == '0'
       where(state: STATE)
     elsif state.to_s == '1'
-      where(state: ['opening', 'pending'], order_type: 1)
+      where('state in (?) and order_type = ? and expiration_at >= ?', ['opening', 'pending'], 1, Time.now)
     elsif state.to_s == '2'
       where(state: 'paid')
     elsif state.to_s == '3'
       where(state: 'completed')
     elsif state.to_s == '4'
-      where(state: ['canceled', 'refund'])
+      where('state in (?) or expiration_at < ?', ['canceled', 'refund'], 1, Time.now)
     end
   }
 
@@ -108,7 +108,7 @@ class Order < ActiveRecord::Base
       '1'
     elsif cod? && state == 'completed'
       '3'
-    elsif olp? && %w(opening pending).include?(state)
+    elsif olp? && %w(opening pending).include?(state) && !is_expiration
       '0'
     elsif olp? && state == 'paid'
       '2'
@@ -116,7 +116,7 @@ class Order < ActiveRecord::Base
       '3'
     elsif olp? && state == 'refund'
       '4'
-    elsif olp? && state == 'canceled'
+    elsif (olp? && state == 'canceled') || is_expiration
       '5'
     end
   end
@@ -153,10 +153,14 @@ class Order < ActiveRecord::Base
 
   def get_expiration_time
     if olp? && %w(opening pending).include?(state)
-      ((created_at + 30.minutes) - Time.now).to_i
+      (expiration_at - Time.now).to_i
     else
       ''
     end
+  end
+
+  def is_expiration
+    Time.now > expiration_at
   end
 
   private

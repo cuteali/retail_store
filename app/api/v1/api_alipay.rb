@@ -13,7 +13,10 @@ module V1
         authenticate!
         if !@erruser
           order = @current_user.orders.normal.find_by(id: params[:order_id])
-          @pay_url = order.pay_url if order
+          if order
+            @pay_url = order.pay_url
+            @is_expiration = order.is_expiration
+          end
         end
       end
     end

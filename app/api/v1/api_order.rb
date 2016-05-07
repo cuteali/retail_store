@@ -74,6 +74,7 @@ module V1
               if @stock_volume_result == 0
                 state, order_type = get_order_type_and_state(params[:order_type])
                 @order = @current_user.orders.create(shop_id: shop.id, address_id: address.try(:id), receive_name: address.try(:receive_name), receive_phone: address.try(:receive_phone), area: address.try(:area), detail: address.try(:detail), total_price: total_price, order_type: order_type, state: state)
+                @order.update_columns(expiration_at: @order.created_at + 30.minutes) if @order.olp?
                 @order.create_orders_shop_products(shop, product_arr)
                 pro_ids = @order.update_product_stock_volume
                 AppLog.info("pro_ids:      #{pro_ids}")
