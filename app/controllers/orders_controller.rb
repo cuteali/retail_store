@@ -2,7 +2,12 @@ class OrdersController < ApplicationController
   def alipay_notify
     notify_params = params.except(*request.path_parameters.keys)
     # 先校验消息的真实性
+    Rails.logger.info "=======notify_params========#{notify_params}========"
     if Alipay::Sign.verify?(notify_params) && Alipay::Notify.verify?(notify_params)
+      Rails.logger.info "=======out_trade_no1========#{notify_params[:out_trade_no]}========"
+      Rails.logger.info "=======out_trade_no2========#{notify_params['out_trade_no']}========"
+      Rails.logger.info "=======out_trade_no3========#{params['out_trade_no']}========"
+      Rails.logger.info "=======out_trade_no4========#{params[:out_trade_no]}========"
       # 获取交易关联的订单
       @order = Order.find_by(order_no: params[:out_trade_no])
 
