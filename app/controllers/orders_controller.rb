@@ -1,5 +1,6 @@
 class OrdersController < ApplicationController
   def alipay_notify
+    binding.pry
     notify_params = params.except(*request.path_parameters.keys)
     # 先校验消息的真实性
     Rails.logger.info "=======notify_params========#{notify_params}========"
