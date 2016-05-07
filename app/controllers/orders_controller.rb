@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
       when 'WAIT_BUYER_PAY'
         Rails.logger.info "11111111111111"
         # 交易开启
-        @order.update_column(trade_no: params[:trade_no])
+        @order.update_columns(trade_no: params[:trade_no])
         @order.pend
       when 'WAIT_SELLER_SEND_GOODS'
         Rails.logger.info "22222222222222"
