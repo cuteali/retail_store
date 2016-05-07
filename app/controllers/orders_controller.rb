@@ -15,8 +15,8 @@ class OrdersController < ApplicationController
         @order.pend
       when 'TRADE_SUCCESS'
         # 买家完成支付
-        # @order.pay
-        @order.update_column :state, 'completed'
+        @order.pay
+        # @order.update_column :state, 'completed'
         # 虚拟物品无需发货，所以立即调用发货接口
         @order.send_good
       when 'TRADE_FINISHED'
