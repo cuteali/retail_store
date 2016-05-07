@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
         # 交易开启
         @order.update_columns(trade_no: params[:trade_no])
         @order.pend
-      when 'WAIT_SELLER_SEND_GOODS'
+      when 'TRADE_SUCCESS'
         Rails.logger.info "22222222222222"
         # 买家完成支付
         @order.pay
