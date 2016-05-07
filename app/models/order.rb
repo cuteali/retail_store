@@ -26,7 +26,7 @@ class Order < ActiveRecord::Base
     elsif state.to_s == '3'
       where(state: 'completed')
     elsif state.to_s == '4'
-      where('state in (?) or expiration_at < ?', ['canceled', 'refund'], 1, Time.now)
+      where('state in (?) or expiration_at < ?', ['canceled', 'refund'], Time.now)
     end
   }
 
