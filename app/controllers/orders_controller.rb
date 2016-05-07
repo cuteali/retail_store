@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [ :alipay_notify ]
+  
   def alipay_notify
     Rails.logger.info "=======params========#{params}========"
     Rails.logger.info "=======out_trade_no3========#{params['out_trade_no']}========"
