@@ -64,11 +64,14 @@ class Order < ActiveRecord::Base
   end
 
   def send_good
-    Alipay::Service.send_goods_confirm_by_platform(
-      :trade_no => trade_no,
-      :logistics_name => 'jinhuola.cc',
-      :transport_type => 'DIRECT' # 无需物流
-    )
+    Alipay::Service.send_goods_confirm_by_platform({
+      trade_no: trade_no,
+      logistics_name: 'jinhuola.cc',
+      transport_type: 'DIRECT' # 无需物流
+    }, {
+      sign_type: 'RSA',
+      key: ENV['rsa_private_key']
+    })
   end
 
   def pay_url
