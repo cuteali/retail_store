@@ -155,7 +155,7 @@ class Order < ActiveRecord::Base
     if olp? && %w(opening pending).include?(state)
       (expiration_at - Time.now).to_i
     else
-      ''
+      0
     end
   end
 
