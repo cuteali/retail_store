@@ -151,6 +151,14 @@ class Order < ActiveRecord::Base
     pro_ids
   end
 
+  def get_expiration_time
+    if olp? && %w(opening pending).include?(state)
+      ((created_at + 30.minutes) - Time.now).to_i
+    else
+      ''
+    end
+  end
+
   private
     def generate_order_no
       max_order_no = Order.maximum(:order_no) || 1605040
