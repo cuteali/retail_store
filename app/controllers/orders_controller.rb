@@ -10,29 +10,26 @@ class OrdersController < ApplicationController
 
       case params[:trade_status]
       when 'WAIT_BUYER_PAY'
-        Rails.logger.info "11111111111111"
         # 交易开启
         @order.update_columns(trade_no: params[:trade_no])
         @order.pend
       when 'TRADE_SUCCESS'
-        Rails.logger.info "22222222222222"
         # 买家完成支付
-        @order.pay
+        # @order.pay
+        @order.complete
         # 虚拟物品无需发货，所以立即调用发货接口
         @order.send_good
       when 'TRADE_FINISHED'
-        Rails.logger.info "33333333333333"
         # 交易完成
         @order.complete
       when 'TRADE_CLOSED'
-        Rails.logger.info "44444444444444"
         # 交易被关闭
         @order.cancel
       end
 
-      render :text => 'success' # 成功接收消息后，需要返回纯文本的 ‘success’，否则支付宝会定时重发消息，最多重试7次。 
+      render text: 'success'
     else
-      render :text => 'error'
+      render text: 'error'
     end
   end
 
