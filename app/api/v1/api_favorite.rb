@@ -12,7 +12,7 @@ module V1
       end
       get '', jbuilder: 'v1/favorites/index' do
         authenticate!
-        if !@erruser
+        if @token
           @favorites = @current_user.favorites.joins(:shop_product).where( "shop_products.status = 0" ).normal.where(shop_id: params[:shop_id]).latest.by_page(params[:page_num])
         end
       end
@@ -25,7 +25,7 @@ module V1
       end
       post '', jbuilder: 'v1/favorites/create' do
         authenticate!
-        if !@erruser
+        if @token
           shop = Shop.normal.find_by(id: params[:shop_id])
           @favorite = @current_user.favorites.create(shop_id: shop.id, shop_product_id: params[:product_id])
         end
@@ -38,7 +38,7 @@ module V1
       end
       delete '', jbuilder: 'v1/favorites/delete' do
         authenticate!
-        if !@erruser
+        if @token
           favorite = @current_user.favorites.normal.find_by(id: params[:id])
           if favorite.present?
             @favorite = favorite.deleted!
@@ -53,7 +53,7 @@ module V1
       end
       get 'delete_all', jbuilder: 'v1/favorites/delete_all' do
         authenticate!
-        if !@erruser
+        if @token
           favorites = @current_user.favorites.normal.where(shop_id: params[:shop_id])
           if favorites.present?
             @favorites = favorites.map{|f| f.deleted!}

@@ -16,7 +16,7 @@ module V1
       end
       get ':token', jbuilder: 'v1/carts/index' do
         authenticate!
-        if !@erruser
+        if @token
           @carts = @current_user.carts.joins(:shop_product).where(shop_id: @shop.id).normal.group_by{ |cart| cart.shop_product.category.name }
         end
       end
@@ -30,7 +30,7 @@ module V1
       end
       post '', jbuilder: 'v1/carts/create' do
         authenticate!
-        if !@erruser
+        if @token
           product = @shop.shop_products.find_by(id: params[:product_id])
           cart = @current_user.carts.find_by(shop_id: @shop.id, shop_product_id: product.id)
           if cart
@@ -51,7 +51,7 @@ module V1
       end
       post 'edit_product_num', jbuilder: 'v1/carts/edit_product_num' do
         authenticate!
-        if !@erruser
+        if @token
           cart = @current_user.carts.find_by(shop_id: @shop.id, id: params[:cart_id])
           @cart = cart.update(product_num: params[:product_num])
         end
@@ -68,7 +68,7 @@ module V1
         cart_ids_json = JSON.parse(params[:cart_ids].gsub("\\",""))
         AppLog.info("cart_ids_json:  #{cart_ids_json}")
         authenticate!
-        if !@erruser
+        if @token
           ActiveRecord::Base.transaction do
             carts = @current_user.carts.where(shop_id: @shop.id, id: cart_ids_json)
             AppLog.info("ids:   #{carts.pluck(:id)}")

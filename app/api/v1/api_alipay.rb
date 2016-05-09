@@ -11,7 +11,7 @@ module V1
       end
       get 'alipay_string', jbuilder: 'v1/alipays/alipay_string' do
         authenticate!
-        if !@erruser
+        if @token
           order = @current_user.orders.normal.find_by(id: params[:order_id])
           if order
             @pay_url = order.pay_url

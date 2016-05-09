@@ -23,8 +23,8 @@ module V1
       post 'sign_in', jbuilder: "v1/shoppers/sign_in" do
         @token, @shopper = Shopper.sign_in(params[:phone], params[:rand_code])
         if @token.present?
-          $redis.set(@token, @shopper.id)
-          @result = $redis.expire(@token, 24*3600*15)
+          $redis.set(@shopper.id, @token)
+          @result = $redis.expire(@shopper.id, 24*3600*15)
         end
       end
 
@@ -36,7 +36,7 @@ module V1
       end
       put '', jbuilder: "v1/shoppers/update" do 
         authenticate!
-        if !@erruser
+        if @token
           declared_params = declared(params, include_missing: false)
           @result = @current_user.update_columns(declared_params)
         end
@@ -48,12 +48,11 @@ module V1
       end
       post 'update_token', jbuilder: "v1/shoppers/update_token" do
         authenticate!
-        if !@erruser
-          @token = SecureRandom.urlsafe_base64
-          $redis.del(@current_user.token)
-          @current_user.update(token: @token)
-          $redis.set(@token, @current_user.id)
-          @result = $redis.expire(@token, 24*3600*15)
+        if @token
+          token = SecureRandom.urlsafe_base64
+          @current_user.update(token: token)
+          $redis.set(@current_user.id, token)
+          @result = $redis.expire(@current_user.id, 24*3600*15)
         end
       end
 
@@ -64,7 +63,7 @@ module V1
       end
       get ':token', jbuilder: 'v1/shoppers/show' do
         authenticate!
-        if !@erruser
+        if @token
           shop = Shop.normal.find_by(id: params[:shop_id])
           @messages = @current_user.messages.where(shop_id: shop.id).normal.unread
         end

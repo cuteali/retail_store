@@ -10,7 +10,7 @@ module V1
       end
       get '', jbuilder: 'v1/messages/index' do
         authenticate!
-        if !@erruser 
+        if @token 
           @messages = @current_user.messages.normal
         end
       end

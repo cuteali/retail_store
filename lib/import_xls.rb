@@ -5,6 +5,10 @@ module ImportXls
     shop2 = Shop.where(name: '醉食汇大连路店', address: '上海市虹口区大连路1035号', lng: '121.506019', lat: '31.268009', phone: '15026815026', director: '闫康', shop_model_id: shop_model.id).first_or_create
     unit1 = Unit.where(name: '箱').first_or_create
     unit2 = Unit.where(name: '包').first_or_create
+    top_search1 = TopSearch.where(name: '食用油').first_or_create
+    top_search2 = TopSearch.where(name: '南北干货').first_or_create
+    top_search3 = TopSearch.where(name: '夏威夷果').first_or_create
+    top_search4 = TopSearch.where(name: '调味料').first_or_create
     spreadsheet = open_spreadsheet(file)
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|

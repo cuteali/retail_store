@@ -20,7 +20,7 @@ module V1
       end
       get '', jbuilder: 'v1/addresses/index' do
         authenticate!
-        if !@erruser 
+        if @token
           @addresses = @current_user.addresses.normal
         end
       end
@@ -38,7 +38,7 @@ module V1
       end
       post '', jbuilder: 'v1/addresses/create' do
         authenticate!
-        if !@erruser
+        if @token
           default = is_default(params[:default])
           update_all_default if default
           @address = @current_user.addresses.create(receive_phone: params[:receive_phone], receive_name: params[:receive_name], area: params[:area], detail: params[:detail], lng: params[:lng], lat: params[:lat], is_default: default)
@@ -59,7 +59,7 @@ module V1
       end
       put '', jbuilder: 'v1/addresses/update' do
         authenticate!
-        if !@erruser
+        if @token
           @address = @current_user.addresses.normal.find_by(id: params[:id])
           if @address.present?
             default = is_default(params[:default])
@@ -76,7 +76,7 @@ module V1
       end
       delete '', jbuilder: 'v1/addresses/delete' do
         authenticate!
-        if !@erruser
+        if @token
           address = @current_user.addresses.normal.find_by(id: params[:id])
           if address.present?
             @address = address.deleted!
@@ -92,7 +92,7 @@ module V1
       get 'show/:id', jbuilder: 'v1/addresses/show' do
         AppLog.info("address show start")
         authenticate!
-        if !@erruser
+        if @token
           @address = @current_user.addresses.normal.find_by(id: params[:id])
         end
         AppLog.info("address:  #{@address}")
@@ -104,7 +104,7 @@ module V1
       end
       get 'default/:token', jbuilder: 'v1/addresses/show' do 
         authenticate!
-        if !@erruser
+        if @token
           @address = @current_user.addresses.normal.default.first
         end
       end

@@ -5,12 +5,19 @@ class API < Grape::API
 
   helpers do
     def current_user
-      shopper_id = $redis.get(params.delete(:token))
-      @current_user ||= Shopper.normal.find_by(id: shopper_id)
+      user_token = params.delete(:token)
+      AppLog.info("user_token:    #{user_token}")
+      current_user = Shopper.normal.find_by(token: user_token)
+      if current_user.present?
+        AppLog.info("user_id : #{current_user.id}")
+        token = $redis.get(current_user.id)
+        AppLog.info("token is :#{token}")
+      end
+      [token, current_user]
     end
 
     def authenticate!
-      @erruser = current_user.blank?
+      @token, @current_user = current_user
     end
   end
 
