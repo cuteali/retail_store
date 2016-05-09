@@ -68,6 +68,18 @@ module V1
           @messages = @current_user.messages.where(shop_id: shop.id).normal.unread
         end
       end
+
+      # http://localhost:3000/api/v1/shoppers/client/:token
+      params do
+        requires :token, type: String
+        requires :client_id, type: String
+      end
+      get 'client/:token', jbuilder: 'v1/shoppers/client' do
+        authenticate!
+        if @token
+          @result = @current_user.update(client_id: params[:client_id])
+        end
+      end
     end
   end
 end

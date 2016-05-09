@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160507090122) do
+ActiveRecord::Schema.define(version: 20160509095910) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(version: 20160507090122) do
     t.string   "token",      limit: 255
     t.string   "key",        limit: 255
     t.integer  "level",      limit: 1,   default: 0, null: false
+    t.string   "client_id",  limit: 255
     t.integer  "status",     limit: 1,   default: 0, null: false
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
