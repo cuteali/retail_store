@@ -7,13 +7,13 @@
     <%= csrf_meta_tags %>
   </head>
   <body>
-    <% unless invalid_path? %>
+    <% if current_user && !invalid_path? %>
       <%= render '/layouts/top_nav' %>
     <% end %>
 
     <div class="container-fluid content">
       <div class="row">
-        <% unless invalid_path? %>
+        <% if current_user && !invalid_path? %>
           <%= render '/layouts/left_nav' %>
         <% end %>
         <%= yield %>
