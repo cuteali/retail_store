@@ -11,7 +11,9 @@ class ShopProduct < ActiveRecord::Base
   has_many :orders_shop_products
   has_many :carts
   has_many :adverts
+  has_many :messages, as: :messageable
 
+  scope :shelves, -> { where(state: 1) }
   scope :sorted, -> { order('sort DESC') }
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :name_like, -> (name) { where('name like ?', "%#{name}%") if name.present? }

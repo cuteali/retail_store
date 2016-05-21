@@ -1,0 +1,84 @@
+<div class="main">
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="javascript:void(0);"><i class="fa fa-list-alt"></i>店铺管理</a></li>
+        <li><a href="<%= shops_path %>"><i class="fa fa-table"></i>店铺列表</a></li>
+        <li class="active"><a href="javascript:void(0);"><i class="fa fa-pencil-square-o"></i><%= crumb_name(@shop) %>店铺</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2><%= crumb_name(@shop) %>店铺</h2>
+    </div>          
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-indent red"></i>填写表单</h6>              
+        </div>
+        <div class="panel-body">
+          <%= form_for(@shop, html: {class: "form-horizontal", role: "form", multipart: true}) do |f| %>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="shop_model_id">店铺模板</label>
+              <div class="col-md-9">
+                <% options = ShopModel.normal.pluck(:name, :id) %>
+                <%= f.select :shop_model_id, options.insert(0, ['选择店铺模板','']), {}, class: 'form-control'%>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="name">店铺名称</label>
+              <div class="col-md-9">
+                <%= f.text_field :name, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="address">地址</label>
+              <div class="col-md-9">
+                <%= f.text_field :address, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="lat">纬度</label>
+              <div class="col-md-9">
+                <%= f.text_field :lat, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="lng">经度</label>
+              <div class="col-md-9">
+                <%= f.text_field :lng, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="tel">电话</label>
+              <div class="col-md-9">
+                <%= f.text_field :tel, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="director">负责人</label>
+              <div class="col-md-9">
+                <%= f.text_field :director, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="phone">手机</label>
+              <div class="col-md-9">
+                <%= f.text_field :phone, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3 col-md-offset-3">
+                <button type="submit" class="bk-margin-5 btn btn-primary">保存</button>
+                <button type="button" class="bk-margin-5 btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+              </div>
+            </div>
+            <br>
+          <% end %>
+        </div>  
+      </div>  
+    </div>
+  </div>
+</div>

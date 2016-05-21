@@ -1,0 +1,65 @@
+<div class="main">
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="<%= users_path %>"><i class="fa fa-list-alt"></i>系统管理</a></li>
+        <li class="active"><a href="<%= edit_user_path %>"><i class="fa fa-pencil-square-o"></i>修改管理员</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2>修改管理员</h2>
+    </div>          
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-indent red"></i>填写表单</h6>              
+        </div>
+        <div class="panel-body">
+          <%= form_for(@user, html: {method: :put, class: "form-horizontal", role: "form", multipart: true}) do |f| %>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="shop_id">店铺</label>
+              <div class="col-md-9">
+                <% options = Shop.normal.order(:id).pluck(:name, :id) %>
+                <%= f.select :shop_id, options.insert(0,["选择店铺",""]), {}, class: 'form-control'%>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="role">角色</label>
+              <div class="col-md-9">
+                <%= f.select :role, [["店铺管理员", "user"], ["高级管理员", "editor"], ["超级管理员", "admin"]], {}, class: 'form-control' %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="username">用户名</label>
+              <div class="col-md-9">
+                <%= f.text_field :username, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="phone">手机号</label>
+              <div class="col-md-9">
+                <%= f.text_field :phone, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="email">邮箱</label>
+              <div class="col-md-9">
+                <%= f.email_field :email, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3 col-md-offset-3">
+                <button type="submit" class="bk-margin-5 btn btn-primary">保存</button>
+                <button type="button" class="bk-margin-5 btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+              </div>
+            </div>
+            <br>
+          <% end %>
+        </div>  
+      </div>  
+    </div>
+  </div>
+</div>

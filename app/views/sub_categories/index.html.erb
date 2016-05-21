@@ -1,0 +1,80 @@
+<div class="main sidebar-minified">     
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="javascript:void(0);"><i class="fa fa-list-alt"></i>分类管理</a></li>
+        <li class="active"><a href="<%= sub_categories_path %>"><i class="fa fa-table"></i>小分类</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2>小分类</h2>
+    </div>          
+  </div>
+  <div class="row">   
+    <div class="col-lg-12">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-table red"></i><span class="break"></span>小分类</h6>
+        </div>
+        <div class="panel-body">
+          <%= render '/layouts/alert' %>
+          <div class="table-responsive">
+            <%= search_form_for @q, url: {action: action_name}, class: 'form-horizontal', html: { method: :get } do |f| %>
+              <div class="form-group col-md-1">
+                <% options = user_categories.pluck(:name, :id) %>
+                <%= f.select :category_id_eq, options.insert(0,["选择大分类",""]), {}, class: "form-control" %>
+              </div>
+              <div class="form-group col-md-2">
+                <%= f.search_field :name_cont, class: 'form-control', placeholder: '小分类名称' %>
+              </div>
+              <div class="form-group col-md-1">
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-primary">查询</button>
+                </span>
+              </div>
+            <% end %>
+            <div style="float: right;">
+              <a href="<%= new_sub_category_path %>" class="bk-margin-5 btn btn-success"><i class="fa fa-plus"></i> 添加小分类</a>
+            </div>
+            <table class="table table-bordered table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>类别名称</th>
+                  <th>大分类</th>
+                  <th>操作</th>
+                </tr>
+              </thead>   
+              <tbody>
+                <% if @sub_categories.each do |category| %>
+                  <tr>
+                    <td><%= category.id %></td>
+                    <td><%= category.name %></td>
+                    <td><%= category.category.try(:name) %></td>
+                    <td>
+                      <%= link_to stick_top_sub_category_path(category), class: "btn btn-success" do %>
+                        <i class="fa fa-arrow-up"></i>
+                      <% end %>
+                      <%= link_to edit_sub_category_path(category), class: "btn btn-info" do %>
+                        <i class="fa fa-edit"></i>
+                      <% end %>
+                      <%= link_to sub_category_path(category), class: "btn btn-danger", method: :delete, data: { confirm: '确定要删除吗？' } do %>
+                        <i class="fa fa-trash-o"></i>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end.blank? %>
+                  <tr>
+                    <td colspan="4" class="green text-center">无记录</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <%= paginate @sub_categories %>
+        </div>
+      </div>
+    </div>          
+  </div>
+</div>

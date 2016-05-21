@@ -7,6 +7,7 @@ class Shop < ActiveRecord::Base
   has_many :sub_categories, -> { order "sub_categories.sort DESC" }
   has_many :detail_categories, -> { order "detail_categories.sort DESC" }
   has_many :favorites
+  has_many :users
 
   enum status: [ :normal, :deleted ]
 end

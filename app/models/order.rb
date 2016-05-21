@@ -2,6 +2,7 @@ class Order < ActiveRecord::Base
   belongs_to :address
   belongs_to :shop
   belongs_to :shopper
+  has_many :messages, as: :messageable
   has_many :orders_shop_products, dependent: :destroy
   has_many :shop_products, through: :orders_shop_products
   accepts_nested_attributes_for :orders_shop_products, allow_destroy: true
@@ -16,21 +17,28 @@ class Order < ActiveRecord::Base
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :latest, -> { order('created_at DESC') }
   scope :can_delete, -> { where(state: ['completed', 'canceled']) }
+  scope :not_receiving, -> { where(state: 'paid') }
+  scope :receiving, -> { where(state: 'receiving') }
   scope :by_state, -> (state = nil) {
-    if state.to_s == '0'
-      where(state: STATE)
-    elsif state.to_s == '1'
-      where('state in (?) and order_type = ? and expiration_at >= ?', ['opening', 'pending'], 1, Time.now)
-    elsif state.to_s == '2'
-      where(state: 'paid')
-    elsif state.to_s == '3'
-      where(state: 'completed')
-    elsif state.to_s == '4'
-      where('state in (?) or expiration_at < ?', ['canceled', 'refund'], Time.now)
+    case state
+    when '0' then where(state: STATE)
+    when '1' then where('state in (?) and order_type = ? and expiration_at >= ?', ['opening', 'pending'], 1, Time.now)
+    when '2' then where(state: ['paid', 'receiving'])
+    when '3' then where(state: 'completed')
+    when '4' then where('state in (?) or expiration_at < ?', ['canceled', 'refund'], Time.now)
+    end
+  }
+  scope :by_shop_state, -> (state = nil) {
+    case state
+    when '0' then where(state: 'paid')
+    when '1' then where(state: 'receiving')
+    when '2' then where(state: 'completed')
+    when '3' then where(state: 'refund')
+    when '4' then where(state: 'canceled')
     end
   }
 
-  STATE = %w(opening pending paid completed refund canceled)
+  STATE = %w(opening pending paid receiving completed refund canceled)
   validates_inclusion_of :state, :in => STATE
 
   STATE.each do |state|
@@ -102,22 +110,24 @@ class Order < ActiveRecord::Base
     result
   end
 
-  # 0 待付款 1 货到付款 2 已支付待收货 3 交易成功 4 退款中 5 交易关闭
+  # 0 待付款 1 货到付款 2 已支付待收货 3 交易成功 4 退款中 5 交易关闭 6 未接单
   def state_type
-    if cod? && state == 'paid'
+    if cod? && state == 'receiving'
       '1'
     elsif cod? && state == 'completed'
       '3'
     elsif olp? && %w(opening pending).include?(state) && !is_expiration
       '0'
-    elsif olp? && state == 'paid'
+    elsif olp? && state == 'receiving'
       '2'
     elsif olp? && state == 'completed'
       '3'
     elsif olp? && state == 'refund'
       '4'
-    elsif (olp? && state == 'canceled') || is_expiration
+    elsif state == 'canceled' || (olp? && is_expiration)
       '5'
+    elsif state == 'paid'
+      '6'
     end
   end
 

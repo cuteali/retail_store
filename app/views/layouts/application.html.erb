@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>RetailStore</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+  <head>
+    <title>醉食汇</title>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <% unless invalid_path? %>
+      <%= render '/layouts/top_nav' %>
+    <% end %>
 
-<%= yield %>
-
-</body>
+    <div class="container-fluid content">
+      <div class="row">
+        <% unless invalid_path? %>
+          <%= render '/layouts/left_nav' %>
+        <% end %>
+        <%= yield %>
+      </div>
+    </div>
+  </body>
 </html>

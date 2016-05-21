@@ -8,7 +8,7 @@ class Image < ActiveRecord::Base
   scope :sorted, -> { order('sort DESC') }
 
   def self.image_upload(image_params, imageable_id, imageable_type)
-    image_params.each do |img|
+    image_params.to_a.each do |img|
       Image.create(key: img, imageable_id: imageable_id, imageable_type: imageable_type)
     end
   end

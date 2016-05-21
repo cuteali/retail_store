@@ -19,6 +19,22 @@ class API < Grape::API
     def authenticate!
       @token, @current_user = current_user
     end
+
+    def current_shop
+      user_token = params.delete(:token)
+      AppLog.info("user_token:    #{user_token}")
+      user = User.normal.find_by(token: user_token)
+      if user.present?
+        AppLog.info("user_id : #{user.id}")
+        token = $redis.get(user.phone)
+        AppLog.info("token is :#{token}")
+      end
+      [token, user]
+    end
+
+    def authenticate_shop!
+      @shop_token, @current_shop = current_shop
+    end
   end
 
   mount V1::ApiAddress
@@ -31,5 +47,7 @@ class API < Grape::API
   mount V1::ApiMessage
   mount V1::ApiOrder
   mount V1::ApiProduct
+  mount V1::ApiShop
   mount V1::ApiShopper
+  mount V1::ApiUser
 end

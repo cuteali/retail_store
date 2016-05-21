@@ -1,0 +1,145 @@
+<div class="main">
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="javascript:void(0);"><i class="fa fa-list-alt"></i>店铺管理</a></li>
+        <li><a href="<%= products_path %>"><i class="fa fa-table"></i>基础产品</a></li>
+        <li class="active"><a href="javascript:void(0);"><i class="fa fa-pencil-square-o"></i><%= crumb_name(@product) %>产品</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2><%= crumb_name(@product) %>产品</h2>
+    </div>          
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-indent red"></i>填写表单</h6>              
+        </div>
+        <div class="panel-body">
+          <%= form_for(@product, html: {class: "form-horizontal", role: "form", multipart: true}) do |f| %>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="category_id">大分类</label>
+              <div class="col-md-9">
+                <% category_options = user_categories.pluck(:name, :id) %>
+                <%= f.select :category_id, category_options.insert(0, ['选择大分类','']), {}, class: 'form-control'%>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="sub_category_id">小分类</label>
+              <div class="col-md-9">
+                <% sub_category_options = user_sub_categories.where(category_id: f.object.category_id).pluck(:name, :id) %>
+                <%= f.select :sub_category_id, sub_category_options.insert(0,["选择小分类",""]), {}, class: 'form-control'%>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="detail_category_id">具体分类</label>
+              <div class="col-md-9">
+                <% detail_category_options = user_detail_categories.where(sub_category_id: f.object.sub_category_id).pluck(:name, :id) %>
+                <%= f.select :detail_category_id, detail_category_options.insert(0,["选择具体分类",""]), {}, class: 'form-control'%>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="unit_id">单位</label>
+              <div class="col-md-9">
+                <% unit_options = Unit.normal.pluck(:name, :id) %>
+                <%= f.select :unit_id, unit_options.insert(0,["选择单位",""]), {}, class: 'form-control'%>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="name">产品名称</label>
+              <div class="col-md-9">
+                <%= f.text_field :name, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="key">封面图片</label>
+              <div class="col-md-9">
+                <%= f.file_field :key, multiple: true %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="key">轮播图</label>
+              <div class="col-md-9">
+                <%= f.file_field :images, multiple: true %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="price">价格</label>
+              <div class="col-md-9">
+                <%= f.text_field :price, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="old_price">原价</label>
+              <div class="col-md-9">
+                <%= f.text_field :old_price, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="desc">描述</label>
+              <div class="col-md-9">
+                <%= f.text_area :desc, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="info">简介</label>
+              <div class="col-md-9">
+                <%= f.text_area :info, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="spec">规格</label>
+              <div class="col-md-9">
+                <%= f.text_field :spec, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="sort">排序</label>
+              <div class="col-md-9">
+                <%= f.text_field :sort, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3 col-md-offset-3">
+                <button type="submit" class="bk-margin-5 btn btn-primary">保存</button>
+                <button type="button" class="bk-margin-5 btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+              </div>
+            </div>
+            <br>
+          <% end %>
+        </div>  
+      </div>  
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $("[name='product[category_id]']").change(function(){
+    var set_url = "<%= select_options_categories_url %>" + 
+                  "?category_id=" + $("[name='product[category_id]']").val() + 
+                  "&id=product_sub_category_id&name=product[sub_category_id]&first_option=选择小分类&class_name=SubCategory";
+    jQuery.ajax({
+      type: "GET",
+      url: set_url,
+      dataType: "json",
+      success: function(data){
+        $('#product_sub_category_id').html(data.html);
+      }
+    });
+  });
+  $("[name='product[sub_category_id]']").change(function(){
+    var set_url = "<%= select_options_categories_url %>" + 
+                  "?sub_category_id=" + $("[name='product[sub_category_id]']").val() + 
+                  "&id=product_detail_category_id&name=product[detail_category_id]&first_option=选择具体分类&class_name=DetailCategory";
+    jQuery.ajax({
+      type: "GET",
+      url: set_url,
+      dataType: "json",
+      success: function(data){
+        $('#product_detail_category_id').html(data.html);
+      }
+    });
+  });
+</script>

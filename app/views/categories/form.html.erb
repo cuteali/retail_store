@@ -1,0 +1,79 @@
+<div class="main">
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="javascript:void(0);"><i class="fa fa-list-alt"></i>分类管理</a></li>
+        <li><a href="<%= categories_path %>"><i class="fa fa-table"></i>大分类</a></li>
+        <li class="active"><a href="javascript:void(0);"><i class="fa fa-pencil-square-o"></i><%= crumb_name(@category) %>大分类</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2><%= crumb_name(@category) %>大分类</h2>
+    </div>          
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-indent red"></i>填写表单</h6>              
+        </div>
+        <div class="panel-body">
+          <%= form_for(@category, html: {class: "form-horizontal", role: "form", multipart: true}) do |f| %>
+            <%= f.hidden_field :shop_id %>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="name">类别名称</label>
+              <div class="col-md-9">
+                <%= f.text_field :name, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="name_as">简称</label>
+              <div class="col-md-9">
+                <%= f.text_field :name_as, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="key">首页圆图</label>
+              <div class="col-md-9">
+                <%= f.file_field :key, multiple: true %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="logo_key">首页长图</label>
+              <div class="col-md-9">
+                <%= f.file_field :logo_key, multiple: true %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">首页展示</label>
+              <div class="col-md-9">
+                <div class="radio-custom radio-inline">
+                  <%= f.radio_button :is_app_index, 'is_index', id: 'is_app_index1' %>
+                  <label for="is_app_index1"> 是</label>
+                </div>
+                <div class="radio-custom radio-inline">
+                  <%= f.radio_button :is_app_index, 'not_index', id: 'is_app_index2' %>
+                  <label for="is_app_index1"> 否</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="sort">排序</label>
+              <div class="col-md-9">
+                <%= f.text_field :sort, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3 col-md-offset-3">
+                <button type="submit" class="bk-margin-5 btn btn-primary">保存</button>
+                <button type="button" class="bk-margin-5 btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+              </div>
+            </div>
+            <br>
+          <% end %>
+        </div>  
+      </div>  
+    </div>
+  </div>
+</div>

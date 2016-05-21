@@ -1,0 +1,6 @@
+<td>
+  <%= form_for(user) do |f| %>
+    <%= f.select :role, [["店铺管理员", "user"], ["高级管理员", "editor"], ["超级管理员", "admin"]], {}, class: 'input-sm' %>
+    <button type="submit" class="bk-margin-5 btn btn-info btn-xs">保存</button>
+  <% end %>
+</td>

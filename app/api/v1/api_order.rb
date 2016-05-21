@@ -98,7 +98,7 @@ module V1
         authenticate!
         if @token
           @order = @current_user.orders.normal.find_by(id: params[:id])
-          @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC')
+          @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC') if @order
         end
       end
 

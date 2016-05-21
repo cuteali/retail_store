@@ -6,7 +6,7 @@ class Product < ActiveRecord::Base
   belongs_to :detail_category
   belongs_to :unit
   has_one :shop_product
-  has_many :images, as: :menuable
+  has_many :images, as: :imageable
 
   scope :sorted, -> { order('sort DESC') }
 

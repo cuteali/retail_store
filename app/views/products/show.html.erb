@@ -1,0 +1,63 @@
+<div class="main ">
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="javascript:void(0);"><i class="fa fa-list-alt"></i>店铺管理</a></li>
+        <li><a href="<%= products_path %>"><i class="fa fa-table"></i>基础产品</a></li>
+        <li class="active"><a href="<%= product_path(@product) %>"><i class="fa fa-picture-o"></i>产品轮播图</a></li>             
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2>产品轮播图</h2>
+    </div>          
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel bk-bg-white">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-plus-square-o red"></i>产品轮播图</h6>
+        </div>
+        <div class="panel-body">                  
+          <%= render '/layouts/alert' %>
+          <div class="form-group">
+            <label class="control-label">轮播图上传</label>
+            <div class="controls">
+              <div id="dropzone">
+                <%= form_for(@product, url: product_upload_images_path(@product), html: {class: "dropzone", role: "form", multipart: true, method: :post}) do |f| %>
+                  <div class="fallback">
+                    <input name="file" type="file" multiple />
+                  </div>
+                  <div class="dz-default dz-message"><span>Drop files here to upload</span></div>
+                  <% @images.each do |image| %>
+                    <div class="dz-preview dz-processing dz-image-preview dz-error">
+                      <div class="dz-details">
+                        <%= image_tag image.key.try(:url) %>
+                      </div>
+                      <%= link_to delete_image_product_path(@product, image_id: image.id), method: :delete, data: { confirm: '确定要删除吗？' } do %>
+                        <div class="dz-error-mark"><span>✘</span></div>
+                      <% end %>
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function() {
+    Dropzone.autoDiscover = false;
+    var dropzone = new Dropzone (".dropzone");
+    dropzone.on("queuecomplete", function(file) {
+      location.reload();
+    });
+
+    if ($(".dz-image-preview").length > 0) {
+      $(".dz-message").addClass("hide");
+    }
+  });
+</script>

@@ -73,11 +73,12 @@ module V1
       params do
         requires :token, type: String
         requires :client_id, type: String
+        requires :client_type, type: String
       end
       get 'client/:token', jbuilder: 'v1/shoppers/client' do
         authenticate!
         if @token
-          @result = @current_user.update(client_id: params[:client_id])
+          @result = @current_user.update(client_id: params[:client_id], client_type: params[:client_type])
         end
       end
     end

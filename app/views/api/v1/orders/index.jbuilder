@@ -2,11 +2,13 @@ if @token
   if @orders
     json.errcode 0
     json.errmsg '获取订单列表成功'
+    json.total_pages @orders.total_pages if params[:page_num]
     json.objlist(@orders) do |order|
       json.id order.id
       json.shop_id order.shop.id
       json.shop_name order.shop.name
       json.order_no order.order_no
+      json.order_type Order.order_types[order.order_type]
       json.state order.state_type
       json.area order.area
       json.detail order.detail
