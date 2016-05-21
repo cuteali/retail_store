@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_filter :current_shop
 
   def current_shop
-    @shop = current_user.shop
+    @shop = current_user.shop if current_user
   end
 
   def update_keys(model, key_params, logo_key_params=nil)
