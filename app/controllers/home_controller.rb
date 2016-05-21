@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  skip_before_filter :filter_current_user
+  skip_before_filter :filter_current_user, :current_shop
 
   def index
     if current_user && current_user.admin?
