@@ -75,13 +75,13 @@
                     <td><%= product.price %></td>
                     <td><%= product.old_price %></td>
                     <td>
-                      <%= link_to product_path(product), class: "btn btn-success" do %>
+                      <%= link_to product_path(product), class: "btn btn-success", title: "轮播图", data: { rel: "tooltip" } do %>
                         <i class="fa fa-picture-o"></i>
                       <% end %>
-                      <%= link_to edit_product_path(product), class: "btn btn-info" do %>
+                      <%= link_to edit_product_path(product), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
                       <% end %>
-                      <%= link_to product_path(product), class: "btn btn-danger", method: :delete, data: { confirm: '确定要删除吗？' } do %>
+                      <%= link_to product_path(product), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
                         <i class="fa fa-trash-o"></i>
                       <% end %>
                     </td>

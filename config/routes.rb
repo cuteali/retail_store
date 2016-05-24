@@ -43,9 +43,26 @@ Rails.application.routes.draw do
     delete :delete_image, on: :member
   end
 
-  resources :users
+  resources :shops do
+    member do
+      get :init_categories_products
+    end
+  end
+
+  resources :users do
+    member do
+      get :forget_password
+      put :reset_password
+    end
+  end
+
+  resources :shop_products do
+    collection do
+      get :select_product, :search_product
+    end
+  end
   resources :shop_models
-  resources :shops
   resources :units
   resources :top_searches
+  resources :adverts
 end

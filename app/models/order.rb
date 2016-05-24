@@ -12,7 +12,7 @@ class Order < ActiveRecord::Base
   before_create :generate_order_no
 
   enum status: [ :normal, :deleted ]
-  enum order_type: [ :cod, :olp ]
+  enum order_type: [ :cod, :olp, :to_shop ]
 
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :latest, -> { order('created_at DESC') }
@@ -30,7 +30,7 @@ class Order < ActiveRecord::Base
   }
   scope :by_shop_state, -> (state = nil) {
     case state
-    when '0' then where(state: 'paid')
+    when '0' then where("order_type = 0 and state = 'paid' or order_type in (?) and state = 'paid' and expiration_at > ?", [1,2], Time.now)
     when '1' then where(state: 'receiving')
     when '2' then where(state: 'completed')
     when '3' then where(state: 'refund')
@@ -110,22 +110,22 @@ class Order < ActiveRecord::Base
     result
   end
 
-  # 0 待付款 1 货到付款 2 已支付待收货 3 交易成功 4 退款中 5 交易关闭 6 未接单
+  # 0 待付款 1 货到付款 2 已支付待收货 3 交易成功 4 退款中 5 交易关闭 6 未接单 7 到店自提
   def state_type
     if cod? && state == 'receiving'
       '1'
-    elsif cod? && state == 'completed'
-      '3'
+    elsif to_shop? && state == 'receiving'
+      '7'
     elsif olp? && %w(opening pending).include?(state) && !is_expiration
       '0'
     elsif olp? && state == 'receiving'
       '2'
-    elsif olp? && state == 'completed'
-      '3'
     elsif olp? && state == 'refund'
       '4'
-    elsif state == 'canceled' || (olp? && is_expiration)
+    elsif state == 'canceled' || (%w(olp to_shop).include?(order_type) && is_expiration)
       '5'
+    elsif state == 'completed'
+      '3'
     elsif state == 'paid'
       '6'
     end
@@ -136,6 +136,8 @@ class Order < ActiveRecord::Base
       '货到付款'
     elsif olp?
       '在线支付'
+    elsif to_shop?
+      '到店自提'
     end
   end
 

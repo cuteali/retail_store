@@ -51,10 +51,15 @@
                     <td><%= shop.director %></td>
                     <td><%= shop.phone %></td>
                     <td>
-                      <%= link_to edit_shop_path(shop), class: "btn btn-info" do %>
+                      <%= link_to edit_shop_path(shop), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
                       <% end %>
-                      <%= link_to shop_path(shop), class: "btn btn-danger", method: :delete, data: { confirm: '确定要删除吗？' } do %>
+                      <% if shop.categories.blank? %>
+                        <%= link_to init_categories_products_shop_path(shop), class: "btn btn-success", title: "店铺初始化分类、产品", data: { rel: "tooltip" } do %>
+                          <i class="fa fa-sitemap"></i>
+                        <% end %>
+                      <% end %>
+                      <%= link_to shop_path(shop), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
                         <i class="fa fa-trash-o"></i>
                       <% end %>
                     </td>

@@ -53,13 +53,13 @@
                     <td><%= category.name %></td>
                     <td><%= category.category.try(:name) %></td>
                     <td>
-                      <%= link_to stick_top_sub_category_path(category), class: "btn btn-success" do %>
+                      <%= link_to stick_top_sub_category_path(category), class: "btn btn-success", title: "置顶", data: { rel: "tooltip" } do %>
                         <i class="fa fa-arrow-up"></i>
                       <% end %>
-                      <%= link_to edit_sub_category_path(category), class: "btn btn-info" do %>
+                      <%= link_to edit_sub_category_path(category), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
                       <% end %>
-                      <%= link_to sub_category_path(category), class: "btn btn-danger", method: :delete, data: { confirm: '确定要删除吗？' } do %>
+                      <%= link_to sub_category_path(category), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
                         <i class="fa fa-trash-o"></i>
                       <% end %>
                     </td>

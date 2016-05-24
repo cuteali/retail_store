@@ -44,12 +44,15 @@
                     <td><%= user.email %></td>
                     <%= render user %>
                     <td>
-                      <%= link_to edit_user_path(user), class: "btn btn-info" do %>
-                        <i class="fa fa-edit "></i>
+                      <%= link_to edit_user_path(user), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-edit"></i>
+                      <% end %>
+                      <%= link_to forget_password_user_path(user), class: "btn btn-success", title: "重置密码", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-eraser"></i>
                       <% end %>
                       <% unless user == current_user %>
-                        <%= link_to user_path(user), class: "btn btn-danger", method: :delete, data: { confirm: '确定要删除吗？' } do %>
-                          <i class="fa fa-trash-o "></i>
+                        <%= link_to user_path(user), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
+                          <i class="fa fa-trash-o"></i>
                         <% end %>
                       <% end %>
                     </td>

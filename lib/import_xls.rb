@@ -1,43 +1,21 @@
 module ImportXls
   def self.import(file)
     shop_model = ShopModel.where(name: '模板一').first_or_create
-    shop1 = Shop.where(name: '醉食汇高平路店', address: '上海市闸北区高平路779号', lng: '121.427466', lat: '31.290437', phone: '15026815026', director: '张明', shop_model_id: shop_model.id).first_or_create
-    shop2 = Shop.where(name: '醉食汇大连路店', address: '上海市虹口区大连路1035号', lng: '121.506019', lat: '31.268009', phone: '15026815026', director: '闫康', shop_model_id: shop_model.id).first_or_create
-    unit1 = Unit.where(name: '箱').first_or_create
-    unit2 = Unit.where(name: '包').first_or_create
-    top_search1 = TopSearch.where(name: '食用油').first_or_create
-    top_search2 = TopSearch.where(name: '南北干货').first_or_create
-    top_search3 = TopSearch.where(name: '夏威夷果').first_or_create
-    top_search4 = TopSearch.where(name: '调味料').first_or_create
     spreadsheet = open_spreadsheet(file)
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
       name_as, key, logo_key, is_app_index = get_name_as_and_key(row['大分类'])
       options = {}
-      options[:shop_id] = shop1.id
+      options[:shop_id] = nil
       options[:name_as] = name_as if name_as
       options[:logo_key] = logo_key if logo_key
       options[:is_app_index] = is_app_index if is_app_index
       category = Category.where(name: row['大分类']).first_or_create(options)
-      sub_category = category.sub_categories.where(name: row['小分类']).first_or_create(shop_id: shop1.id)
-      detail_category = sub_category.detail_categories.where(name: row['具体分类']).first_or_create(shop_id: shop1.id, category_id: category.id)
-      @product1 = detail_category.shop_products.where(name: '商品1').first_or_create(shop_id: shop1.id, category_id: category.id, sub_category_id: sub_category.id, unit_id: unit1.id,
-        price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, desc: '商品描述1', info: '商品简介1', spec: '110g*18杯/箱', is_app_index: true)
-      @product1.update_columns(key: '食品.jpg')
-      image1 = @product1.images.first_or_create.update_columns(key: @product1.key.path)
-      @product2 = detail_category.shop_products.where(name: '商品2').first_or_create(shop_id: shop1.id, category_id: category.id, sub_category_id: sub_category.id, unit_id: unit1.id,
-        price: 1, old_price: 2, stock_volume: 100, sales_volume: 0, desc: '商品描述2', info: '商品简介2', spec: '200g*12/箱', is_app_index: true)
-      @product2.update_columns(key: '食品2.jpg')
-      image2 = @product2.images.first_or_create.update_columns(key: @product2.key.path)
+      sub_category = category.sub_categories.where(name: row['小分类']).first_or_create(shop_id: nil)
+      detail_category = sub_category.detail_categories.where(name: row['具体分类']).first_or_create(shop_id: nil, category_id: category.id)
     end
-    update_qiniu_key(shop1.id)
-    ShopProduct.limit(4).each_with_index do |p, index|
-      advert = shop1.adverts.where(shop_product_id: p.id).first_or_create
-      advert.update_columns(key: "广告#{index + 1}.jpg")
-      p.messages.where(shop_id: shop1.id, shopper_id: 1).first_or_create(title: "测试标题#{index + 1}", info: "测试文本#{index + 1}")
-      p.messages.where(shop_id: shop1.id, shopper_id: 2).first_or_create(title: "测试标题#{index + 1}", info: "测试文本#{index + 1}")
-    end
+    update_qiniu_key
   end
 
   def self.open_spreadsheet(file)
@@ -77,6 +55,8 @@ module ImportXls
     when '酱菜调味' then ['调味', '调味.png', '酱菜调味.png', false]
     when '饮料酒水' then ['酒水', '酒水.png', '酒水饮料.png', false]
     when '方便速食' then ['速食', '速食.png', '方便速食.png', false]
+    when '蜜饯肉铺' then ['蜜饯', '蜜饯.png', '蜜饯肉铺.png', false]
+    when '定时定量' then ['定量', '定量.png', '定时定量.png', false]
     end
   end
 

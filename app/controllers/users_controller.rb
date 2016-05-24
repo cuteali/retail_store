@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:edit, :update, :destroy]
+  before_action :set_user, only: [:edit, :update, :destroy, :forget_password, :reset_password]
   before_filter :authenticate_user!
   after_action :verify_authorized
 
@@ -27,6 +27,23 @@ class UsersController < ApplicationController
     @user.deleted!
     flash[:success] = '删除成功！'
     redirect_to :back
+  end
+
+  def forget_password
+    authorize @user
+  end
+
+  def reset_password
+    authorize @user
+    @user.password = params[:password]
+    @user.password_confirmation = params[:password]
+    if @user.save
+      flash[:success] = '重置密码成功！'
+      redirect_to users_path
+    else
+      flash[:danger] = '重置密码失败！'
+      redirect_to :back
+    end
   end
 
   private 

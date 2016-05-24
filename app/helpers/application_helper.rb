@@ -48,4 +48,8 @@ module ApplicationHelper
       @shop.detail_categories.normal.sorted
     end
   end
+
+  def get_select_product_html(product)
+    return "<input type='text' name='product_price' id='product_price' class='form-control' value='#{product.price}'>"
+  end
 end

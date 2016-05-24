@@ -37,10 +37,10 @@
                     <td><%= top_search.id %></td>
                     <td><%= top_search.name %></td>
                     <td>
-                      <%= link_to edit_top_search_path(top_search), class: "btn btn-info" do %>
+                      <%= link_to edit_top_search_path(top_search), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
                       <% end %>
-                      <%= link_to top_search_path(top_search), class: "btn btn-danger", method: :delete, data: { confirm: '确定要删除吗？' } do %>
+                      <%= link_to top_search_path(top_search), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
                         <i class="fa fa-trash-o"></i>
                       <% end %>
                     </td>

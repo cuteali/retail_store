@@ -22,4 +22,12 @@ class UserPolicy
     return false if @current_user == @user
     @current_user.admin?
   end
+
+  def forget_password?
+    @current_user.admin?
+  end
+
+  def reset_password?
+    @current_user.admin?
+  end
 end

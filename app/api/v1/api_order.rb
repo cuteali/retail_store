@@ -29,6 +29,15 @@ module V1
         case order_type
         when '0' then ['paid', 'cod']
         when '1' then ['opening', 'olp']
+        when '2' then ['paid', 'to_shop']
+        end
+      end
+
+      def set_expiration_time(order)
+        if order.olp?
+          order.update_columns(expiration_at: order.created_at + 30.minutes)
+        elsif order.to_shop?
+          order.update_columns(expiration_at: order.created_at + 1.day)
         end
       end
     end
@@ -76,7 +85,7 @@ module V1
               if @stock_volume_result == 0
                 state, order_type = get_order_type_and_state(params[:order_type])
                 @order = @current_user.orders.create(shop_id: shop.id, receive_name: params[:receive_name], receive_phone: params[:receive_phone], area: params[:area], detail: params[:detail], total_price: total_price, order_type: order_type, state: state)
-                @order.update_columns(expiration_at: @order.created_at + 30.minutes) if @order.olp?
+                set_expiration_time(@order)
                 @order.create_orders_shop_products(shop, product_arr)
                 pro_ids = @order.update_product_stock_volume
                 AppLog.info("pro_ids:      #{pro_ids}")

@@ -5,5 +5,6 @@ json.obj do
   if @version == '0'
     json.send_price 0
     json.phone_num '400-0050-383'
+    json.range '3000'
   end
 end

@@ -1,10 +1,10 @@
 class ShopsController < ApplicationController
-  before_action :set_shop, only: [:edit, :update, :destroy]
+  before_action :set_shop, only: [:edit, :update, :destroy, :init_categories_products]
   before_filter :authenticate_user!
   after_action :verify_authorized
   
   def index
-    @shops = Shop.normal.page(params[:page])
+    @shops = Shop.normal.latest.page(params[:page])
     authorize Shop
   end
 
@@ -47,6 +47,14 @@ class ShopsController < ApplicationController
     authorize @shop
     @shop.deleted!
     flash[:success] = '删除成功！'
+    redirect_to :back
+  end
+
+  def init_categories_products
+    authorize @shop
+    Category.init_shop_categories(@shop)
+    Product.init_shop_products(@shop)
+    flash[:success] = '店铺初始化分类、产品成功！'
     redirect_to :back
   end
 

@@ -10,7 +10,7 @@ class ShopProduct < ActiveRecord::Base
   has_many :images, as: :imageable
   has_many :orders_shop_products
   has_many :carts
-  has_many :adverts
+  has_one :advert
   has_many :messages, as: :messageable
 
   scope :shelves, -> { where(state: 1) }
@@ -23,6 +23,7 @@ class ShopProduct < ActiveRecord::Base
 
   enum status: [ :normal, :deleted ]
   enum is_app_index: { is_index: true, not_index: false }
+  enum state: [ :sold_off, :sold_on ]
 
   def is_app_index_to_i
     is_index? ? '1' : '0'

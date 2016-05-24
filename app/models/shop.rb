@@ -9,5 +9,7 @@ class Shop < ActiveRecord::Base
   has_many :favorites
   has_many :users
 
+  scope :latest, -> { order('created_at DESC') }
+
   enum status: [ :normal, :deleted ]
 end
