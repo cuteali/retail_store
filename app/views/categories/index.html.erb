@@ -19,7 +19,19 @@
         </div>
         <div class="panel-body">
           <%= render '/layouts/alert' %>
-          <div class="table-responsive">  
+          <div class="table-responsive">
+            <% if current_user.admin? %>
+              <%= form_tag upload_xls_home_index_path, class: 'form-horizontal', multipart: true do %>
+                <div class="form-group col-md-2">
+                  <%= file_field_tag :file %>
+                </div>
+                <div class="form-group col-md-1">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary btn-sm">导入分类</button>
+                  </span>
+                </div>
+              <% end %>
+            <% end %>
             <div style="float: right;">
               <a href="<%= new_category_path %>" class="bk-margin-5 btn btn-success"><i class="fa fa-plus"></i> 添加大分类</a>
             </div>

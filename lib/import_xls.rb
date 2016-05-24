@@ -56,7 +56,7 @@ module ImportXls
     when '饮料酒水' then ['酒水', '酒水.png', '酒水饮料.png', false]
     when '方便速食' then ['速食', '速食.png', '方便速食.png', false]
     when '蜜饯肉铺' then ['蜜饯', '蜜饯.png', '蜜饯肉铺.png', false]
-    when '定时定量' then ['定量', '定量.png', '定时定量.png', false]
+    when '定量食品' then ['定量', '定量.png', '定量食品.png', false]
     end
   end
 
