@@ -4,7 +4,8 @@ class ShoppersController < ApplicationController
   after_action :verify_authorized
 
   def index
-    @shoppers = Shopper.normal.page(params[:page])
+    @q = Shopper.normal.ransack(params[:q])
+    @shoppers = @q.result.latest.page(params[:page])
     authorize Shopper
   end
 

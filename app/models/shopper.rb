@@ -7,6 +7,8 @@ class Shopper < ActiveRecord::Base
   has_many :favorites
   has_many :messages
 
+  scope :latest, -> { order('created_at DESC') }
+
   enum status: [ :normal, :deleted ]
 
   def self.sign_in(phone, rand_code)
