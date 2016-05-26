@@ -25,8 +25,9 @@ class API < Grape::API
       AppLog.info("user_token:    #{user_token}")
       user = User.normal.find_by(token: user_token)
       if user.present?
-        AppLog.info("user_id : #{user.id}")
-        token = $redis.get(user.phone)
+        key = "#{user.username}_#{user.phone}"
+        AppLog.info("key : #{key}")
+        token = $redis.get(key)
         AppLog.info("token is :#{token}")
       end
       [token, user]
