@@ -59,6 +59,8 @@
                   <th>状态</th>
                   <th>价格</th>
                   <th>原价</th>
+                  <th>库存</th>
+                  <th>销量</th>
                   <th>操作</th>
                 </tr>
               </thead>   
@@ -75,6 +77,8 @@
                     <td><%= shop_product.state_name %></td>
                     <td><%= shop_product.price %></td>
                     <td><%= shop_product.old_price %></td>
+                    <td><%= shop_product.stock_volume %></td>
+                    <td><%= shop_product.sales_volume %></td>
                     <td>
                       <%= link_to stick_top_shop_product_path(shop_product), class: "btn btn-warning", title: "置顶", data: { rel: "tooltip" } do %>
                         <i class="fa fa-arrow-up"></i>
@@ -92,7 +96,7 @@
                   </tr>
                 <% end.blank? %>
                   <tr>
-                    <td colspan="11" class="green text-center">无记录</td>
+                    <td colspan="13" class="green text-center">无记录</td>
                   </tr>
                 <% end %>
               </tbody>
