@@ -1,7 +1,6 @@
 class AdvertsController < ApplicationController
   before_action :set_advert, only: [:edit, :update, :destroy]
   before_filter :authenticate_user!
-  # after_action :verify_authorized, only: :destroy
   
   def index
     @q = @shop.adverts.normal.ransack(params[:q])
@@ -42,7 +41,6 @@ class AdvertsController < ApplicationController
   end
 
   def destroy
-    # authorize @detail_category
     @advert.deleted!
     flash[:success] = '删除成功！'
     redirect_to :back
@@ -53,7 +51,7 @@ class AdvertsController < ApplicationController
       @advert = Advert.find_by(id: params[:id], shop_id: @shop.try(:id))
     end
 
-    def category_params
+    def advert_params
       params.require(:advert).permit(:shop_id, :shop_product_id)
     end
 end
