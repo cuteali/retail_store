@@ -77,7 +77,9 @@ class OrdersController < ApplicationController
     if Alipay::Sign.verify?(notify_params) && Alipay::Notify.verify?(notify_params)
       # 获取交易关联的订单
       @order = Order.find_by(order_no: params[:out_trade_no])
-
+      Rails.logger.info "=================#{params}===================="
+      Rails.logger.info "=================#{notify_params}===================="
+      Rails.logger.info "=================#{params[:trade_no]}===================="
       case params[:trade_status]
       when 'WAIT_BUYER_PAY'
         # 交易开启

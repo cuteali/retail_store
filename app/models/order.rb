@@ -88,7 +88,7 @@ class Order < ActiveRecord::Base
       out_trade_no: order_no,
       notify_url: Rails.application.routes.url_helpers.alipay_notify_orders_url(host: 'jinhuola.cc'),
       subject: 'subject',
-      total_fee: '0.01',
+      total_fee: total_price.to_s,
       body: 'text'
     }, {
       sign_type: 'RSA',
