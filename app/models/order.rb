@@ -234,10 +234,8 @@ class Order < ActiveRecord::Base
   end
 
   def update_expiration_at_state
-    if is_expiration 
-      if (olp? && ['opening', 'pending'].include?(state)) || (to_shop? && state == 'paid')
-        self.update(state: 'canceled')
-      end
+    if (olp? && ['opening', 'pending'].include?(state)) || (to_shop? && state == 'paid')
+      self.update(state: 'canceled') if is_expiration
     end
   end
 
