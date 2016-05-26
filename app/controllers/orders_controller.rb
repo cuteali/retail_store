@@ -4,7 +4,9 @@ class OrdersController < ApplicationController
   before_filter :authenticate_user!, except: [ :alipay_notify ]
   
   def index
-    @q = @shop.orders.normal.ransack(params[:q])
+    orders = @shop.orders.normal
+    Order.update_expiration_at_state(orders)
+    @q = orders.ransack(params[:q])
     @orders = @q.result.latest.page(params[:page])
   end
 

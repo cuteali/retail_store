@@ -6,8 +6,10 @@ module V1
     helpers do
       def get_state_and_msg(state, order)
         if state == '0'
+          order.update(delivery_at: Time.now)
           ['receiving', '接单成功']
         elsif state == '1'
+          order.update(complete_at: Time.now)
           ['completed', '订单已完成']
         elsif state == '2' && order.olp?
           ['refund', '订单退款中']
@@ -28,7 +30,9 @@ module V1
       get '', jbuilder: 'v1/shops/index' do
         authenticate_shop!
         if @shop_token
-          @orders = @current_shop.shop.orders.normal.by_shop_state(params[:state]).latest.by_page(params[:page_num])
+          orders = @current_shop.shop.orders.normal
+          Order.update_expiration_at_state(orders)
+          @orders = orders.by_shop_state(params[:state]).latest.by_page(params[:page_num])
         end
       end
 
@@ -41,7 +45,10 @@ module V1
         authenticate_shop!
         if @shop_token
           @order = @current_shop.shop.orders.normal.find_by(id: params[:id])
-          @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC') if @order
+          if @order
+            @order.update_expiration_at_state
+            @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC')
+          end
         end
       end
 

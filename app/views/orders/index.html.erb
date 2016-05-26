@@ -50,6 +50,7 @@
                   <th>创建时间</th>
                   <th>发货时间</th>
                   <th>完成时间</th>
+                  <th>过期时间</th>
                   <th>操作</th>
                 </tr>
               </thead>   
@@ -66,6 +67,7 @@
                     <td><%= time_show(order.created_at) %></td>
                     <td><%= time_show(order.delivery_at) %></td>
                     <td><%= time_show(order.complete_at) %></td>
+                    <td><%= time_show(order.expiration_at) %></td>
                     <td>
                       <%#= link_to order_path(order), class: "btn btn-success", title: "订单详情", data: { rel: "tooltip" } do %>
                         <!--i class="fa fa-search-plus"></i-->
@@ -80,7 +82,7 @@
                   </tr>
                 <% end.blank? %>
                   <tr>
-                    <td colspan="11" class="green text-center">无记录</td>
+                    <td colspan="12" class="green text-center">无记录</td>
                   </tr>
                 <% end %>
               </tbody>

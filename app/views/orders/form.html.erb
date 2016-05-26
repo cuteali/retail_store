@@ -60,7 +60,7 @@
             </div>
             <div class="form-group">
               <label class="col-md-2 control-label" for="delivery_at">发货时间</label>
-              <div class="col-md-6">
+              <div class="col-md-9">
                 <div class="input-group">
                   <span class="input-group-addon">
                     <i class="fa fa-calendar"></i>
@@ -71,13 +71,25 @@
             </div>
             <div class="form-group">
               <label class="col-md-2 control-label" for="complete_at">完成时间</label>
-              <div class="col-md-6">
+              <div class="col-md-9">
                 <div class="input-group">
                   <span class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </span>
                   <%= f.text_field :complete_at, class: "form-control datetimepicker" %>
                 </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="complete_at">过期时间</label>
+              <div class="col-md-9">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </span>
+                  <%= f.text_field :expiration_at, class: "form-control datetimepicker" %>
+                </div>
+                <span class="help-block">用户下单时自动生成，订单类型为‘货到付款’时，没有过期时间！</span>
               </div>
             </div>
             <% @order.orders_shop_products.normal.each_with_index do |op, i| %>
@@ -180,8 +192,14 @@
     todayBtn: true,
     language: "zh"
   });
+  $("#order_expiration_at").datetimepicker({
+    autoclose: true,
+    todayBtn: true,
+    language: "zh"
+  });
   $("#order_delivery_at" ).datetimepicker( "option", "dateFormat", "yy-mm-dd" );
   $("#order_complete_at" ).datetimepicker( "option", "dateFormat", "yy-mm-dd" );
+  $("#order_expiration_at" ).datetimepicker( "option", "dateFormat", "yy-mm-dd" );
   var delivery_at = '<%= @order.delivery_at.try(:strftime, "%Y-%m-%d %H:%M") %>'
   if(delivery_at != null && delivery_at != ""){
     $("#order_delivery_at" ).val(delivery_at)
@@ -189,6 +207,10 @@
   var complete_at = '<%= @order.complete_at.try(:strftime, "%Y-%m-%d %H:%M") %>'
   if(complete_at != null && complete_at != ""){
     $("#order_complete_at" ).val(complete_at)
+  }
+  var expiration_at = '<%= @order.expiration_at.try(:strftime, "%Y-%m-%d %H:%M") %>'
+  if(expiration_at != null && expiration_at != ""){
+    $("#order_expiration_at" ).val(expiration_at)
   }
 
 

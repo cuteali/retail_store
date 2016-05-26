@@ -22,7 +22,7 @@ class Product < ActiveRecord::Base
       sub_category = shop.sub_categories.normal.find_by(name: p.sub_category.name)
       detail_category = shop.detail_categories.normal.find_by(name: p.detail_category.name)
       shop_product = shop.shop_products.create(product_id: p.id, category_id: category.id, sub_category_id: sub_category.id, detail_category_id: detail_category.id, unit_id: p.unit.id,
-        price: p.price, old_price: p.old_price, stock_volume: p.stock_volume, sales_volume: p.sales_volume, desc: p.desc, info: p.info, spec: p.spec, is_app_index: p.is_app_index)
+        price: p.price, old_price: p.old_price, stock_volume: 10, desc: p.desc, info: p.info, spec: p.spec, sort: p.sort)
       shop_product.update_columns(key: p.key.path)
       p.images.normal.each do |image|
         shop_product_image = shop_product.images.create

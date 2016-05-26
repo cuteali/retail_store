@@ -19,6 +19,7 @@ class Order < ActiveRecord::Base
   scope :can_delete, -> { where(state: ['completed', 'canceled']) }
   scope :not_receiving, -> { where(state: 'paid') }
   scope :receiving, -> { where(state: 'receiving') }
+  scope :by_expiration, -> { where("order_type in (?) and expiration_at < ?", [1, 2], Time.now) }
   scope :by_state, -> (state = nil) {
     case state
     when '0' then where(state: STATE)
@@ -30,7 +31,7 @@ class Order < ActiveRecord::Base
   }
   scope :by_shop_state, -> (state = nil) {
     case state
-    when '0' then where("order_type = 0 and state = 'paid' or order_type in (?) and state = 'paid' and expiration_at > ?", [1,2], Time.now)
+    when '0' then where("order_type = 0 and state = 'paid' or order_type in (?) and state = 'paid' and expiration_at >= ?", [1,2], Time.now)
     when '1' then where(state: 'receiving')
     when '2' then where(state: 'completed')
     when '3' then where(state: 'refund')
@@ -54,19 +55,19 @@ class Order < ActiveRecord::Base
   end
 
   def pay
-    if pending?
+    if pending? || canceled?
       update_column :state, 'paid'
     end
   end
 
   def complete
-    if pendding? or paid?
+    if pendding? || paid?
       update_column :state, 'completed'
     end
   end
 
   def cancel
-    if pendding? or paid?
+    if pendding? || paid?
       update_column :state, 'canceled'
     end
   end
@@ -222,6 +223,22 @@ class Order < ActiveRecord::Base
 
   def get_address
     area.to_s + detail.to_s
+  end
+
+  def self.update_expiration_at_state(orders)
+    orders.by_expiration.each do |order|
+      if (order.olp? && ['opening', 'pending'].include?(order.state)) || (order.to_shop? && order.state == 'paid')
+        order.update(state: 'canceled')
+      end
+    end
+  end
+
+  def update_expiration_at_state
+    if is_expiration 
+      if (olp? && ['opening', 'pending'].include?(state)) || (to_shop? && state == 'paid')
+        self.update(state: 'canceled')
+      end
+    end
   end
 
   private

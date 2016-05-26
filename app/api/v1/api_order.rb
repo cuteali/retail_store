@@ -53,7 +53,9 @@ module V1
       get '', jbuilder: 'v1/orders/index' do
         authenticate!
         if @token
-          @orders = @current_user.orders.normal.by_state(params[:state]).latest.by_page(params[:page_num])
+          orders = @current_user.orders.normal
+          Order.update_expiration_at_state(orders)
+          @orders = orders.by_state(params[:state]).latest.by_page(params[:page_num])
         end
       end
 
@@ -107,7 +109,10 @@ module V1
         authenticate!
         if @token
           @order = @current_user.orders.normal.find_by(id: params[:id])
-          @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC') if @order
+          if @order
+            @order.update_expiration_at_state
+            @shop_products = @order.orders_shop_products.joins(:shop_product).order('shop_products.category_id ASC')
+          end
         end
       end
 
@@ -120,7 +125,7 @@ module V1
         authenticate!
         if @token
           order = @current_user.orders.normal.find_by(id: params[:id])
-          @order = order.update(state: 'completed')
+          @order = order.update(state: 'completed', complete_at: Time.now)
         end
       end
 
