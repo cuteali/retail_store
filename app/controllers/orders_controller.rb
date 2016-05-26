@@ -1,5 +1,73 @@
 class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [ :alipay_notify ]
+  before_action :set_order, only: [:edit, :update, :destroy, :show, :add_order_product]
+  before_filter :authenticate_user!, except: [ :alipay_notify ]
+  
+  def index
+    @q = @shop.orders.normal.ransack(params[:q])
+    @orders = @q.result.latest.page(params[:page])
+  end
+
+  def edit
+    render :form
+  end
+
+  def update
+    is_changed = OrdersShopProduct.valid_is_changed(@order.id, order_params[:orders_shop_products_attributes])
+    @order.restore_products if is_changed
+    if @order.update(order_params)
+      if is_changed
+        @order.update_total_price
+        @order.update_product_stock_volume
+      end
+      flash[:success] = '修改成功！'
+      return redirect_to session[:return_to] if session[:return_to]
+      redirect_to orders_path
+    else
+      flash[:danger] = '修改失败！'
+      redirect_to :back
+    end
+  end
+
+  def destroy
+    @order.deleted!
+    flash[:success] = '删除成功！'
+    redirect_to :back
+  end
+
+  def show
+    @shop_products = @order.shop_products.normal.group_by(&:category_id)
+  end
+
+  def delete_order_product
+    @order = @shop.orders.normal.find_by(id: params[:order_id])
+    orders_shop_product = @order.orders_shop_products.find_by(id: params[:id])
+    orders_shop_product.deleted!
+    flash[:success] = '删除成功！'
+    redirect_to :back
+  end
+
+  def add_order_product
+    shop_product = @shop.shop_products.normal.find_by(id: params[:shop_product_id])
+    return redirect_to :back if shop_product.blank?
+    orders_shop_product = @order.orders_shop_products.new(shop_product_id: shop_product.id, product_num: params[:product_num], product_price: params[:product_price])
+    if params[:product_num].to_i > shop_product.stock_volume
+      flash[:danger] = "保存失败，产品库存不足！"
+    elsif orders_shop_product.save
+      @order.update_total_price
+      orders_shop_product.shop_product.add_sales_volume(orders_shop_product.product_num)
+      flash[:success] = "保存成功！"
+    else
+      flash[:danger] = "保存失败！"
+    end
+    redirect_to :back
+  end
+
+  def select_product
+    shop_product = @shop.shop_products.normal.find_by(id: params[:shop_product_id])
+    html = get_select_product_html(shop_product)
+    render json: {html: html, product_id: shop_product.id}
+  end
 
   def alipay_notify
     notify_params = params.except(*request.path_parameters.keys)
@@ -33,9 +101,12 @@ class OrdersController < ApplicationController
     end
   end
 
-  private
+  private 
+    def set_order
+      @order = @shop.orders.normal.find_by(id: params[:id])
+    end
 
     def order_params
-      params.require(:order).permit(:quantity)
+      params.require(:order).permit(:receive_name, :receive_phone, :area, :detail, :order_type, :state, :delivery_at, :complete_at, :expiration_at, orders_shop_products_attributes: [:id, :product_num, :product_price])
     end
 end

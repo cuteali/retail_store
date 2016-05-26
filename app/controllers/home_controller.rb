@@ -3,12 +3,12 @@ class HomeController < ApplicationController
   skip_before_filter :current_shop
 
   def index
-    if current_user && current_user.admin?
-      Rails.logger.info "1111111111"
-      redirect_to users_path
-    elsif request.referrer =~ /users/i || current_user.blank?
-      Rails.logger.info "2222222222"
+    if current_user.blank?
       redirect_to new_user_session_path
+    elsif current_user && current_user.admin?
+      redirect_to users_path
+    elsif current_user && current_user.user?
+      redirect_to shop_products_path
     end
   end
 

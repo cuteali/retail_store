@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
 
   belongs_to :shop
 
+  validates :shop_id, :role, presence: true, if: :can_validate?
   validates :username,
   presence: true,
   uniqueness: {
@@ -26,6 +27,10 @@ class User < ActiveRecord::Base
 
   scope :android, -> { where(client_type: 'android') }
   scope :ios, -> { where(client_type: 'ios') }
+
+  def can_validate?
+    User.pluck(:role).include?(2)
+  end
 
   def self.sign_in(value, password)
     token = nil

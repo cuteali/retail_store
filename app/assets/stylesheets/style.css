@@ -2883,7 +2883,7 @@ background-size: 35px 35px;
 =================================================================== */
 .switch {
 position: relative;
-display: inline-block;
+/*display: inline-block;*/
 vertical-align: top;
 width: 56px;
 height: 20px;

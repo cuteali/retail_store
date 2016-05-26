@@ -14,7 +14,10 @@ Rails.application.routes.draw do
   resources :orders do
     collection do
       post :alipay_notify
+      post :add_order_product
+      get :select_product
     end
+    delete :delete_order_product, on: :member
   end
 
   resources :categories do
@@ -57,12 +60,20 @@ Rails.application.routes.draw do
   end
 
   resources :shop_products do
+    post :upload_images
     collection do
       get :select_product, :search_product
     end
+    member do
+      get :stick_top
+      delete :delete_image
+    end
   end
+
   resources :shop_models
   resources :units
   resources :top_searches
   resources :adverts
+  resources :shoppers
+  resources :addresses
 end

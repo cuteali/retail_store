@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
   
   def index
     @q = Product.normal.ransack(params[:q])
-    @products = @q.result.sorted.page(params[:page])
+    @products = @q.result.sorted.latest.page(params[:page])
     authorize Product
   end
 

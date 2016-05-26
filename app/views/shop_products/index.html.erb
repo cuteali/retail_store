@@ -1,0 +1,134 @@
+<div class="main sidebar-minified">     
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li class="active"><a href="<%= shop_products_path %>"><i class="fa fa-table"></i>产品管理</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2>产品管理</h2>
+    </div>          
+  </div>
+  <div class="row">   
+    <div class="col-lg-12">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-table red"></i><span class="break"></span>产品管理</h6>
+        </div>
+        <div class="panel-body">
+          <%= render '/layouts/alert' %>
+          <div class="table-responsive">
+            <%= search_form_for @q, url: {action: action_name}, class: 'form-horizontal', html: { method: :get } do |f| %>
+              <%
+                category_options = user_categories.pluck(:name, :id)
+                sub_category_options = user_sub_categories.where(category_id: f.object.category_id_eq).pluck(:name, :id)
+                detail_category_options = user_detail_categories.where(sub_category_id: f.object.sub_category_id_eq).pluck(:name, :id)
+              %>
+              <div class="form-group col-md-1">
+                <%= f.select :category_id_eq, category_options.insert(0,["选择大分类",""]), {}, id: 'category_id', class: "form-control" %>
+              </div>
+              <div class="form-group col-md-1">
+                <%= f.select :sub_category_id_eq, sub_category_options.insert(0,["选择小分类",""]), {}, id: 'sub_category_id', class: "form-control" %>
+              </div>
+              <div class="form-group col-md-1">
+                <%= f.select :detail_category_id_eq, detail_category_options.insert(0,["选择具体分类",""]), {}, id: 'detail_category_id', class: "form-control" %>
+              </div>
+              <div class="form-group col-md-2">
+                <%= f.search_field :name_cont, class: 'form-control', placeholder: '产品名称' %>
+              </div>
+              <div class="form-group col-md-1">
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-primary">查询</button>
+                </span>
+              </div>
+            <% end %>
+            <div style="float: right;">
+              <a href="<%= new_shop_product_path %>" class="bk-margin-5 btn btn-success"><i class="fa fa-plus"></i> 添加产品</a>
+            </div>
+            <table class="table table-striped table-bordered bootstrap-datatable datatable">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>产品名称</th>
+                  <th>封面图片</th>
+                  <th>大分类</th>
+                  <th>小分类</th>
+                  <th>具体分类</th>
+                  <th>首页展示</th>
+                  <th>状态</th>
+                  <th>价格</th>
+                  <th>原价</th>
+                  <th>操作</th>
+                </tr>
+              </thead>   
+              <tbody>
+                <% if @shop_products.each do |shop_product| %>
+                  <tr>
+                    <td><%= shop_product.id %></td>
+                    <td><%= shop_product.name %></td>
+                    <td><%= image_tag shop_product.key.try(:url), size:"50x50" %></td>
+                    <td><%= shop_product.category.try(:name) %></td>
+                    <td><%= shop_product.sub_category.try(:name) %></td>
+                    <td><%= shop_product.detail_category.try(:name) %></td>
+                    <td><%= shop_product.is_app_index_name %></td>
+                    <td><%= shop_product.state_name %></td>
+                    <td><%= shop_product.price %></td>
+                    <td><%= shop_product.old_price %></td>
+                    <td>
+                      <%= link_to stick_top_shop_product_path(shop_product), class: "btn btn-warning", title: "置顶", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-arrow-up"></i>
+                      <% end %>
+                      <%= link_to shop_product_path(shop_product), class: "btn btn-success", title: "轮播图", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-picture-o"></i>
+                      <% end %>
+                      <%= link_to edit_shop_product_path(shop_product), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-edit"></i>
+                      <% end %>
+                      <%= link_to shop_product_path(shop_product), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
+                        <i class="fa fa-trash-o"></i>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end.blank? %>
+                  <tr>
+                    <td colspan="11" class="green text-center">无记录</td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <%= paginate @shop_products %>
+        </div>
+      </div>
+    </div>          
+  </div>
+</div>
+<script type="text/javascript">
+  $("#category_id").change(function(){
+    var set_url = "<%= select_options_categories_url %>" + 
+                  "?category_id=" + $("#category_id").val() + 
+                  "&id=sub_category_id&name=q[sub_category_id_eq]&first_option=选择小分类&class_name=SubCategory";
+    jQuery.ajax({
+      type: "GET",
+      url: set_url,
+      dataType: "json",
+      success: function(data){
+        $('#sub_category_id').html(data.html);
+      }
+    });
+  });
+  $("#sub_category_id").change(function(){
+    var set_url = "<%= select_options_categories_url %>" + 
+                  "?sub_category_id=" + $("#sub_category_id").val() + 
+                  "&id=detail_category_id&name=q[detail_category_id_eq]&first_option=选择具体分类&class_name=DetailCategory";
+    jQuery.ajax({
+      type: "GET",
+      url: set_url,
+      dataType: "json",
+      success: function(data){
+        $('#detail_category_id').html(data.html);
+      }
+    });
+  });
+</script>

@@ -3,12 +3,12 @@
     <div class="pull-left">
       <ol class="breadcrumb visible-sm visible-md visible-lg">                
         <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
-        <li><a href="<%= users_path %>"><i class="fa fa-list-alt"></i>系统管理</a></li>
-        <li class="active"><a href="<%= edit_user_path(@user) %>"><i class="fa fa-pencil-square-o"></i>修改管理员</a></li>
+        <li><a href="<%= shoppers_path %>"><i class="fa fa-table"></i>用户管理</a></li>
+        <li class="active"><a href="javascript:void(0);"><i class="fa fa-pencil-square-o"></i><%= crumb_name(@shopper) %>用户</a></li>
       </ol>           
     </div>
     <div class="pull-right">
-      <h2>修改管理员</h2>
+      <h2><%= crumb_name(@shopper) %>用户</h2>
     </div>          
   </div>
   <div class="row">
@@ -18,24 +18,11 @@
           <h6><i class="fa fa-indent red"></i>填写表单</h6>              
         </div>
         <div class="panel-body">
-          <%= form_for(@user, validate: true, html: {method: :put, class: "form-horizontal", role: "form", multipart: true}) do |f| %>
+          <%= form_for(@shopper, html: {class: "form-horizontal", role: "form", multipart: true}) do |f| %>
             <div class="form-group">
-              <label class="col-md-3 control-label" for="shop_id">店铺</label>
+              <label class="col-md-3 control-label" for="name">用户名</label>
               <div class="col-md-9">
-                <% options = Shop.normal.pluck(:name, :id) %>
-                <%= f.select :shop_id, options.insert(0,["选择店铺",""]), {}, class: 'form-control', validate: true %>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="role">角色</label>
-              <div class="col-md-9">
-                <%= f.select :role, [["店铺管理员", "user"], ["高级管理员", "editor"], ["超级管理员", "admin"]], {}, class: 'form-control', validate: true %>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="username">用户名</label>
-              <div class="col-md-9">
-                <%= f.text_field :username, class: "form-control", validate: true %>
+                <%= f.text_field :name, class: "form-control" %>
               </div>
             </div>
             <div class="form-group">
@@ -45,9 +32,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3 control-label" for="email">邮箱</label>
+              <label class="col-md-3 control-label" for="key">头像</label>
               <div class="col-md-9">
-                <%= f.email_field :email, class: "form-control" %>
+                <%= f.file_field :key, multiple: true %>
               </div>
             </div>
             <div class="form-group">

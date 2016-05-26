@@ -19,6 +19,9 @@ class UsersController < ApplicationController
       flash[:success] = '修改成功！'
       return redirect_to session[:return_to] if session[:return_to]
       redirect_to users_path
+    else
+      flash[:success] = '修改失败！'
+      redirect_to :back
     end
   end
 

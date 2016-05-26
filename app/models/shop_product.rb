@@ -25,6 +25,14 @@ class ShopProduct < ActiveRecord::Base
   enum is_app_index: { is_index: true, not_index: false }
   enum state: [ :sold_off, :sold_on ]
 
+  def is_app_index_name
+    is_index? ? '是' : '否'
+  end
+
+  def state_name
+    sold_off? ? '下架' : '上架'
+  end
+
   def is_app_index_to_i
     is_index? ? '1' : '0'
   end
@@ -39,5 +47,21 @@ class ShopProduct < ActiveRecord::Base
       end
     end
     result
+  end
+
+  def restore_stock_volume(number)
+    self.stock_volume += number.to_i
+    self.sales_volume -= number.to_i
+    self.save
+  end
+
+  def add_sales_volume(number)
+    self.stock_volume -= number.to_i
+    self.sales_volume += number.to_i
+    self.save
+  end
+
+  def self.init_sort(shop)
+    shop.shop_products.normal.maximum(:sort).to_i + 1
   end
 end

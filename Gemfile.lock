@@ -72,6 +72,10 @@ GEM
     carrierwave-qiniu (0.2.3)
       carrierwave
       qiniu (~> 6.5.1)
+    client_side_validations (4.2.3)
+      jquery-rails (>= 3.1.2, < 5.0.0)
+      js_regex (~> 1.0, >= 1.0.9)
+      rails (>= 4.0.0, < 4.3.0)
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -133,6 +137,8 @@ GEM
     jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
       turbolinks
+    js_regex (1.0.14)
+      regexp_parser (= 0.3.3)
     json (1.8.3)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
@@ -214,6 +220,7 @@ GEM
     rdoc (4.2.2)
       json (~> 1.4)
     redis (3.2.2)
+    regexp_parser (0.3.3)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
     rest-client (1.7.3)
@@ -293,6 +300,7 @@ DEPENDENCIES
   capistrano3-unicorn
   carrierwave
   carrierwave-qiniu (~> 0.2.0)
+  client_side_validations
   coffee-rails (~> 4.1.0)
   devise
   font-awesome-rails

@@ -9,6 +9,7 @@ class Category < ActiveRecord::Base
   has_many :shop_products, -> { order "shop_products.sort DESC, shop_products.updated_at DESC" }
 
   scope :sorted, -> { order('sort DESC') }
+  scope :latest, -> { order('created_at DESC') }
   scope :base_category, -> { where(shop_id: nil) }
 
   validates :sort, presence: true

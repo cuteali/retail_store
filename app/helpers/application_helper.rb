@@ -27,29 +27,33 @@ module ApplicationHelper
 
   def user_categories
     if current_user.admin?
-      Category.base_category.normal.sorted
+      Category.base_category.normal.sorted.latest
     else
-      @shop.categories.normal.sorted
+      @shop.categories.normal.sorted.latest
     end
   end
 
   def user_sub_categories
     if current_user.admin?
-      SubCategory.base_category.normal.sorted
+      SubCategory.base_category.normal.sorted.latest
     else
-      @shop.sub_categories.normal.sorted
+      @shop.sub_categories.normal.sorted.latest
     end
   end
 
   def user_detail_categories
     if current_user.admin?
-      DetailCategory.base_category.normal.sorted
+      DetailCategory.base_category.normal.sorted.latest
     else
-      @shop.detail_categories.normal.sorted
+      @shop.detail_categories.normal.sorted.latest
     end
   end
 
   def get_select_product_html(product)
     return "<input type='text' name='product_price' id='product_price' class='form-control' value='#{product.price}'>"
+  end
+
+  def time_show(time)
+    time.strftime("%Y-%m-%d %H:%M:%S") if time.present?
   end
 end

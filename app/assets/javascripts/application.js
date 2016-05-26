@@ -17,8 +17,15 @@
 //= require core.min
 //= require dropzone.min
 //= require bootstrap-colorpicker
-//= require bootstrap-datepicker
-//= require bootstrap-timepicker
+// require bootstrap-datepicker
+// require bootstrap-timepicker
 //= require bootstrap-tagsinput
 //= require index
 //= require form-elements
+//= require rails.validations
+//= require date-time/moment.min
+//= require date-time/bootstrap-clockpicker
+//= require date-time/bootstrap-datepicker.min
+//= require date-time/daterangepicker.min
+//= require date-time/bootstrap-datetimepicker
+//= require date-time/datepicker.zh

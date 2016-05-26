@@ -35,6 +35,11 @@
                 <li class="<%= 'active opened' if controller_name == 'top_searches' %>"><a href="<%= top_searches_path %>"><span class="text"> 热门搜索</span></a></li>
               </ul>
             </li>
+            <li class="<%= 'active opened nav-expanded' if controller_name == 'shoppers' %>">
+              <a href="<%= shoppers_path %>">
+                <i class="fa fa-table" aria-hidden="true"></i><span>用户管理</span>
+              </a>
+            </li>
           <% end %>
           <li class="nav-parent <%= 'active nav-expanded' if %w(categories sub_categories detail_categories).include?(controller_name) %>">
             <a>
@@ -47,9 +52,19 @@
             </ul>
           </li>
           <% if current_user.user? %>
+            <li class="<%= 'active opened nav-expanded' if controller_name == 'shop_products' %>">
+              <a href="<%= shop_products_path %>">
+                <i class="fa fa-table" aria-hidden="true"></i><span>产品管理</span>
+              </a>
+            </li>
             <li class="<%= 'active opened nav-expanded' if controller_name == 'adverts' %>">
               <a href="<%= adverts_path %>">
                 <i class="fa fa-table" aria-hidden="true"></i><span>广告管理</span>
+              </a>
+            </li>
+            <li class="<%= 'active opened nav-expanded' if controller_name == 'orders' %>">
+              <a href="<%= orders_path %>">
+                <i class="fa fa-table" aria-hidden="true"></i><span>订单管理</span>
               </a>
             </li>
           <% end %>

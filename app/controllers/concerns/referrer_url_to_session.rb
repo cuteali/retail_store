@@ -7,7 +7,7 @@ module ReferrerUrlToSession
 
   def session_referrer
     if action_name =~ /edit|show/
-      session[:return_to] = request.referrer
+      session[:return_to] = request.referrer if request.referrer !~ /edit/
     end
   end
 end

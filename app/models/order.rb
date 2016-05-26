@@ -141,6 +141,14 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def self.order_type_name(order_type)
+    case order_type
+    when 'cod'     then '货到付款'
+    when 'olp'     then '在线支付'
+    when 'to_shop' then '到店自提'
+    end
+  end
+
   def create_orders_shop_products(shop, products)
     products.each do |p|
       shop_product = shop.shop_products.find_by(id: p['id'])
@@ -173,6 +181,47 @@ class Order < ActiveRecord::Base
 
   def is_expiration
     Time.now > expiration_at
+  end
+
+  def restore_products
+    orders_shop_products.each do |op|
+      op.shop_product.restore_stock_volume(op.product_num)
+    end
+  end
+
+  def update_total_price
+    new_total_price = orders_shop_products.to_a.sum do |op|
+      op.product_price * op.product_num
+    end
+    self.update(total_price: new_total_price)
+  end
+
+  def self.state_name(state)
+    case state
+    when 'opening'   then '已下单'
+    when 'pending'   then '支付中'
+    when 'paid'      then '未接单'
+    when 'receiving' then '已接单'
+    when 'completed' then '已完成'
+    when 'refund'    then '退款中'
+    when 'canceled'  then '已取消'
+    end
+  end
+
+  def state_name
+    case state
+    when 'opening'   then '已下单'
+    when 'pending'   then '支付中'
+    when 'paid'      then '未接单'
+    when 'receiving' then '已接单'
+    when 'completed' then '已完成'
+    when 'refund'    then '退款中'
+    when 'canceled'  then '已取消'
+    end
+  end
+
+  def get_address
+    area.to_s + detail.to_s
   end
 
   private

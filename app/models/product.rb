@@ -9,6 +9,7 @@ class Product < ActiveRecord::Base
   has_many :images, as: :imageable
 
   scope :sorted, -> { order('sort DESC') }
+  scope :latest, -> { order('created_at DESC') }
 
   validates :sort, presence: true
   validates :sort, numericality: { only_integer: true, greater_than_or_equal_to: 1}
