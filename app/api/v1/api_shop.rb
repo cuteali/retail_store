@@ -65,7 +65,7 @@ module V1
           order = @current_shop.shop.orders.normal.find_by(id: params[:id])
           state, @msg = get_state_and_msg(params[:state], order)
           @order = order.update(state: state)
-          Message.push_message_to_shopper(@order) if params[:state] == '0'
+          Message.push_message_to_shopper(order) if params[:state] == '0'
         end
       end
     end
