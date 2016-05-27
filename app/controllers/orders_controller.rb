@@ -71,6 +71,11 @@ class OrdersController < ApplicationController
     render json: {html: html, product_id: shop_product.id}
   end
 
+  def change_is_receiving
+    @shop.update(is_receiving: params[:is_receiving])
+    render js: 'void(0);'
+  end
+
   def alipay_notify
     notify_params = params.except(*request.path_parameters.keys)
     # 先校验消息的真实性

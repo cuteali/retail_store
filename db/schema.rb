@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160526090041) do
+ActiveRecord::Schema.define(version: 20160527062147) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -264,6 +264,7 @@ ActiveRecord::Schema.define(version: 20160526090041) do
     t.string   "tel",           limit: 255
     t.string   "phone",         limit: 255
     t.string   "director",      limit: 255
+    t.integer  "is_receiving",  limit: 1,   default: 1, null: false
     t.integer  "status",        limit: 1,   default: 0, null: false
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false

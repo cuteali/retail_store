@@ -12,4 +12,5 @@ class Shop < ActiveRecord::Base
   scope :latest, -> { order('created_at DESC') }
 
   enum status: [ :normal, :deleted ]
+  enum is_receiving: [ :turn_on, :turn_off ]
 end

@@ -36,6 +36,14 @@
                   <button type="submit" class="btn btn-primary">查询</button>
                 </span>
               </div>
+              <div class="col-md-5 col-md-offset-2">
+                <label class="col-md-2 control-label bk-margin-top-5">自动接单:</label>
+                <label class="switch switch-primary bk-margin-top-10">
+                  <input type="checkbox" class="switch-input" <%= 'checked' if @shop.turn_on? %> />
+                  <span class="switch-label" data-on="On" data-off="Off"></span>
+                  <span class="switch-handle"></span>
+                </label>
+              </div>
             <% end %>
             <table class="table table-striped table-bordered bootstrap-datatable datatable">
               <thead>
@@ -94,3 +102,14 @@
     </div>          
   </div>
 </div>
+<script type="text/javascript">
+  $(".switch-input").on("change",function(){
+    var is_receiving;
+    if ($(this).is(":checked")){
+      is_receiving = 'turn_on';
+    }else{
+      is_receiving = 'turn_off';
+    }
+    $.getScript('<%= change_is_receiving_orders_path %>'+'?is_receiving='+is_receiving);
+  });
+</script>
