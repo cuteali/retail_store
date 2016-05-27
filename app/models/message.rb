@@ -11,7 +11,7 @@ class Message < ActiveRecord::Base
   scope :by_page, -> (page_num) { page(page_num) if page_num }
 
   def self.push_message_to_user(order)
-    message = order.messages.new(title: '您有新的订单！', info: "醉食汇订单：#{order.order_no}")
+    message = order.messages.new(title: '醉食汇', info: "您有一条新的订单！")
     order.shop.users.normal.each do |user|
       if user.client_type == 'android'
         message.igetui_push_message_to_list(user.client_id)
@@ -23,7 +23,7 @@ class Message < ActiveRecord::Base
 
   def self.push_message_to_shopper(order)
     shopper = order.shopper
-    message = order.messages.create(shopper_id: shopper.id, title: '商家已接单', info: "醉食汇订单：#{order.order_no}")
+    message = order.messages.create(shopper_id: shopper.id, title: '醉食汇', info: "商家已接单！")
     if shopper.client_type == 'android'
       message.igetui_push_message_to_list(shopper.client_id)
     elsif shopper.client_type == 'ios'
