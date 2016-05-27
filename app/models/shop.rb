@@ -8,6 +8,7 @@ class Shop < ActiveRecord::Base
   has_many :detail_categories, -> { order "detail_categories.sort DESC" }
   has_many :favorites
   has_many :users
+  has_many :messages
 
   scope :latest, -> { order('created_at DESC') }
 

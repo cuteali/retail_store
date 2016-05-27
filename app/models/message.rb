@@ -1,4 +1,5 @@
 class Message < ActiveRecord::Base
+  belongs_to :user
   belongs_to :shop
   belongs_to :shopper
   belongs_to :messageable, polymorphic: true
@@ -8,6 +9,27 @@ class Message < ActiveRecord::Base
 
   scope :latest, -> { order('created_at DESC') }
   scope :by_page, -> (page_num) { page(page_num) if page_num }
+
+  def self.push_message_to_user(order)
+    message = order.messages.new(title: '您有新的订单！', info: "醉食汇订单：#{order.order_no}")
+    order.shop.users.normal.each do |user|
+      if user.client_type == 'android'
+        message.igetui_push_message_to_list(user.client_id)
+      elsif user.client_type == 'ios'
+        message.jpush_push_message(user.client_id)
+      end
+    end
+  end
+
+  def self.push_message_to_shopper(order)
+    shopper = order.shopper
+    message = order.messages.create(shopper_id: shopper.id, title: '商家已接单', info: "醉食汇订单：#{order.order_no}")
+    if shopper.client_type == 'android'
+      message.igetui_push_message_to_list(shopper.client_id)
+    elsif shopper.client_type == 'ios'
+      message.jpush_push_message(shopper.client_id)
+    end
+  end
 
   def is_new_to_i
     unread? ? '0' : '1'

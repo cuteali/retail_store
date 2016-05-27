@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527062147) do
+ActiveRecord::Schema.define(version: 20160527080534) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20160527062147) do
   add_index "images", ["imageable_id", "imageable_type"], name: "imageable_index", using: :btree
 
   create_table "messages", force: :cascade do |t|
+    t.integer  "user_id",          limit: 4
     t.integer  "shopper_id",       limit: 4
     t.integer  "shop_id",          limit: 4
     t.integer  "messageable_id",   limit: 4
@@ -131,6 +132,7 @@ ActiveRecord::Schema.define(version: 20160527062147) do
   add_index "messages", ["messageable_id", "messageable_type"], name: "messageable_index", using: :btree
   add_index "messages", ["shop_id"], name: "index_messages_on_shop_id", using: :btree
   add_index "messages", ["shopper_id"], name: "index_messages_on_shopper_id", using: :btree
+  add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4

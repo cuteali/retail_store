@@ -56,7 +56,9 @@ class Order < ActiveRecord::Base
 
   def pay
     if pending? || canceled?
-      update_column :state, 'paid'
+      new_state = shop.turn_on? ? 'receiving' : 'paid'
+      update_column :state, new_state
+      Message.push_message_to_user(self)
     end
   end
 

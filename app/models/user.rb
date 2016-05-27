@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   attr_accessor :login
 
   belongs_to :shop
+  has_many :messages
 
   validates :shop_id, :role, presence: true, if: :can_validate?
   validates :username,
