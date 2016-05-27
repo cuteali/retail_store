@@ -123,7 +123,7 @@ class Message < ActiveRecord::Base
       info,
       title: title || '醉食汇'
     ).set_options(
-      apns_production: true
+      apns_production: false
     )
     ret = pusher.push(push_payload)
     Rails.logger.info "============#{ret}============"
