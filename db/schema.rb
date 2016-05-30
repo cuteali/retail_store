@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527080534) do
+ActiveRecord::Schema.define(version: 20160530034917) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -258,18 +258,19 @@ ActiveRecord::Schema.define(version: 20160527080534) do
   add_index "shoppers", ["token"], name: "index_shoppers_on_token", using: :btree
 
   create_table "shops", force: :cascade do |t|
-    t.integer  "shop_model_id", limit: 4
-    t.string   "name",          limit: 255
-    t.string   "address",       limit: 255
-    t.string   "lat",           limit: 255
-    t.string   "lng",           limit: 255
-    t.string   "tel",           limit: 255
-    t.string   "phone",         limit: 255
-    t.string   "director",      limit: 255
-    t.integer  "is_receiving",  limit: 1,   default: 1, null: false
-    t.integer  "status",        limit: 1,   default: 0, null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.integer  "shop_model_id",  limit: 4
+    t.string   "name",           limit: 255
+    t.string   "address",        limit: 255
+    t.string   "lat",            limit: 255
+    t.string   "lng",            limit: 255
+    t.string   "tel",            limit: 255
+    t.string   "phone",          limit: 255
+    t.string   "director",       limit: 255
+    t.integer  "is_receiving",   limit: 1,   default: 1, null: false
+    t.string   "delivery_range", limit: 255
+    t.integer  "status",         limit: 1,   default: 0, null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
   end
 
   add_index "shops", ["director"], name: "index_shops_on_director", using: :btree
