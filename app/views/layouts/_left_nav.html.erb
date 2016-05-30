@@ -17,6 +17,16 @@
             </div>
           </div>
           <div class="divider2"></div>
+          <li class="nav-parent <%= 'active nav-expanded' if %w(categories sub_categories detail_categories).include?(controller_name) %>">
+            <a>
+              <i class="fa fa-list-alt" aria-hidden="true"></i><span>分类管理</span>
+            </a>
+            <ul class="nav nav-children">
+              <li class="<%= 'active opened' if controller_name == 'categories' %>"><a href="<%= categories_path %>"><span class="text"> 大分类</span></a></li>
+              <li class="<%= 'active opened' if controller_name == 'sub_categories' %>"><a href="<%= sub_categories_path %>"><span class="text"> 小分类</span></a></li>
+              <li class="<%= 'active opened' if controller_name == 'detail_categories' %>"><a href="<%= detail_categories_path %>"><span class="text"> 具体分类</span></a></li>
+            </ul>
+          </li>
           <% if current_user.admin? %>
             <li class="<%= 'active opened nav-expanded' if controller_name == 'users' %>">
               <a href="/users">
@@ -41,16 +51,6 @@
               </a>
             </li>
           <% end %>
-          <li class="nav-parent <%= 'active nav-expanded' if %w(categories sub_categories detail_categories).include?(controller_name) %>">
-            <a>
-              <i class="fa fa-list-alt" aria-hidden="true"></i><span>分类管理</span>
-            </a>
-            <ul class="nav nav-children">
-              <li class="<%= 'active opened' if controller_name == 'categories' %>"><a href="<%= categories_path %>"><span class="text"> 大分类</span></a></li>
-              <li class="<%= 'active opened' if controller_name == 'sub_categories' %>"><a href="<%= sub_categories_path %>"><span class="text"> 小分类</span></a></li>
-              <li class="<%= 'active opened' if controller_name == 'detail_categories' %>"><a href="<%= detail_categories_path %>"><span class="text"> 具体分类</span></a></li>
-            </ul>
-          </li>
           <% if current_user.user? %>
             <li class="<%= 'active opened nav-expanded' if controller_name == 'shop_products' %>">
               <a href="<%= shop_products_path %>">
@@ -65,6 +65,11 @@
             <li class="<%= 'active opened nav-expanded' if controller_name == 'orders' %>">
               <a href="<%= orders_path %>">
                 <i class="fa fa-table" aria-hidden="true"></i><span>订单管理</span>
+              </a>
+            </li>
+            <li class="<%= 'active opened nav-expanded' if controller_name == 'messages' %>">
+              <a href="<%= messages_path %>">
+                <i class="fa fa-table" aria-hidden="true"></i><span>推送管理</span>
               </a>
             </li>
           <% end %>

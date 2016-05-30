@@ -76,4 +76,5 @@ Rails.application.routes.draw do
   resources :adverts
   resources :shoppers
   resources :addresses
+  resources :messages
 end

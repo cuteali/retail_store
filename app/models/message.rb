@@ -6,9 +6,31 @@ class Message < ActiveRecord::Base
 
   enum status: [ :normal, :deleted ]
   enum is_new: [ :unread, :read ]
+  enum goal: [ :push_shopper, :push_user ]
 
   scope :latest, -> { order('created_at DESC') }
   scope :by_page, -> (page_num) { page(page_num) if page_num }
+  scope :broadcast, -> { where(shoppper_id: nil) }
+
+  def goal_name
+    push_shopper? ? '用户端' : '商户端'
+  end
+
+  def shop_push_message
+    if push_shopper?
+      push_users = Shopper.normal
+    elsif push_user?
+      push_users = shop.users.normal
+    end
+    push_users.each do |obj|
+      message = obj.messages.create(messageable: messageable, title: title, info: info)
+      if obj.client_type == 'android'
+        message.igetui_push_message(obj.client_id)
+      elsif obj.client_type == 'ios'
+        message.jpush_push_message(obj.client_id)
+      end
+    end
+  end
 
   def self.push_message_to_user(order)
     message = order.messages.new(title: '醉食汇', info: "您有一条新的订单！")
@@ -25,7 +47,7 @@ class Message < ActiveRecord::Base
     shopper = order.shopper
     message = order.messages.create(shopper_id: shopper.id, title: '醉食汇', info: "商家已接单！")
     if shopper.client_type == 'android'
-      message.igetui_push_message_to_list(shopper.client_id)
+      message.igetui_push_message(shopper.client_id)
     elsif shopper.client_type == 'ios'
       message.jpush_push_message(shopper.client_id)
     end
@@ -48,8 +70,8 @@ class Message < ActiveRecord::Base
     pusher = IGeTui.pusher(ENV['igetui_app_id'], ENV['igetui_app_key'], ENV['igetui_master_secret'])
 
     template = IGeTui::NotificationTemplate.new
-    template.logo = '醉食汇logo.png'
-    template.logo_url = 'http://7xszen.com2.z0.glb.qiniucdn.com/%E9%86%89%E9%A3%9F%E6%B1%87logo.png'
+    template.logo = '安卓512-512logo.png'
+    template.logo_url = 'http://7xszen.com1.z0.glb.clouddn.com/%E5%AE%89%E5%8D%93512-512logo.png'
     template.title = title || '醉食汇'
     template.text = info
 

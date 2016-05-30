@@ -1,0 +1,105 @@
+<div class="main">
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li><a href="<%= messages_path %>"><i class="fa fa-table"></i>推送管理</a></li>
+        <li class="active"><a href="javascript:void(0);"><i class="fa fa-pencil-square-o"></i><%= crumb_name(@message) %>推送</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2><%= crumb_name(@message) %>推送</h2>
+    </div>          
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-indent red"></i>填写表单</h6>              
+        </div>
+        <div class="panel-body">
+          <%= form_for(@message, html: {class: "form-horizontal", role: "form", multipart: true}) do |f| %>
+            <%= f.hidden_field :messageable_id %>
+            <%= f.hidden_field :messageable_type %>
+            <div class="form-group">
+              <label class="col-md-3 control-label">推送目标</label>
+              <div class="col-md-9">
+                <div class="radio-custom radio-inline">
+                  <%= f.radio_button :goal, 'push_shopper', id: 'goal1' %>
+                  <label for="goal1"> 用户端</label>
+                </div>
+                <div class="radio-custom radio-inline">
+                  <%= f.radio_button :goal, 'push_user', id: 'goal2' %>
+                  <label for="goal2"> 商户端</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">搜索推送的产品:</label>
+              <div class="col-sm-7">
+                <%= text_field_tag :product_name, nil, class: "form-control" %>
+                <span class="help-block">（可不填，默认推送普通消息！）</span>
+              </div>
+              <div class="col-sm-2">
+                <button type="button" id="search_name" class="btn btn-primary btn-sm">查询</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="detail_category_id">推送的产品</label>
+              <div class="col-md-9">
+                <%= select_tag :select_product_id, options_for_select([["选择推送的产品",""]]), class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">产品名称</label>
+              <div class="col-md-9">
+                <p class="form-control-static"><%= f.object.messageable.try(:name) %></p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="title">标题</label>
+              <div class="col-md-9">
+                <%= f.text_field :title, class: "form-control" %>
+                <span class="help-block">（不填默认为：醉食汇）</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="info">内容</label>
+              <div class="col-md-9">
+                <%= f.text_area :info, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3 col-md-offset-3">
+                <button type="submit" class="bk-margin-5 btn btn-primary">保存</button>
+                <button type="button" class="bk-margin-5 btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+              </div>
+            </div>
+            <br>
+          <% end %>
+        </div>  
+      </div>  
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $("#search_name").click(function(){
+    var set_url = "<%= search_product_shop_products_url %>" + 
+                  "?product_name=" + $("#product_name").val() + 
+                  "&id=select_product_id&name=select_product_id&first_option=选择关联的产品";
+    jQuery.ajax({
+      type: "GET",
+      url: set_url,
+      dataType: "json",
+      success: function(data){
+        $('#select_product_id').html(data.html);
+      }
+    });
+  });
+  $("#select_product_id").change(function(){
+    var $this=$(this);
+    $('#message_messageable_id').val($this.val());
+    $('#message_messageable_type').val('ShopProduct');
+    $('.form-control-static').text($this.find("option:selected").text());
+  });
+</script>
