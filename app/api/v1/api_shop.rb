@@ -13,7 +13,7 @@ module V1
           ['completed', '订单已完成']
         elsif state == '2' && order.olp?
           ['refund', '订单退款中']
-        elsif state == '3' || (state == '2' && order.cod?)
+        elsif state == '3' || (state == '2' && !order.olp?)
           ['canceled', '订单已成功关闭']
         end
       end
@@ -21,7 +21,7 @@ module V1
 
     resources 'shops' do
       # http://localhost:3000/api/v1/shops
-      # state: 0待接单 1配送中 2已完成 3待退款 4已取消
+      # state: 0待接单 1配送中 2已完成 3待退款 4已取消 5全部
       params do 
         requires :token, type: String
         requires :state, type: String

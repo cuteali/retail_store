@@ -36,6 +36,7 @@ class Order < ActiveRecord::Base
     when '2' then where(state: 'completed')
     when '3' then where(state: 'refund')
     when '4' then where(state: 'canceled')
+    when '5' then where(state: STATE)
     end
   }
 
@@ -125,7 +126,7 @@ class Order < ActiveRecord::Base
       '2'
     elsif olp? && state == 'refund'
       '4'
-    elsif state == 'canceled' || (%w(olp to_shop).include?(order_type) && is_expiration)
+    elsif state == 'canceled'
       '5'
     elsif state == 'completed'
       '3'
