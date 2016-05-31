@@ -3,7 +3,7 @@ class MessagesController < ApplicationController
   before_filter :authenticate_user!
   
   def index
-    @messages = @shop.messages.normal.latest.page(params[:page])
+    @messages = @shop.messages.normal.broadcast.latest.page(params[:page])
   end
 
   def new

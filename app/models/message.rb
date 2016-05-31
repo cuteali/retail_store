@@ -10,7 +10,7 @@ class Message < ActiveRecord::Base
 
   scope :latest, -> { order('created_at DESC') }
   scope :by_page, -> (page_num) { page(page_num) if page_num }
-  scope :broadcast, -> { where(shoppper_id: nil) }
+  scope :broadcast, -> { where("shopper_id is ?", nil) }
 
   def goal_name
     push_shopper? ? '用户端' : '商户端'
@@ -23,7 +23,11 @@ class Message < ActiveRecord::Base
       push_users = shop.users.normal
     end
     push_users.each do |obj|
-      message = obj.messages.create(messageable: messageable, title: title, info: info)
+      if obj.is_a?(User)
+        message = obj.messages.create(shop_id: shop_id, messageable: messageable, title: title, info: info)
+      elsif obj.is_a?(Shopper)
+        message = obj.messages.new(shop_id: shop_id, messageable: messageable, title: title, info: info)
+      end
       if obj.client_type == 'android'
         message.igetui_push_message(obj.client_id)
       elsif obj.client_type == 'ios'
@@ -62,7 +66,7 @@ class Message < ActiveRecord::Base
     when 'ShopProduct' then '0'
     when 'Order' then '1'
     else
-      ''
+      '2'
     end
   end
 
@@ -72,7 +76,7 @@ class Message < ActiveRecord::Base
     template = IGeTui::NotificationTemplate.new
     template.logo = '安卓512-512logo.png'
     template.logo_url = 'http://7xszen.com1.z0.glb.clouddn.com/%E5%AE%89%E5%8D%93512-512logo.png'
-    template.title = title || '醉食汇'
+    template.title = title.blank? ? '醉食汇' : title
     template.text = info
 
     message = IGeTui::AppMessage.new
@@ -95,7 +99,7 @@ class Message < ActiveRecord::Base
     template = IGeTui::TransmissionTemplate.new
     content = {
                 action: 'notification',
-                title: title || '醉食汇',
+                title: title.blank? ? '醉食汇' : title,
                 content: info,
                 type: obj_type,
                 id: messageable_id.to_s
@@ -136,18 +140,18 @@ class Message < ActiveRecord::Base
     if registration_id
       audience = JPush::Push::Audience.new.set_registration_id(registration_id)
     end
-
+# binding.pry
     push_payload = JPush::Push::PushPayload.new(
       platform: 'ios',
       audience: audience || 'all',
       notification: notification
     ).set_message(
       info,
-      title: title || '醉食汇'
+      title: title.blank? ? '醉食汇' : title
     ).set_options(
-      apns_production: false
+      apns_production: true
     )
-    ret = pusher.push(push_payload)
+    ret = pusher.push(push_payload) rescue nil
     Rails.logger.info "============#{ret}============"
   end
 end

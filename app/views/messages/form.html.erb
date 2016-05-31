@@ -38,7 +38,7 @@
               <label class="col-sm-3 control-label">搜索推送的产品:</label>
               <div class="col-sm-7">
                 <%= text_field_tag :product_name, nil, class: "form-control" %>
-                <span class="help-block">（可不填，默认推送普通消息！）</span>
+                <span class="help-block">（推送给用户端时，必须选择推送的产品）</span>
               </div>
               <div class="col-sm-2">
                 <button type="button" id="search_name" class="btn btn-primary btn-sm">查询</button>
@@ -102,4 +102,13 @@
     $('#message_messageable_type').val('ShopProduct');
     $('.form-control-static').text($this.find("option:selected").text());
   });
+
+  $('button[type=submit]').click(function() {
+     $message_goal = $('input[name="message[goal]"]:checked');
+     $message_messageable_id = $('#message_messageable_id');
+     if($message_goal.val() == "push_shopper" && $message_messageable_id.val() == ""){
+       alert('请选择推送的产品！');
+       return false;
+     }
+   });
 </script>
