@@ -1896,7 +1896,7 @@ div.DTFC_LeftFootWrapper table {
 .bootstrap-timepicker-widget.dropdown-menu.open {
   display: inline-block;
 }
-.bootstrap-timepicker-widget.dropdown-menu:before {
+/*.bootstrap-timepicker-widget.dropdown-menu:before {
   border-bottom: 7px solid rgba(0, 0, 0, 0.2);
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
@@ -1915,7 +1915,7 @@ div.DTFC_LeftFootWrapper table {
   left: 10px;
   position: absolute;
   top: -6px;
-}
+}*/
 .bootstrap-timepicker-widget a.btn,
 .bootstrap-timepicker-widget input {
   border-radius: 4px;

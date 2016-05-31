@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160530103849) do
+ActiveRecord::Schema.define(version: 20160531030819) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(version: 20160530103849) do
     t.datetime "delivery_at"
     t.datetime "complete_at"
     t.datetime "expiration_at"
+    t.string   "remarks",       limit: 255
     t.datetime "created_at",                                                             null: false
     t.datetime "updated_at",                                                             null: false
   end
@@ -269,6 +270,8 @@ ActiveRecord::Schema.define(version: 20160530103849) do
     t.string   "director",       limit: 255
     t.integer  "is_receiving",   limit: 1,   default: 1, null: false
     t.string   "delivery_range", limit: 255
+    t.string   "start_at",       limit: 255
+    t.string   "end_at",         limit: 255
     t.integer  "status",         limit: 1,   default: 0, null: false
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false

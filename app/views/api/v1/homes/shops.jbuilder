@@ -8,6 +8,7 @@ if @shops
     json.lat shop.lat
     json.address shop.address
     json.range shop.delivery_range
+    json.business_hours shop.business_hours
   end
 else
   json.errcode 1

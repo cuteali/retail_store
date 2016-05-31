@@ -35,7 +35,8 @@
                   <th>电话</th>
                   <th>负责人</th>
                   <th>手机</th>
-                  <th>配送范围</th>
+                  <th>配送范围(米)</th>
+                  <th>营业时间</th>
                   <th>操作</th>
                 </tr>
               </thead>   
@@ -52,6 +53,7 @@
                     <td><%= shop.director %></td>
                     <td><%= shop.phone %></td>
                     <td><%= shop.delivery_range %></td>
+                    <td><%= shop.business_hours %></td>
                     <td>
                       <%= link_to edit_shop_path(shop), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
@@ -68,7 +70,7 @@
                   </tr>
                 <% end.blank? %>
                   <tr>
-                    <td colspan="11" class="green text-center">无记录</td>
+                    <td colspan="12" class="green text-center">无记录</td>
                   </tr>
                 <% end %>
               </tbody>

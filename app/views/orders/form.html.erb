@@ -92,6 +92,12 @@
                 <span class="help-block">用户下单时自动生成，订单类型为‘货到付款’时，没有过期时间！</span>
               </div>
             </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="remarks">备注</label>
+              <div class="col-md-9">
+                <%= f.text_field :remarks, class: "form-control" %>
+              </div>
+            </div>
             <% @order.orders_shop_products.normal.each_with_index do |op, i| %>
               <%= f.fields_for :orders_shop_products, op do |opro| %>
                 <%= opro.hidden_field :id, name: "order[orders_shop_products_attributes][][id]" %>

@@ -80,6 +80,20 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="col-md-3 control-label">营业时间</label>
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-3">
+                    <%= f.text_field :start_at, class: "form-control", data: { "plugin-timepicker" => "", "plugin-options" => '{ "showMeridian": false }' } %>
+                  </div>
+                  <label class="col-md-1 control-label">至</label>
+                  <div class="col-md-3">
+                    <%= f.text_field :end_at, class: "form-control", data: { "plugin-timepicker" => "", "plugin-options" => '{ "showMeridian": false }' } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
               <div class="col-md-3 col-md-offset-3">
                 <button type="submit" class="bk-margin-5 btn btn-primary">保存</button>
                 <button type="button" class="bk-margin-5 btn btn-default" onclick="javascript:history.go(-1);">返回</button>

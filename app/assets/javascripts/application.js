@@ -18,7 +18,7 @@
 //= require dropzone.min
 //= require bootstrap-colorpicker
 // require bootstrap-datepicker
-// require bootstrap-timepicker
+//= require bootstrap-timepicker
 //= require bootstrap-tagsinput
 //= require index
 //= require form-elements

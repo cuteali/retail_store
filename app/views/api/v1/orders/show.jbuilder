@@ -19,6 +19,7 @@ if @token
       json.pro_count @order.orders_shop_products.sum(:product_num)
       json.total_price @order.total_price
       json.expiration_time @order.get_expiration_time
+      json.remarks @order.remarks
       json.products(@shop_products) do |op|
         json.product_id op.shop_product_id
         json.number op.product_num

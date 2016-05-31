@@ -14,4 +14,8 @@ class Shop < ActiveRecord::Base
 
   enum status: [ :normal, :deleted ]
   enum is_receiving: [ :turn_on, :turn_off ]
+
+  def business_hours
+    "#{start_at} - #{end_at}" if start_at && end_at
+  end
 end

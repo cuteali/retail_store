@@ -23,7 +23,7 @@ class Order < ActiveRecord::Base
   scope :by_state, -> (state = nil) {
     case state
     when '0' then where(state: STATE)
-    when '1' then where('state in (?) and order_type = ? and expiration_at >= ?', ['opening', 'pending'], 1, Time.now)
+    when '1' then where('state in (?) and order_type in (?) and expiration_at >= ?', ['opening', 'pending'], [1, 2], Time.now)
     when '2' then where(state: ['paid', 'receiving'])
     when '3' then where(state: 'completed')
     when '4' then where('state in (?) or expiration_at < ?', ['canceled', 'refund'], Time.now)
@@ -31,7 +31,7 @@ class Order < ActiveRecord::Base
   }
   scope :by_shop_state, -> (state = nil) {
     case state
-    when '0' then where("order_type = 0 and state = 'paid' or order_type in (?) and state = 'paid' and expiration_at >= ?", [1,2], Time.now)
+    when '0' then where("order_type = 0 and state = 'paid' or order_type in (?) and state = 'paid' and expiration_at >= ?", [1, 2], Time.now)
     when '1' then where(state: 'receiving')
     when '2' then where(state: 'completed')
     when '3' then where(state: 'refund')
@@ -120,7 +120,7 @@ class Order < ActiveRecord::Base
       '1'
     elsif to_shop? && state == 'receiving'
       '7'
-    elsif olp? && %w(opening pending).include?(state) && !is_expiration
+    elsif %w(olp to_shop).include?(order_type) && %w(opening pending).include?(state) && !is_expiration
       '0'
     elsif olp? && state == 'receiving'
       '2'
@@ -176,7 +176,7 @@ class Order < ActiveRecord::Base
   end
 
   def get_expiration_time
-    if olp? && %w(opening pending).include?(state)
+    if %w(olp to_shop).include?(order_type) && %w(opening pending).include?(state)
       (expiration_at - Time.now).to_i
     else
       0
@@ -230,21 +230,21 @@ class Order < ActiveRecord::Base
 
   def self.update_expiration_at_state(orders)
     orders.by_expiration.each do |order|
-      if (order.olp? && ['opening', 'pending'].include?(order.state)) || (order.to_shop? && order.state == 'paid')
+      if ['opening', 'pending'].include?(order.state)
         order.update(state: 'canceled')
       end
     end
   end
 
   def update_expiration_at_state
-    if (olp? && ['opening', 'pending'].include?(state)) || (to_shop? && state == 'paid')
+    if ['opening', 'pending'].include?(state)
       self.update(state: 'canceled') if is_expiration
     end
   end
 
   private
     def generate_order_no
-      max_order_no = Order.maximum(:order_no) || 1605270000
+      max_order_no = Order.maximum(:order_no) || 1606010000
       self.order_no = max_order_no.succ
     end
 end
