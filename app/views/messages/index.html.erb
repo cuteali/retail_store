@@ -38,7 +38,7 @@
                   <tr>
                     <td><%= message.id %></td>
                     <td><%= message.goal_name %></td>
-                    <td><%= message.messageable.name %></td>
+                    <td><%= message.messageable.try(:name) %></td>
                     <td><%= message.title %></td>
                     <td><%= message.info %></td>
                     <td>
