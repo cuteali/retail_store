@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       return redirect_to session[:return_to] if session[:return_to]
       redirect_to users_path
     else
-      flash[:success] = '修改失败！'
+      flash[:danger] = '修改失败！'
       redirect_to :back
     end
   end
@@ -38,8 +38,10 @@ class UsersController < ApplicationController
 
   def reset_password
     authorize @user
-    @user.password = params[:password]
-    @user.password_confirmation = params[:password]
+    if params[:user][:password]
+      @user.password = params[:user][:password]
+      @user.password_confirmation = params[:user][:password]
+    end
     if @user.save
       flash[:success] = '重置密码成功！'
       redirect_to users_path
