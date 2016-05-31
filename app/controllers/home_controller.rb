@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     if current_user.blank?
       redirect_to new_user_session_path
     elsif current_user && current_user.admin?
-      redirect_to users_path
+      redirect_to shops_path
     elsif current_user && current_user.user?
       redirect_to shop_products_path
     end

@@ -28,18 +28,14 @@
             </ul>
           </li>
           <% if current_user.admin? %>
-            <li class="<%= 'active opened nav-expanded' if controller_name == 'users' %>">
-              <a href="/users">
-                <i class="fa fa-table" aria-hidden="true"></i><span>系统管理</span>
-              </a>
-            </li>
-            <li class="nav-parent <%= 'active nav-expanded' if %w(shop_models shops products units top_searches).include?(controller_name) %>">
+            <li class="nav-parent <%= 'active nav-expanded' if %w(shop_models shops products units top_searches users registrations).include?(controller_name) %>">
               <a>
                 <i class="fa fa-list-alt" aria-hidden="true"></i><span>店铺管理</span>
               </a>
               <ul class="nav nav-children">
                 <li class="<%= 'active opened' if controller_name == 'shop_models' %>"><a href="<%= shop_models_path %>"><span class="text"> 店铺模板</span></a></li>
                 <li class="<%= 'active opened' if controller_name == 'shops' %>"><a href="<%= shops_path %>"><span class="text"> 店铺列表</span></a></li>
+                <li class="<%= 'active opened' if %w(users registrations).include?(controller_name) %>"><a href="<%= users_path %>"><span class="text"> 店铺账号</span></a></li>
                 <li class="<%= 'active opened' if controller_name == 'products' %>"><a href="<%= products_path %>"><span class="text"> 基础产品</span></a></li>
                 <li class="<%= 'active opened' if controller_name == 'units' %>"><a href="<%= units_path %>"><span class="text"> 产品单位</span></a></li>
                 <li class="<%= 'active opened' if controller_name == 'top_searches' %>"><a href="<%= top_searches_path %>"><span class="text"> 热门搜索</span></a></li>
