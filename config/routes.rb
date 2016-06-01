@@ -77,4 +77,5 @@ Rails.application.routes.draw do
   resources :shoppers
   resources :addresses
   resources :messages
+  resources :user_agreements, only: :index
 end
