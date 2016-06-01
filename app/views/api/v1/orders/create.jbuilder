@@ -9,6 +9,9 @@ if @token
   elsif @stock_volume_result == 3
     json.errcode 3
     json.errmsg '产品库存不足'
+  elsif @is_sold_off
+    json.errcode 1
+    json.errmsg '部分产品已下架'
   else
     json.errcode 1
     json.errmsg '订单创建失败'

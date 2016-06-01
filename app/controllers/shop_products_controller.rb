@@ -33,6 +33,7 @@ class ShopProductsController < ApplicationController
     if @shop_product.update(shop_product_params)
       update_keys(@shop_product, params[:shop_product][:key])
       Image.image_upload(params[:shop_product][:images], @shop_product.id, 'ShopProduct')
+      Cart.where(shop_product_id: @shop_product.id).destroy_all if @shop_product.sold_off?
       flash[:success] = '修改成功！'
       return redirect_to session[:return_to] if session[:return_to]
       redirect_to shop_products_path

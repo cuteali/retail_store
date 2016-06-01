@@ -1,7 +1,38 @@
 module ImportXls
   def self.import(file)
-    shop_model = ShopModel.where(name: '模板一').first_or_create
     spreadsheet = open_spreadsheet(file)
+    if spreadsheet.sheets[0] == '产品'
+      ImportXls.product_excel_file(spreadsheet)
+    elsif spreadsheet.sheets[0] == '分类管理'
+      ImportXls.category_excel_file(spreadsheet)
+    end
+  end
+
+  def self.product_excel_file(spreadsheet)
+    header = spreadsheet.row(1)
+    (2..spreadsheet.last_row).each do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      options = {}
+      options[:category_id] = Category.base_category.normal.find_by(name: row['大分类']).try(:id)
+      options[:sub_category_id] = SubCategory.base_category.normal.find_by(name: row['小分类']).try(:id)
+      options[:detail_category_id] = DetailCategory.base_category.normal.find_by(name: row['具体分类']).try(:id)
+      options[:unit_id] = Unit.normal.find_by(name: row['单位']).try(:id)
+      options[:price] = row['价格']
+      options[:old_price] = row['原价']
+      options[:desc] = row['描述']
+      options[:info] = row['简介']
+      options[:spec] = row['规格']
+      options[:stock_volume] = row['库存'].to_i
+      options[:sales_volume] = row['销量'].to_i
+      options[:sort] = row['排序'].to_i
+      options[:is_app_index] = row['首页展示'] == '是' ? 'is_index' : 'not_index'
+      options[:state] = row['是否上架'] == '是' ? 'sold_on' : 'sold_off'
+      Product.normal.where(name: row['产品名称']).first_or_create(options) if row['产品名称'].present?
+    end
+  end
+
+  def self.category_excel_file(spreadsheet)
+    shop_model = ShopModel.where(name: '模板一').first_or_create
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]

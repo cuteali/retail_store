@@ -15,14 +15,19 @@ module V1
 
       def validate_stock_volume(shop, products)
         result = 0
+        is_sold_off = false
         products.each do |p|
           shop_product = shop.shop_products.find_by(id: p['id'])
+          if shop_product.sold_off?
+            is_sold_off = true
+            break
+          end
           if shop_product.stock_volume < p["number"].to_i
             result = 3
             break
           end
         end
-        result
+        [result, is_sold_off]
       end
 
       def get_order_type_and_state(order_type)
@@ -82,8 +87,8 @@ module V1
             total_price = check_total_price(shop, product_arr)
             AppLog.info("money:#{params[:money]}")
             if total_price == params[:money].gsub(/[^\d\.]/, '').to_f
-              @stock_volume_result = validate_stock_volume(shop, product_arr)
-              if @stock_volume_result == 0
+              @stock_volume_result, @is_sold_off = validate_stock_volume(shop, product_arr)
+              if @stock_volume_result == 0 && !@is_sold_off
                 state, order_type = get_order_type_and_state(params[:order_type])
                 @order = @current_user.orders.create(shop_id: shop.id, receive_name: params[:receive_name], receive_phone: params[:receive_phone], area: params[:area], 
                   detail: params[:detail], total_price: total_price, order_type: order_type, state: state, remarks: params[:remarks])
