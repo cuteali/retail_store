@@ -13,7 +13,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   def filename
-     @name ||= "#{SecureRandom.hex 4}.#{file.extension}" if original_filename.present? and super.present?
+     @name ||= "#{rand(0xffffff)}-#{SecureRandom.hex 4}.#{file.extension}" if original_filename.present? and super.present?
   end
 
   def timestamp

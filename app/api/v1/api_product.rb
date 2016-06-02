@@ -18,7 +18,7 @@ module V1
         @top_shop_products = shop.shop_products.normal.sold_on.sorted.limit(6)
         if @shop_product
           @favorite = shop.favorites.normal.find_by(shopper_id: @current_user.try(:id), shop_product_id: @shop_product.id)
-          @images = @shop_product.images.normal.sorted.to_a.insert(0, @shop_product)
+          @images = @shop_product.images.normal.sorted
         end
       end
 
