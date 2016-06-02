@@ -20,6 +20,7 @@ if @token
       json.total_price @order.total_price
       json.expiration_time @order.get_expiration_time
       json.remarks @order.remarks
+      json.freight @order.freight
       json.products(@shop_products) do |op|
         json.product_id op.shop_product_id
         json.number op.product_num

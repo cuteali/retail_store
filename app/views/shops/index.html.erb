@@ -30,13 +30,13 @@
                   <th>店铺模板</th>
                   <th>店铺名称</th>
                   <th>地址</th>
-                  <th>纬度</th>
-                  <th>经度</th>
                   <th>电话</th>
                   <th>负责人</th>
                   <th>手机</th>
                   <th>配送范围(米)</th>
                   <th>营业时间</th>
+                  <th>起送价格</th>
+                  <th>运费</th>
                   <th>操作</th>
                 </tr>
               </thead>   
@@ -47,13 +47,13 @@
                     <td><%= shop.shop_model.try(:name) %></td>
                     <td><%= shop.name %></td>
                     <td><%= shop.address %></td>
-                    <td><%= shop.lat %></td>
-                    <td><%= shop.lng %></td>
                     <td><%= shop.tel %></td>
                     <td><%= shop.director %></td>
                     <td><%= shop.phone %></td>
                     <td><%= shop.delivery_range %></td>
                     <td><%= shop.business_hours %></td>
+                    <td><%= shop.send_price %></td>
+                    <td><%= shop.freight %></td>
                     <td>
                       <%= link_to edit_shop_path(shop), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
@@ -65,6 +65,9 @@
                       <% end %>
                       <%= link_to shop_path(shop), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
                         <i class="fa fa-trash-o"></i>
+                      <% end %>
+                      <%= link_to order_statistic_path(shop), class: "btn btn-warning", title: "订单统计", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-random"></i>
                       <% end %>
                     </td>
                   </tr>

@@ -56,4 +56,12 @@ module ApplicationHelper
   def time_show(time)
     time.strftime("%Y-%m-%d %H:%M:%S") if time.present?
   end
+
+  def valid_shop_path?
+    %w(shop_models shops products units top_searches users registrations).include?(controller_name)
+  end
+
+  def valid_statistics_show_path?
+    controller_name == 'order_statistics' && action_name == 'show'
+  end
 end

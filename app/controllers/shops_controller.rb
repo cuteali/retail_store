@@ -60,10 +60,10 @@ class ShopsController < ApplicationController
 
   private 
     def set_shop
-      @shop = Shop.find_by(id: params[:id])
+      @shop = Shop.normal.find_by(id: params[:id])
     end
 
     def shop_params
-      params.require(:shop).permit(:shop_model_id, :name, :address, :lat, :lng, :tel, :phone, :director, :delivery_range, :start_at, :end_at)
+      params.require(:shop).permit(:shop_model_id, :name, :address, :lat, :lng, :tel, :phone, :director, :delivery_range, :start_at, :end_at, :send_price, :freight)
     end
 end

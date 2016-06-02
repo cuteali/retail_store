@@ -43,6 +43,35 @@ module V1
           order.update_columns(expiration_at: order.created_at + 30.minutes)
         end
       end
+
+      def valid_send_price(shop, total_price, order_type)
+        if (total_price < shop.send_price) && order_type != '2'
+          shop.freight
+        else
+          0
+        end
+      end
+
+      def send_to_user(shop, order)
+        phones = shop.users.normal.user.pluck(:phone)
+        if phones.present?
+          text = "【醉食汇】您好，您有来自#{order.receive_name}的新订单，请查收～"
+          @errcode = Sms.send_sms(phones.uniq, text)
+          AppLog.info("info:#{@errcode}")
+        end
+      end
+
+      def send_to_shopper(shopper, order)
+        reg = /^1[3|4|5|8][0-9]\d{8}$/
+        phones = []
+        phones << shopper.phone if shopper.phone =~ reg
+        phones << order.receive_phone if order.receive_phone =~ reg
+        if phones.present?
+          text = "【醉食汇】您好，您有新的订单，请查收～"
+          @errcode = Sms.send_sms(phones.uniq, text)
+          AppLog.info("info:#{@errcode}")
+        end
+      end
     end
 
     resources 'orders' do
@@ -89,9 +118,10 @@ module V1
             if total_price == params[:money].gsub(/[^\d\.]/, '').to_f
               @stock_volume_result, @is_sold_off = validate_stock_volume(shop, product_arr)
               if @stock_volume_result == 0 && !@is_sold_off
+                freight = valid_send_price(shop, total_price, params[:order_type])
                 state, order_type = get_order_type_and_state(params[:order_type])
                 @order = @current_user.orders.create(shop_id: shop.id, receive_name: params[:receive_name], receive_phone: params[:receive_phone], area: params[:area], 
-                  detail: params[:detail], total_price: total_price, order_type: order_type, state: state, remarks: params[:remarks])
+                  detail: params[:detail], total_price: total_price, freight: freight, order_type: order_type, state: state, remarks: params[:remarks])
                 set_expiration_time(@order)
                 @order.create_orders_shop_products(shop, product_arr)
                 pro_ids = @order.update_product_stock_volume
@@ -100,6 +130,10 @@ module V1
                 AppLog.info("carts:   #{carts.pluck(:id)}")
                 @carts = carts.destroy_all
                 Message.push_message_to_user(@order) if !@order.olp?
+                if @order
+                  send_to_user(shop, @order)
+                  send_to_shopper(@current_user, @order)
+                end
               end
             end
           end

@@ -98,6 +98,24 @@
                 <%= f.text_field :remarks, class: "form-control" %>
               </div>
             </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="freight">运费</label>
+              <div class="col-md-9">
+                <%= f.text_field :freight, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">订单总额（不包含运费）</label>
+              <div class="col-md-9">
+                <p class="form-control-static"><%= f.object.total_price %></p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">总计（包含运费）</label>
+              <div class="col-md-9">
+                <p class="form-control-static"><%= f.object.total_price + f.object.freight %></p>
+              </div>
+            </div>
             <% @order.orders_shop_products.normal.each_with_index do |op, i| %>
               <%= f.fields_for :orders_shop_products, op do |opro| %>
                 <%= opro.hidden_field :id, name: "order[orders_shop_products_attributes][][id]" %>
@@ -105,20 +123,26 @@
                   <div class="col-md-12">
                     <div class="input-group">
                       <span class="input-group-btn">
-                        <%= link_to delete_order_product_order_path(opro.object, order_id: @order.id), class: 'btn btn-warning', method: 'delete', data: { confirm: '确定要删除吗？' } do %>
+                        <%= link_to delete_order_product_order_path(opro.object, order_id: @order.id), class: 'btn btn-danger', method: 'delete', data: { confirm: '确定要删除吗？' } do %>
                           <i class="fa fa-times"></i>
                         <% end %>
                       </span>
                       <% name = op.shop_product.try(:name).to_s %>
-                      <label class="col-md-6 control-label" for="product_num" title="<%= name %>" data-rel="tooltip" >
+                      <label class="col-md-5 control-label" for="product_num" title="<%= name %>" data-rel="tooltip" >
                         <%= name.length > 24 ? (name[0..21]+'...') : name %>
                       </label>
-                      <div class="col-md-2">
-                        <%= opro.text_field :product_num, class: 'form-control', name: "order[orders_shop_products_attributes][][product_num]" %>
+                      <div class="col-md-3">
+                        <div class="input-group">
+                          <%= opro.text_field :product_num, class: 'form-control', name: "order[orders_shop_products_attributes][][product_num]" %>
+                          <span class="input-group-addon">个</span>
+                        </div>
                       </div>
                       <label class="col-md-1 control-label" for="product_price">单价</label>
-                      <div class="col-md-2">
-                        <%= opro.text_field :product_price, class: 'form-control', name: "order[orders_shop_products_attributes][][product_price]" %>
+                      <div class="col-md-3">
+                        <div class="input-group">
+                          <%= opro.text_field :product_price, class: 'form-control', name: "order[orders_shop_products_attributes][][product_price]" %>
+                          <span class="input-group-addon">元</span>
+                        </div>
                       </div>
                     </div>
                   </div>

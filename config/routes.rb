@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :user_agreements, only: :index
   resources :shop_models
   resources :units
   resources :top_searches
@@ -77,5 +78,5 @@ Rails.application.routes.draw do
   resources :shoppers
   resources :addresses
   resources :messages
-  resources :user_agreements, only: :index
+  resources :order_statistics
 end

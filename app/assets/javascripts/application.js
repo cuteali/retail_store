@@ -1,7 +1,9 @@
 //= require jquery
 //= require jquery.turbolinks
 //= require jquery_ujs
-//= require turbolinks
+// require turbolinks
+//= require highcharts/highcharts
+//= require highcharts/highcharts-more
 //= require js/skycons
 //= require modernizr
 //= require jquery-ui-1.10.4.min

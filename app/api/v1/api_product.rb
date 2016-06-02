@@ -14,8 +14,8 @@ module V1
       get 'show/:id', jbuilder: 'v1/products/show' do
         authenticate! if params[:token]
         shop = Shop.normal.find_by(id: params[:shop_id])
-        @shop_product = shop.shop_products.normal.find_by(id: params[:id])
-        @top_shop_products = shop.shop_products.normal.sorted.limit(6)
+        @shop_product = shop.shop_products.normal.sold_on.find_by(id: params[:id])
+        @top_shop_products = shop.shop_products.normal.sold_on.sorted.limit(6)
         if @shop_product
           @favorite = shop.favorites.normal.find_by(shopper_id: @current_user.try(:id), shop_product_id: @shop_product.id)
           @images = @shop_product.images.normal.sorted.to_a.insert(0, @shop_product)
@@ -32,9 +32,9 @@ module V1
         shop = Shop.normal.find_by(id: params[:shop_id])
         shop ||= Shop.normal.first
         if shop
-          @shop_products = shop.shop_products.normal.name_like(params[:name_like]).sorted.by_page(params[:page_num])
+          @shop_products = shop.shop_products.normal.sold_on.name_like(params[:name_like]).sorted.by_page(params[:page_num])
         end
-        @top_shop_products = shop.shop_products.normal.sorted.limit(2) if @shop_products.blank?
+        @top_shop_products = shop.shop_products.normal.sold_on.sorted.limit(2) if @shop_products.blank?
       end
 
       # http://localhost:3000/api/v1/products/sub_category/:id
@@ -47,7 +47,7 @@ module V1
         shop = Shop.normal.find_by(id: params[:shop_id])
         sub_category = shop.sub_categories.find_by(id: params[:id])
         if sub_category
-          @shop_products = shop.shop_products.normal.where(sub_category_id: sub_category.id).sorted.by_page(params[:page_num])
+          @shop_products = shop.shop_products.normal.sold_on.where(sub_category_id: sub_category.id).sorted.by_page(params[:page_num])
         end
       end
 
@@ -61,7 +61,7 @@ module V1
         shop = Shop.normal.find_by(id: params[:shop_id])
         detail_category = shop.detail_categories.find_by(id: params[:id])
         if detail_category
-          @shop_products = shop.shop_products.normal.where(detail_category_id: detail_category.id).sorted.by_page(params[:page_num])
+          @shop_products = shop.shop_products.normal.sold_on.where(detail_category_id: detail_category.id).sorted.by_page(params[:page_num])
         end
       end
     end

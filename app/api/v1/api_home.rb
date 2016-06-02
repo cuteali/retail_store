@@ -8,7 +8,7 @@ module V1
         products = {}
         categories.each do |category|
           key = category.logo_key.try(:url) || category.name
-          products[key] = shop.shop_products.normal.is_index.where(category_id: category.id).take(6)
+          products[key] = shop.shop_products.normal.sold_on.is_index.where(category_id: category.id).take(6)
         end
         products
       end

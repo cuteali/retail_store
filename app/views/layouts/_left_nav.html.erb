@@ -28,13 +28,13 @@
             </ul>
           </li>
           <% if current_user.admin? %>
-            <li class="nav-parent <%= 'active nav-expanded' if %w(shop_models shops products units top_searches users registrations).include?(controller_name) %>">
+            <li class="nav-parent <%= 'active nav-expanded' if valid_shop_path? || valid_statistics_show_path? %>">
               <a>
                 <i class="fa fa-list-alt" aria-hidden="true"></i><span>店铺管理</span>
               </a>
               <ul class="nav nav-children">
                 <li class="<%= 'active opened' if controller_name == 'shop_models' %>"><a href="<%= shop_models_path %>"><span class="text"> 店铺模板</span></a></li>
-                <li class="<%= 'active opened' if controller_name == 'shops' %>"><a href="<%= shops_path %>"><span class="text"> 店铺列表</span></a></li>
+                <li class="<%= 'active opened' if controller_name == 'shops' || valid_statistics_show_path? %>"><a href="<%= shops_path %>"><span class="text"> 店铺列表</span></a></li>
                 <li class="<%= 'active opened' if %w(users registrations).include?(controller_name) %>"><a href="<%= users_path %>"><span class="text"> 店铺账号</span></a></li>
                 <li class="<%= 'active opened' if controller_name == 'products' %>"><a href="<%= products_path %>"><span class="text"> 基础产品</span></a></li>
                 <li class="<%= 'active opened' if controller_name == 'units' %>"><a href="<%= units_path %>"><span class="text"> 产品单位</span></a></li>
@@ -44,6 +44,11 @@
             <li class="<%= 'active opened nav-expanded' if controller_name == 'shoppers' %>">
               <a href="<%= shoppers_path %>">
                 <i class="fa fa-table" aria-hidden="true"></i><span>用户管理</span>
+              </a>
+            </li>
+            <li class="<%= 'active opened nav-expanded' if controller_name == 'order_statistics' && action_name == 'index' %>">
+              <a href="<%= order_statistics_path %>">
+                <i class="fa fa-random" aria-hidden="true"></i><span>交易统计</span>
               </a>
             </li>
           <% end %>
@@ -61,6 +66,11 @@
             <li class="<%= 'active opened nav-expanded' if controller_name == 'orders' %>">
               <a href="<%= orders_path %>">
                 <i class="fa fa-table" aria-hidden="true"></i><span>订单管理</span>
+              </a>
+            </li>
+            <li class="<%= 'active opened nav-expanded' if valid_statistics_show_path? %>">
+              <a href="<%= order_statistic_path(@shop) %>">
+                <i class="fa fa-random" aria-hidden="true"></i><span>交易统计</span>
               </a>
             </li>
             <li class="<%= 'active opened nav-expanded' if controller_name == 'messages' %>">

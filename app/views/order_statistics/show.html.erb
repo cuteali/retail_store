@@ -1,0 +1,277 @@
+<style>
+  .input-group-addon, .input-group-btn {
+    width: 0%;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .chartInfoHead {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 19px;
+    font-size: 16px;
+
+  }
+  .chartInfoHeadFooter {
+    border-top: 1px solid #ccc;
+    padding-top: 19px;
+    font-size: 16px;
+  }
+  .chartInfoCon1 b, .chartInfoCon2 b {
+    display: block;
+    font-size: 30px;
+    padding: 10px 0;
+  }
+</style>
+
+<div class="main sidebar-minified">     
+  <div class="page-header">
+    <div class="pull-left">
+      <ol class="breadcrumb visible-sm visible-md visible-lg">                
+        <li><a href="<%= root_path %>"><i class="icon fa fa-home"></i>首页</a></li>
+        <li class="active"><a href="javascript:void(0);"><i class="fa fa-random"></i><%= @order_shop.try(:name) %>的交易统计</a></li>
+      </ol>           
+    </div>
+    <div class="pull-right">
+      <h2>已完成的订单统计</h2>
+    </div>          
+  </div>
+  <div class="row">         
+    <div class="col-lg-12">
+      <div class="bk-bg-white">               
+        <div class="panel-body mailbox-btn-action text-center">
+          <div class="col-sm-6 col-xs-12 bk-padding-top-15 text-center">
+            <span class="item-action-group">                  
+              <%{"今天" => "one_days", "最近7天" => "one_weeks", "最近一月" => "one_months"}.each do |key, value|%>
+                <a href="<%= order_statistic_path(@order_shop, created_date: value) %>" class="btn btn-info item-action <%= "active" if @date == value %>"><%= key %></a>
+              <%end%>
+            </span>
+          </div>                  
+          <div class="col-sm-4 col-xs-12 bk-padding-top-15 text-center">
+            <%= form_tag order_statistic_path(@order_shop), class: 'form-horizontal', :method => :get do %>
+              <div class="form-group">
+                <div class="input-daterange input-group">
+                  <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </span>
+                  <%= text_field_tag :start_time, params[:start_time], class: 'datepicker form-control'  %>
+                  <span class="input-group-addon">to</span>
+                  <%= text_field_tag :end_time, params[:end_time], class: 'datepicker form-control' %>
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">查询</button>
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="panel bk-bg-white">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-random red"></i><span class="break"></span>已完成订单数量</h6>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-10 highCharts">
+            <div class="chart" id="chart-1"></div>
+            <div>
+              <span><%= @start_time %></span>
+              <span class="margin-left-10">到</span>
+              <span class="margin-left-10"><%= @end_time %></span>
+              <span class="margin-left-20">订单数： <%= @count %></span>
+            </div>
+          </div>
+          <div class="well col-md-2 text-center">
+            <div class="chartInfoHead">订单数</div>
+            <div class="chartInfoCon1 text-warning">
+              <b><%= @orders.where("date(created_at) = ?",@today).length %></b>
+              <span>今日订单</span>
+            </div>
+            <div class="chartInfoCon2 text-info ">
+              <b><%= @orders.where("date(created_at) = ?",@today-1.day).length %></b>
+              <span>昨日订单</span>
+            </div>
+            <div class="chartInfoHeadFooter">共计<%= @orders.length %>个</div>
+          </div>
+        </div>
+      </div>
+    </div>            
+  </div>
+  <div class="row">         
+    <div class="col-lg-12">
+      <div class="panel bk-bg-white">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-random red"></i><span class="break"></span>已完成订单金额</h6>
+        </div>            
+        <div class="panel-body">
+          <div class="col-md-10 highCharts">
+            <div class="chart" id="chart-2"></div>
+            <div>
+              <span><%= @start_time %></span>
+              <span class="margin-left-10">到</span>
+              <span class="margin-left-10"><%= @end_time %></span>
+              <span class="margin-left-20">交易额 <%= @amount %> 元</span>
+            </div>
+          </div>
+          <div class="well col-md-2 text-center">
+            <div class="chartInfoHead">交易额</div>
+            <div class="chartInfoCon1 text-warning">
+              <b><%= @orders.where("date(created_at) = ?",@today).sum(:total_price) %></b>
+              <span>今日交易额</span>
+            </div>
+            <div class="chartInfoCon2 text-info ">
+              <b><%= @orders.where("date(created_at) = ?",@today-1.day).sum(:total_price) %></b>
+              <span>昨日交易额</span>
+            </div>
+            <div class="chartInfoHeadFooter">共计<%= @orders.sum(:total_price) %>元</div>
+          </div>
+        </div>
+      </div>
+    </div>            
+  </div>
+  <div class="row">   
+    <div class="col-lg-12">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-table red"></i><span class="break"></span>全部-已完成的订单</h6>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>订单数</th>
+                  <th>交易额（元）</th>
+                </tr>
+              </thead>   
+              <tbody>
+                <% if @order_stats.each do |key, value| %>
+                  <tr>
+                    <td><%= key %></td>
+                    <td><%= value[0] %></td>
+                    <td><%= value[1] %></td>
+                  </tr>
+                <% end.blank? %>
+                  <tr><td colspan="3" class="green text-center">无记录</td></tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>          
+  </div>
+  <div class="row">   
+    <div class="col-lg-12">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-table red"></i><span class="break"></span>货到付款-已完成的订单</h6>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>订单数</th>
+                  <th>交易额（元）</th>
+                </tr>
+              </thead>   
+              <tbody>
+                <% if @cod_order_stats.each do |key, value| %>
+                  <tr>
+                    <td><%= key %></td>
+                    <td><%= value[0] %></td>
+                    <td><%= value[1] %></td>
+                  </tr>
+                <% end.blank? %>
+                  <tr><td colspan="3" class="green text-center">无记录</td></tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>          
+  </div>
+  <div class="row">   
+    <div class="col-lg-12">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-table red"></i><span class="break"></span>在线支付-已完成的订单</h6>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>订单数</th>
+                  <th>交易额（元）</th>
+                </tr>
+              </thead>   
+              <tbody>
+                <% if @olp_order_stats.each do |key, value| %>
+                  <tr>
+                    <td><%= key %></td>
+                    <td><%= value[0] %></td>
+                    <td><%= value[1] %></td>
+                  </tr>
+                <% end.blank? %>
+                  <tr><td colspan="3" class="green text-center">无记录</td></tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>          
+  </div>
+  <div class="row">   
+    <div class="col-lg-12">
+      <div class="panel">
+        <div class="panel-heading bk-bg-primary">
+          <h6><i class="fa fa-table red"></i><span class="break"></span>到店自提-已完成的订单</h6>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-condensed table-hover">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>订单数</th>
+                  <th>交易额（元）</th>
+                </tr>
+              </thead>   
+              <tbody>
+                <% if @to_shop_order_stats.each do |key, value| %>
+                  <tr>
+                    <td><%= key %></td>
+                    <td><%= value[0] %></td>
+                    <td><%= value[1] %></td>
+                  </tr>
+                <% end.blank? %>
+                  <tr><td colspan="3" class="green text-center">无记录</td></tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>          
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('input[class*="datepicker"]').attr('readonly', 'readonly').datepicker({
+      todayBtn: "linked",
+      autoclose: true,
+
+      format: "yyyy-mm-dd"
+    });
+    <%if @chart%>
+      $('#chart-1').append("<%= escape_javascript(high_chart('chart_basic_line1', @chart)) -%>");
+    <%end%>
+    <%if @chart_amount%>
+      $('#chart-2').append("<%= escape_javascript(high_chart('chart_basic_line2', @chart_amount)) -%>");
+    <%end%>
+  });
+</script>

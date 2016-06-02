@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160601051939) do
+ActiveRecord::Schema.define(version: 20160601091438) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -147,6 +147,7 @@ ActiveRecord::Schema.define(version: 20160601051939) do
     t.integer  "order_type",    limit: 1,                                                null: false
     t.string   "trade_no",      limit: 255
     t.decimal  "total_price",               precision: 12, scale: 2, default: 0.0
+    t.decimal  "freight",                   precision: 12, scale: 2, default: 0.0,       null: false
     t.string   "state",         limit: 255,                          default: "opening"
     t.integer  "status",        limit: 1,                            default: 0,         null: false
     t.datetime "delivery_at"
@@ -272,13 +273,15 @@ ActiveRecord::Schema.define(version: 20160601051939) do
     t.string   "tel",            limit: 255
     t.string   "phone",          limit: 255
     t.string   "director",       limit: 255
-    t.integer  "is_receiving",   limit: 1,   default: 1, null: false
+    t.integer  "is_receiving",   limit: 1,                            default: 1,   null: false
     t.string   "delivery_range", limit: 255
     t.string   "start_at",       limit: 255
     t.string   "end_at",         limit: 255
-    t.integer  "status",         limit: 1,   default: 0, null: false
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.decimal  "send_price",                 precision: 12, scale: 2, default: 0.0, null: false
+    t.decimal  "freight",                    precision: 12, scale: 2, default: 0.0, null: false
+    t.integer  "status",         limit: 1,                            default: 0,   null: false
+    t.datetime "created_at",                                                        null: false
+    t.datetime "updated_at",                                                        null: false
   end
 
   add_index "shops", ["director"], name: "index_shops_on_director", using: :btree

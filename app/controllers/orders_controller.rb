@@ -114,6 +114,6 @@ class OrdersController < ApplicationController
     end
 
     def order_params
-      params.require(:order).permit(:receive_name, :receive_phone, :area, :detail, :order_type, :state, :delivery_at, :complete_at, :expiration_at, :remarks, orders_shop_products_attributes: [:id, :product_num, :product_price])
+      params.require(:order).permit(:receive_name, :receive_phone, :area, :detail, :order_type, :state, :delivery_at, :complete_at, :expiration_at, :remarks, :freight, orders_shop_products_attributes: [:id, :product_num, :product_price])
     end
 end
