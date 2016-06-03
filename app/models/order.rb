@@ -65,6 +65,7 @@ class Order < ActiveRecord::Base
       new_state = shop.turn_on? ? 'receiving' : 'paid'
       update_column :state, new_state
       Message.push_message_to_user(self)
+      send_to_user
     end
   end
 
@@ -207,7 +208,7 @@ class Order < ActiveRecord::Base
 
   def self.state_name(state)
     case state
-    when 'opening'   then '已下单'
+    when 'opening'   then '未支付'
     when 'pending'   then '支付中'
     when 'paid'      then '未接单'
     when 'receiving' then '已接单'
@@ -219,7 +220,7 @@ class Order < ActiveRecord::Base
 
   def state_name
     case state
-    when 'opening'   then '已下单'
+    when 'opening'   then '未支付'
     when 'pending'   then '支付中'
     when 'paid'      then '未接单'
     when 'receiving' then '已接单'
@@ -530,6 +531,15 @@ class Order < ActiveRecord::Base
           data: serie['data']
         })
       end
+    end
+  end
+
+  def send_to_user
+    phones = shop.users.normal.user.pluck(:phone)
+    if phones.present?
+      text = "【醉食汇】您好，您有新的订单，请查收～"
+      @errcode = Sms.send_sms(phones.uniq, text)
+      AppLog.info("info:#{@errcode}")
     end
   end
 

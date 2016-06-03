@@ -51,27 +51,6 @@ module V1
           0
         end
       end
-
-      def send_to_user(shop, order)
-        phones = shop.users.normal.user.pluck(:phone)
-        if phones.present?
-          text = "【醉食汇】您好，您有来自#{order.receive_name}的新订单，请查收～"
-          @errcode = Sms.send_sms(phones.uniq, text)
-          AppLog.info("info:#{@errcode}")
-        end
-      end
-
-      def send_to_shopper(shopper, order)
-        reg = /^1[3|4|5|8][0-9]\d{8}$/
-        phones = []
-        phones << shopper.phone if shopper.phone =~ reg
-        phones << order.receive_phone if order.receive_phone =~ reg
-        if phones.present?
-          text = "【醉食汇】您好，您有新的订单，请查收～"
-          @errcode = Sms.send_sms(phones.uniq, text)
-          AppLog.info("info:#{@errcode}")
-        end
-      end
     end
 
     resources 'orders' do
@@ -130,10 +109,7 @@ module V1
                 AppLog.info("carts:   #{carts.pluck(:id)}")
                 @carts = carts.destroy_all
                 Message.push_message_to_user(@order) if !@order.olp?
-                if @order
-                  send_to_user(shop, @order)
-                  send_to_shopper(@current_user, @order)
-                end
+                @order.send_to_user if @order.cod?
               end
             end
           end
