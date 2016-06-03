@@ -7,7 +7,7 @@ Sidekiq.configure_client do |config|
     chain.add Sidekiq::Status::ClientMiddleware
   end
   if Rails.env.production?
-    config.redis = { :url => 'redis://139.196.166.7:6379/0' }
+    config.redis = { :url => 'redis://localhost:6379/0' }
   else
     config.redis = { :url => 'redis://localhost:6379/0' }
   end
@@ -15,7 +15,7 @@ end
 
 Sidekiq.configure_server do |config|
   if Rails.env.production?
-    config.redis = { :url => 'redis://139.196.166.7:6379/0' }
+    config.redis = { :url => 'redis://localhost:6379/0' }
   else
     config.redis = { :url => 'redis://localhost:6379/0' }
   end
