@@ -59,7 +59,7 @@
                         <i class="fa fa-edit"></i>
                       <% end %>
                       <% if shop.categories.blank? %>
-                        <%= link_to init_categories_products_shop_path(shop), class: "btn btn-success", title: "店铺初始化分类、产品", data: { rel: "tooltip" } do %>
+                        <%= link_to init_categories_products_shop_path(shop), class: "btn btn-success", title: "店铺初始化分类、产品", data: { rel: "tooltip" }, remote: true do %>
                           <i class="fa fa-sitemap"></i>
                         <% end %>
                       <% end %>
