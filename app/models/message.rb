@@ -82,7 +82,6 @@ class Message < ActiveRecord::Base
     message = IGeTui::AppMessage.new
     message.data = template
 
-    Rails.logger.info "============#{client_id}============"
     if client_id
       client = IGeTui::Client.new(client_id)
       ret = pusher.push_message_to_single(message, client)
