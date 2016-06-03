@@ -21,7 +21,7 @@
           <div class="table-responsive">
             <%= search_form_for @q, url: {action: action_name}, class: 'form-horizontal', html: { method: :get } do |f| %>
               <div class="form-group col-md-1">
-                <% state_options = Order::STATE.drop(2).map { |state| [ Order.state_name(state), state ] } %>
+                <% state_options = Order::STATE.map { |state| [ Order.state_name(state), state ] } %>
                 <%= f.select :state_eq, state_options.insert(0, ["选择订单状态", ""]), {}, class: "form-control" %>
               </div>
               <div class="form-group col-md-1">
