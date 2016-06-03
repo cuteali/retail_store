@@ -64,4 +64,13 @@ module ApplicationHelper
   def valid_statistics_show_path?
     controller_name == 'order_statistics' && action_name == 'show'
   end
+
+  def update_keys(obj, key_params, logo_key_params=nil)
+    key_params.to_a.each do |k|
+      obj.update(key: k)
+    end
+    logo_key_params.to_a.each do |k|
+      obj.update(logo_key: k)
+    end
+  end
 end

@@ -11,15 +11,6 @@ class ApplicationController < ActionController::Base
     @shop = current_user.shop if current_user
   end
 
-  def update_keys(model, key_params, logo_key_params=nil)
-    key_params.to_a.each do |k|
-      model.update(key: k)
-    end
-    logo_key_params.to_a.each do |k|
-      model.update(logo_key: k)
-    end
-  end
-
   private
 
     def user_not_authorized
