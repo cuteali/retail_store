@@ -108,8 +108,10 @@ module V1
                 carts = @current_user.carts.where(shop_product_id: pro_ids)
                 AppLog.info("carts:   #{carts.pluck(:id)}")
                 @carts = carts.destroy_all
-                Message.push_message_to_user(@order) if !@order.olp?
-                @order.send_to_user if @order.cod?
+                if @order.cod?
+                  Message.push_message_to_user(@order)
+                  @order.send_to_user
+                end
               end
             end
           end
