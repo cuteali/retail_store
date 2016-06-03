@@ -52,7 +52,7 @@ class ShopsController < ApplicationController
 
   def init_categories_products
     authorize @shop
-    Category.init_shop_categories(@shop)
+    # Category.init_shop_categories(@shop)
     Product.init_shop_products(@shop)
     flash[:success] = '店铺初始化分类、产品成功！'
     render js: "location.reload();"
