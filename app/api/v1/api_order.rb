@@ -64,7 +64,7 @@ module V1
       get '', jbuilder: 'v1/orders/index' do
         authenticate!
         if @token
-          orders = @current_user.orders.normal
+          orders = @current_user.orders.normal.not_del
           Order.update_expiration_at_state(orders)
           @orders = orders.by_state(params[:state]).latest.by_page(params[:page_num])
         end
@@ -157,7 +157,7 @@ module V1
         if @token
           order = @current_user.orders.normal.can_delete.find_by(id: params[:id])
           if order.present?
-            @order = order.deleted!
+            @order = order.is_del!
           end
         end
       end

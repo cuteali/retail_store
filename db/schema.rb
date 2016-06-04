@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160601091438) do
+ActiveRecord::Schema.define(version: 20160604052320) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 20160601091438) do
     t.decimal  "total_price",               precision: 12, scale: 2, default: 0.0
     t.decimal  "freight",                   precision: 12, scale: 2, default: 0.0,       null: false
     t.string   "state",         limit: 255,                          default: "opening"
+    t.integer  "shopper_del",   limit: 1,                            default: 0,         null: false
     t.integer  "status",        limit: 1,                            default: 0,         null: false
     t.datetime "delivery_at"
     t.datetime "complete_at"

@@ -6,6 +6,7 @@ if @token
       json.id @order.id
       json.shop_id @order.shop.id
       json.shop_name @order.shop.name
+      json.shop_phone @order.shop.phone
       json.order_no @order.order_no
       json.order_type Order.order_types[@order.order_type]
       json.state @order.state_type

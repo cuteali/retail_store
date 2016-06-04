@@ -12,6 +12,7 @@ class Order < ActiveRecord::Base
   before_create :generate_order_no
 
   enum status: [ :normal, :deleted ]
+  enum shopper_del: [ :not_del, :is_del ]
   enum order_type: [ :cod, :olp, :to_shop ]
 
   scope :by_page, -> (page_num) { page(page_num) if page_num }

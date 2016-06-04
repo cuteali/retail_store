@@ -25,14 +25,27 @@ class Message < ActiveRecord::Base
     push_users.each do |obj|
       if obj.is_a?(User)
         message = obj.messages.create(shop_id: shop_id, messageable: messageable, title: title, info: info)
+        message.push_to_user(obj)
       elsif obj.is_a?(Shopper)
         message = obj.messages.new(shop_id: shop_id, messageable: messageable, title: title, info: info)
+        message.push_to_shopper(obj)
       end
-      if obj.client_type == 'android'
-        message.igetui_push_message(obj.client_id)
-      elsif obj.client_type == 'ios'
-        message.jpush_push_message(obj.client_id)
-      end
+    end
+  end
+
+  def push_to_user(obj)
+    if obj.client_type == 'android'
+      igetui_push_message_to_list(obj.client_id)
+    elsif obj.client_type == 'ios'
+      jpush_push_shop_message(obj.client_id)
+    end
+  end
+
+  def push_to_shopper(obj)
+    if obj.client_type == 'android'
+      igetui_push_message(obj.client_id)
+    elsif obj.client_type == 'ios'
+      jpush_push_message(obj.client_id)
     end
   end
 
@@ -42,7 +55,7 @@ class Message < ActiveRecord::Base
       if user.client_type == 'android'
         message.igetui_push_message_to_list(user.client_id)
       elsif user.client_type == 'ios'
-        message.jpush_push_message(user.client_id)
+        message.jpush_push_shop_message(user.client_id)
       end
     end
   end
@@ -140,7 +153,39 @@ class Message < ActiveRecord::Base
     if registration_id
       audience = JPush::Push::Audience.new.set_registration_id(registration_id)
     end
-# binding.pry
+
+    push_payload = JPush::Push::PushPayload.new(
+      platform: 'ios',
+      audience: audience || 'all',
+      notification: notification
+    ).set_message(
+      info,
+      title: title.blank? ? '醉食汇' : title
+    ).set_options(
+      apns_production: true
+    )
+    ret = pusher.push(push_payload) rescue nil
+    Rails.logger.info "============#{ret}============"
+  end
+
+  def jpush_push_shop_message(registration_id=nil)
+    jpush = JPush::Client.new(ENV['jpush_shop_app_key'], ENV['jpush_shop_master_secret'])
+
+    pusher = jpush.pusher
+
+    notification = JPush::Push::Notification.new
+    notification.set_ios(
+      alert: info,
+      sound: 'default',
+      badge: 1,
+      available: true,
+      extras: {obj_id: messageable_id, obj_type: messageable_type}
+    )
+
+    if registration_id
+      audience = JPush::Push::Audience.new.set_registration_id(registration_id)
+    end
+    
     push_payload = JPush::Push::PushPayload.new(
       platform: 'ios',
       audience: audience || 'all',
