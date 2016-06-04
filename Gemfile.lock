@@ -333,7 +333,6 @@ DEPENDENCIES
   mysql2
   pry-rails
   pundit
-  qiniu
   rails (= 4.2.6)
   rake (= 10.5.0)
   ransack
