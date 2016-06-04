@@ -5,7 +5,11 @@ class AvatarUploader < CarrierWave::Uploader::Base
   storage :qiniu
 
   def store_dir
-    nil
+    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+  end
+
+  def convert_to_nice_date
+    model.created_at.strftime("%Y/%m/%d")
   end
 
   def extension_white_list
@@ -13,11 +17,11 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   def filename
-     @name ||= "#{rand(0xffffff)}-#{SecureRandom.hex 4}.#{file.extension}" if original_filename.present? and super.present?
+     @name ||= "#{timestamp}.#{file.extension}" if original_filename.present? and super.present?
   end
 
   def timestamp
     var = :"@#{mounted_as}_timestamp"
-    model.instance_variable_get(var) || model.instance_variable_set(var, Time.now.to_i)
+    model.instance_variable_get(var) or model.instance_variable_set(var, Time.now.to_i)
   end
 end
