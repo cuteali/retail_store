@@ -9,11 +9,11 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   def extension_white_list
-     %w(jpg jpeg gif png)
+    %w(jpg jpeg gif png)
   end
 
   def filename
-    @name ||= "#{timestamp}.#{file.extension}" if original_filename.present? and super.present?
+    @name ||= "#{rand(0xffffff)}-#{SecureRandom.hex 4}.#{file.extension}" if original_filename.present? and super.present?
   end
 
   def timestamp
