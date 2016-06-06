@@ -18,6 +18,12 @@ class Product < ActiveRecord::Base
   enum is_app_index: { is_index: true, not_index: false }
   enum state: [ :sold_off, :sold_on ]
 
+  before_destroy :clean_key
+ 
+  def clean_key
+    update_columns(key: '')
+  end
+
   def self.init_shop_products(shop)
     Product.normal.sorted.each do |p|
       category = shop.categories.normal.find_by(name: p.category.try(:name))

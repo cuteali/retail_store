@@ -25,6 +25,12 @@ class ShopProduct < ActiveRecord::Base
   enum is_app_index: { is_index: true, not_index: false }
   enum state: [ :sold_off, :sold_on ]
 
+  before_destroy :clean_key
+ 
+  def clean_key
+    update_columns(key: '')
+  end
+
   def is_app_index_name
     is_index? ? '是' : '否'
   end

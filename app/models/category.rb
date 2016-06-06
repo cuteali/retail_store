@@ -18,6 +18,12 @@ class Category < ActiveRecord::Base
   enum status: [ :normal, :deleted ]
   enum is_app_index: { is_index: true, not_index: false }
 
+  before_destroy :clean_key
+ 
+  def clean_key
+    update_columns(key: '', logo_key: '')
+  end
+
   def is_app_index_to_i
     is_index? ? '1' : '0'
   end
