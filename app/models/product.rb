@@ -27,11 +27,11 @@ class Product < ActiveRecord::Base
         shop_product = shop.shop_products.new(product_id: p.id, category_id: category.id, sub_category_id: sub_category.id, detail_category_id: detail_category.id, unit_id: p.unit.id,
           name: p.name, price: p.price, old_price: p.old_price, stock_volume: p.stock_volume, sales_volume: p.sales_volume, desc: p.desc, info: p.info, spec: p.spec, sort: p.sort,
           is_app_index: p.is_app_index, state: p.state)
-        shop_product.key = p.key
+        shop_product.key = p.key if p.key
         shop_product.save
         p.images.normal.each do |image|
           shop_product_image = shop_product.images.new
-          shop_product_image.key = image.key
+          shop_product_image.key = image.key if image.key
           shop_product_image.save
         end
       end
