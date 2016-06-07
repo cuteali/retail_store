@@ -7,4 +7,5 @@
   config.qiniu_bucket_private = false #default is false
   config.qiniu_block_size     = 4*1024*1024
   config.qiniu_protocol       = "http"
+  config.qiniu_can_overwrite  = true
 end

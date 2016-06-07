@@ -5,7 +5,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
   storage :qiniu
 
   def store_dir
-    nil
+    "carrierwave-qiniu"
   end
 
   def extension_white_list
@@ -13,11 +13,11 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   def filename
-    @name ||= "#{rand(0xffffff)}-#{SecureRandom.hex 4}.#{file.extension}" if original_filename.present? and super.present?
+    "images/#{secure_token(10)}.#{file.extension}" if original_filename.present?
   end
 
-  def timestamp
-    var = :"@#{mounted_as}_timestamp"
-    model.instance_variable_get(var) || model.instance_variable_set(var, Time.now.to_i)
+  def secure_token(length = 16)
+    var = :"@#{mounted_as}_secure_token"
+    model.instance_variable_get(var) or model.instance_variable_set(var, SecureRandom.hex(length/2))
   end
 end

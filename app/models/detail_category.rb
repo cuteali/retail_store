@@ -15,12 +15,6 @@ class DetailCategory < ActiveRecord::Base
   validates :sort, numericality: { only_integer: true, greater_than_or_equal_to: 1}
 
   enum status: [ :normal, :deleted ]
-  
-  before_destroy :clean_key
- 
-  def clean_key
-    update_columns(key: '')
-  end
 
   def self.init_sort(shop=nil)
     if shop
