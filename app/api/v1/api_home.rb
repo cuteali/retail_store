@@ -25,7 +25,7 @@ module V1
 
       # http://localhost:3000/api/v1/homes/shops
       get 'shops', jbuilder: 'v1/homes/shops' do
-        @shops = Shop.normal
+        @shops = Shop.normal.finished
       end
 
       # http://localhost:3000/api/v1/homes/contents

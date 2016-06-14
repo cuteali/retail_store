@@ -6,6 +6,7 @@ class ShopProductsWorker
     shop = Shop.normal.find_by(id: shop_id)
     Category.init_shop_categories(shop)
     Product.init_shop_products(shop)
+    shop.finished!
   end
 
 end

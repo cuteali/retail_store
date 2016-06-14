@@ -53,7 +53,7 @@ class ShopsController < ApplicationController
   def init_categories_products
     authorize @shop
     ShopProductsWorker.perform_async(@shop.id)
-    flash[:success] = '正在为店铺初始化分类、产品，大约需要5分钟！'
+    flash[:success] = '正在为店铺初始化分类、产品，大约需要1小时！'
     render js: "location.reload();"
   end
 

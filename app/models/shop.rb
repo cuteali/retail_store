@@ -14,8 +14,13 @@ class Shop < ActiveRecord::Base
 
   enum status: [ :normal, :deleted ]
   enum is_receiving: [ :turn_on, :turn_off ]
+  enum init_status: [ :unfinished, :finished ]
 
   def business_hours
     "#{start_at} - #{end_at}" if start_at && end_at
+  end
+
+  def init_status_name
+    unfinished? ? '未完成' : '已完成'
   end
 end

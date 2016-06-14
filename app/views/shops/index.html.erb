@@ -37,6 +37,7 @@
                   <th>营业时间</th>
                   <th>起送价格</th>
                   <th>运费</th>
+                  <th>初始化</th>
                   <th>操作</th>
                 </tr>
               </thead>   
@@ -54,6 +55,7 @@
                     <td><%= shop.business_hours %></td>
                     <td><%= shop.send_price %></td>
                     <td><%= shop.freight %></td>
+                    <td><%= shop.init_status_name %></td>
                     <td>
                       <%= link_to edit_shop_path(shop), class: "btn btn-info", title: "修改", data: { rel: "tooltip" } do %>
                         <i class="fa fa-edit"></i>
@@ -73,7 +75,7 @@
                   </tr>
                 <% end.blank? %>
                   <tr>
-                    <td colspan="12" class="green text-center">无记录</td>
+                    <td colspan="13" class="green text-center">无记录</td>
                   </tr>
                 <% end %>
               </tbody>
