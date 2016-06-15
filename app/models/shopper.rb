@@ -1,5 +1,5 @@
 class Shopper < ActiveRecord::Base
-  mount_uploader :key, AvatarUploader
+  mount_uploader :key, ShopperUploader
 
   has_many :addresses
   has_many :carts

@@ -43,7 +43,7 @@ class ShoppersController < ApplicationController
       @shopper = Shopper.normal.find(params[:id])
     end
 
-    def user_params
+    def shopper_params
       params.require(:shopper).permit(:name, :phone)
     end
 end
