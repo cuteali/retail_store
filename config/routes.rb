@@ -65,7 +65,7 @@ Rails.application.routes.draw do
       get :select_product, :search_product
     end
     member do
-      get :stick_top
+      get :stick_top, :statistics
       delete :delete_image
     end
   end
@@ -79,4 +79,5 @@ Rails.application.routes.draw do
   resources :addresses
   resources :messages
   resources :order_statistics
+  resources :product_statistics
 end

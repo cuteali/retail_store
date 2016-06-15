@@ -25,27 +25,30 @@ module ApplicationHelper
     return html
   end
 
-  def user_categories
+  def user_categories(shop=nil)
     if current_user.admin?
       Category.base_category.normal.sorted.latest
     else
-      @shop.categories.normal.sorted.latest
+      new_shop = shop || @shop
+      new_shop.categories.normal.sorted.latest
     end
   end
 
-  def user_sub_categories
+  def user_sub_categories(shop=nil)
     if current_user.admin?
       SubCategory.base_category.normal.sorted.latest
     else
-      @shop.sub_categories.normal.sorted.latest
+      new_shop = shop || @shop
+      new_shop.sub_categories.normal.sorted.latest
     end
   end
 
-  def user_detail_categories
+  def user_detail_categories(shop=nil)
     if current_user.admin?
       DetailCategory.base_category.normal.sorted.latest
     else
-      @shop.detail_categories.normal.sorted.latest
+      new_shop = shop || @shop
+      new_shop.detail_categories.normal.sorted.latest
     end
   end
 
@@ -61,7 +64,7 @@ module ApplicationHelper
     %w(shop_models shops products units top_searches users registrations).include?(controller_name)
   end
 
-  def valid_statistics_show_path?
+  def valid_order_statistics_show_path?
     controller_name == 'order_statistics' && action_name == 'show'
   end
 
@@ -72,5 +75,13 @@ module ApplicationHelper
     logo_key_params.to_a.each do |k|
       obj.update(logo_key: k)
     end
+  end
+
+  def valid_shop_list_path?
+    controller_name == 'shops' || valid_order_statistics_show_path? || valid_product_statistics_show_path?
+  end
+
+  def valid_product_statistics_show_path?
+    controller_name == 'product_statistics' && action_name == 'show'
   end
 end

@@ -71,6 +71,9 @@
                       <%= link_to order_statistic_path(shop), class: "btn btn-warning", title: "订单统计", data: { rel: "tooltip" } do %>
                         <i class="fa fa-random"></i>
                       <% end %>
+                      <%= link_to product_statistic_path(shop), class: "btn btn-primary", title: "销量统计", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-bar-chart-o"></i>
+                      <% end %>
                     </td>
                   </tr>
                 <% end.blank? %>

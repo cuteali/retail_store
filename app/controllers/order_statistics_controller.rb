@@ -2,7 +2,7 @@ class OrderStatisticsController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    @orders = Order.normal.completed.latest
+    @orders = Order.normal.is_not_canceled.latest
     select_time = true if params[:start_time].present? && params[:end_time].present?
     @date = params[:created_date].present? ? params[:created_date] : "one_days"
     @today = Date.today
@@ -18,7 +18,7 @@ class OrderStatisticsController < ApplicationController
 
   def show
     @order_shop = Shop.normal.find_by(id: params[:id])
-    @orders = @order_shop.orders.normal.completed.latest
+    @orders = @order_shop.orders.normal.is_not_canceled.latest
     select_time = true if params[:start_time].present? && params[:end_time].present?
     @date = params[:created_date].present? ? params[:created_date] : "one_days"
     @today = Date.today

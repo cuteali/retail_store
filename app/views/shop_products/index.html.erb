@@ -96,6 +96,9 @@
                       <%= link_to shop_product_path(shop_product), class: "btn btn-danger", method: :delete, title: "删除", data: { rel: "tooltip", confirm: '确定要删除吗？' } do %>
                         <i class="fa fa-trash-o"></i>
                       <% end %>
+                      <%= link_to statistics_shop_product_path(shop_product), class: "btn btn-primary", title: "销量统计", data: { rel: "tooltip" } do %>
+                        <i class="fa fa-bar-chart-o"></i>
+                      <% end %>
                     </td>
                   </tr>
                 <% end.blank? %>

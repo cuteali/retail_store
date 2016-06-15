@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160614052611) do
+ActiveRecord::Schema.define(version: 20160615050106) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20160614052611) do
   add_index "orders", ["trade_no"], name: "index_orders_on_trade_no", using: :btree
 
   create_table "orders_shop_products", force: :cascade do |t|
+    t.integer  "shop_id",         limit: 4
     t.integer  "order_id",        limit: 4
     t.integer  "shop_product_id", limit: 4
     t.integer  "product_num",     limit: 4
@@ -177,6 +178,7 @@ ActiveRecord::Schema.define(version: 20160614052611) do
   end
 
   add_index "orders_shop_products", ["order_id"], name: "index_orders_shop_products_on_order_id", using: :btree
+  add_index "orders_shop_products", ["shop_id"], name: "index_orders_shop_products_on_shop_id", using: :btree
   add_index "orders_shop_products", ["shop_product_id"], name: "index_orders_shop_products_on_shop_product_id", using: :btree
 
   create_table "products", force: :cascade do |t|

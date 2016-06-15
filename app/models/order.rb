@@ -22,6 +22,7 @@ class Order < ActiveRecord::Base
   scope :receiving, -> { where(state: 'receiving') }
   scope :completed, -> { where(state: 'completed') }
   scope :by_expiration, -> { where("order_type in (?) and expiration_at < ?", [1, 2], Time.now) }
+  scope :is_not_canceled, -> { where("state != 'canceled'") }
   scope :by_state, -> (state = nil) {
     case state
     when '0' then where(state: STATE)
@@ -541,6 +542,12 @@ class Order < ActiveRecord::Base
       text = "【醉食汇】您好，您有新的订单，请查收～"
       @errcode = Sms.send_sms(phones.uniq, text)
       AppLog.info("info:#{@errcode}")
+    end
+  end
+
+  def change_orders_shop_products_status(status)
+    orders_shop_products.each do |op|
+      op.update(status: status)
     end
   end
 

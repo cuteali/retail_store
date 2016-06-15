@@ -65,6 +65,7 @@ module V1
           order = @current_shop.shop.orders.normal.find_by(id: params[:id])
           state, @msg = get_state_and_msg(params[:state], order)
           @order = order.update(state: state)
+          @order.change_orders_shop_products_status('deleted') if @order.canceled?
           Message.push_message_to_shopper(order) if params[:state] == '0'
         end
       end

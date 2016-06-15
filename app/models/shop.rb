@@ -9,6 +9,7 @@ class Shop < ActiveRecord::Base
   has_many :favorites
   has_many :users
   has_many :messages
+  has_many :orders_shop_products
 
   scope :latest, -> { order('created_at DESC') }
 

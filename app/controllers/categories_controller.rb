@@ -62,12 +62,13 @@ class CategoriesController < ApplicationController
   end
 
   def select_options
+    shop_id = params[:shop_id] || @shop.try(:id)
     if params[:category_id]
-      options = Object.const_get(params[:class_name]).where(shop_id: @shop.try(:id), category_id: params[:category_id]).normal.order(:id)
+      options = Object.const_get(params[:class_name]).where(shop_id: shop_id, category_id: params[:category_id]).normal.order(:id)
     elsif params[:sub_category_id]
-      options = Object.const_get(params[:class_name]).where(shop_id: @shop.try(:id), sub_category_id: params[:sub_category_id]).normal.order(:id)
+      options = Object.const_get(params[:class_name]).where(shop_id: shop_id, sub_category_id: params[:sub_category_id]).normal.order(:id)
     elsif params[:detail_category_id]
-      options = Object.const_get(params[:class_name]).where(shop_id: @shop.try(:id), detail_category_id: params[:detail_category_id]).normal.sorted
+      options = Object.const_get(params[:class_name]).where(shop_id: shop_id, detail_category_id: params[:detail_category_id]).normal.sorted
     end
     html = get_select_category_html(options, params[:id], params[:name], params[:first_option])
     render json: {html: html}

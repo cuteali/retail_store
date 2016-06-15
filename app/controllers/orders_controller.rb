@@ -22,6 +22,8 @@ class OrdersController < ApplicationController
         @order.update_total_price
         @order.update_product_stock_volume
       end
+      status = @order.canceled? ? 'deleted' : 'normal'
+      @order.change_orders_shop_products_status(status)
       flash[:success] = '修改成功！'
       return redirect_to session[:return_to] if session[:return_to]
       redirect_to orders_path
@@ -33,6 +35,7 @@ class OrdersController < ApplicationController
 
   def destroy
     @order.deleted!
+    @order.change_orders_shop_products_status('deleted')
     flash[:success] = '删除成功！'
     redirect_to :back
   end
