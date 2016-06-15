@@ -22,7 +22,6 @@ class Order < ActiveRecord::Base
   scope :receiving, -> { where(state: 'receiving') }
   scope :completed, -> { where(state: 'completed') }
   scope :by_expiration, -> { where("order_type in (?) and expiration_at < ?", [1, 2], Time.now) }
-  scope :is_not_canceled, -> { where("state != 'canceled'") }
   scope :by_state, -> (state = nil) {
     case state
     when '0' then where(state: STATE)
