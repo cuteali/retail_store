@@ -143,7 +143,7 @@ class Message < ActiveRecord::Base
 
     notification = JPush::Push::Notification.new
     notification.set_ios(
-      alert: info,
+      alert: info.blank? ? '您有新的消息' : info,
       sound: 'default',
       badge: 1,
       available: true,
@@ -159,7 +159,7 @@ class Message < ActiveRecord::Base
       audience: audience || 'all',
       notification: notification
     ).set_message(
-      info,
+      info.blank? ? '您有新的消息' : info,
       title: title.blank? ? '醉食汇' : title
     ).set_options(
       apns_production: true
@@ -175,7 +175,7 @@ class Message < ActiveRecord::Base
 
     notification = JPush::Push::Notification.new
     notification.set_ios(
-      alert: info,
+      alert: info.blank? ? '您有新的消息' : info,
       sound: 'default',
       badge: 1,
       available: true,
@@ -191,7 +191,7 @@ class Message < ActiveRecord::Base
       audience: audience || 'all',
       notification: notification
     ).set_message(
-      info,
+      info.blank? ? '您有新的消息' : info,
       title: title.blank? ? '醉食汇' : title
     ).set_options(
       apns_production: true
