@@ -15,8 +15,7 @@ module V1
           @order = @current_user.orders.normal.find_by(id: params[:order_id])
           if @order
             @order.wxpay!
-            Rails.logger.info "====request:#{request.to_s}======env:#{request.env}====="
-            remote_ip = request.env['REMOTE_HOST']
+            remote_ip = request.env['REMOTE_HOST'] || request.env['HTTP_X_REAL_IP'] || '139.196.166.7'
             @pay_sign = @order.pay_unifiedorder(remote_ip)
             @is_expiration = @order.is_expiration
           end

@@ -128,14 +128,12 @@ class Order < ActiveRecord::Base
     Rails.logger.info "weixin pay first sign : #{sign}"
     xml = Weixinpay.create_xml(request_options, sign)
     weixin_result = Weixinpay.request_unifiedorder(xml)
-    Rails.logger.info "weixin pay weixin_result : #{weixin_result}"
     response_unifiedorder(weixin_result)
   end
 
   def response_unifiedorder(weixin_result)
     result = HashWithIndifferentAccess.new(Hash.from_xml weixin_result)[:xml]
     return_code =  result[:return_code]
-    Rails.logger.info "weixin pay result : #{result}"
     if return_code == "SUCCESS"
       result_code = result[:result_code]
       if result_code == "SUCCESS"
