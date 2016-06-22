@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   resources :orders do
     collection do
-      post :alipay_notify
+      post :alipay_notify, :weixin_notify
       post :add_order_product
       get :select_product, :change_is_receiving
     end

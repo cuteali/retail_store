@@ -51,4 +51,5 @@ class API < Grape::API
   mount V1::ApiShop
   mount V1::ApiShopper
   mount V1::ApiUser
+  mount V1::ApiWxpay
 end

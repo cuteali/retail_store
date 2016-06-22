@@ -14,6 +14,7 @@ class Order < ActiveRecord::Base
   enum status: [ :normal, :deleted ]
   enum shopper_del: [ :not_del, :is_del ]
   enum order_type: [ :cod, :olp, :to_shop ]
+  enum pay_type: [ :alipay, :wxpay ]
 
   scope :by_page, -> (page_num) { page(page_num) if page_num }
   scope :latest, -> { order('created_at DESC') }
@@ -104,6 +105,64 @@ class Order < ActiveRecord::Base
       sign_type: 'RSA',
       key: ENV['rsa_private_key']
     })
+  end
+
+  def pay_unifiedorder(remote_ip)
+    self.update_columns(nonce_str: Weixinpay.generate_noce_str)
+    request_options = {
+      appid: ENV['weixin_appid'], 
+      mch_id: ENV['weixin_mch_id'], 
+      nonce_str: nonce_str, 
+      body: "醉食汇订单：#{order_no}", 
+      out_trade_no: order_no, 
+      total_fee: ((total_price + freight).to_f * 100).to_i, 
+      spbill_create_ip: remote_ip, 
+      notify_url: Rails.application.routes.url_helpers.weixin_notify_orders_url(host: 'jinhuola.cc'), 
+      trade_type: "APP", 
+      time_start: created_at.strftime('%Y%m%d%H%M%S'),
+      time_expire: expiration_at.strftime('%Y%m%d%H%M%S')
+    }
+    Rails.logger.info "weixin pay request_options : #{request_options}"
+    sign_params = Weixinpay.set_sign_params(request_options)
+    sign = Weixinpay.get_sign(sign_params, ENV['weixin_key'])
+    Rails.logger.info "weixin pay first sign : #{sign}"
+    xml = Weixinpay.create_xml(request_options, sign)
+    weixin_result = Weixinpay.request_unifiedorder(xml)
+    response_unifiedorder(weixin_result)
+  end
+
+  def response_unifiedorder(weixin_result)
+    result = HashWithIndifferentAccess.new(Hash.from_xml weixin_result)[:xml]
+    return_code =  result[:return_code]
+    if return_code == "SUCCESS"
+      result_code = result[:result_code]
+      if result_code == "SUCCESS"
+        self.update_columns(prepay_id: result[:prepay_id])
+        set_pay_sign_params
+      else
+        Rails.logger.info "weixin pay error order order_no : #{order_no}, error: #{result}"
+      end  
+    elsif return_code == "FAIL"
+      Rails.logger.info "weixin pay error order order_no : #{order_no}, error: #{result}"
+    else 
+      Rails.logger.info "weixin pay error order order_no : #{order_no}, error: #{result}"
+    end  
+  end  
+
+  def set_pay_sign_params
+    pay_sign_nonce_str = Weixinpay.generate_noce_str
+    pay_sign_time_stamp = Weixinpay.get_time_stamp
+    pay_sign_params = [
+      "appid=#{ENV['weixin_appid']}", 
+      "partnerid=#{ENV['weixin_mch_id']}",
+      "package=Sign=WXPay", 
+      "timeStamp=#{pay_sign_time_stamp}",
+      "prepayid=#{prepay_id}",  
+      "nonceStr=#{nonce_str}"
+    ]
+    pay_sign = Weixinpay.get_sign(pay_sign_params, ENV['weixin_key'])
+    Rails.logger.info "weixin pay sign : #{pay_sign}"
+    pay_sign
   end
 
   def get_address
@@ -552,7 +611,7 @@ class Order < ActiveRecord::Base
 
   private
     def generate_order_no
-      max_order_no = Order.maximum(:order_no) || 1606040000
+      max_order_no = Order.maximum(:order_no) || 1606220000
       self.order_no = max_order_no.succ
     end
 end

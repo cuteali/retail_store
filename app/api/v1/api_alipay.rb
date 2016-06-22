@@ -14,6 +14,7 @@ module V1
         if @token
           order = @current_user.orders.normal.find_by(id: params[:order_id])
           if order
+            order.alipay!
             @pay_url = order.pay_url
             @is_expiration = order.is_expiration
           end

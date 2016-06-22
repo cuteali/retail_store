@@ -111,6 +111,33 @@ class OrdersController < ApplicationController
     end
   end
 
+  def weixin_notify
+    result = HashWithIndifferentAccess.new(params)[:xml]
+    Rails.logger.info "weixin pay notify info -> #{result}"
+    return_code = result[:return_code]
+    if return_code == "SUCCESS"
+      result_code = result[:result_code]
+      if result_code == "SUCCESS"
+        order = Order.find_by(order_no: params[:out_trade_no])
+        if order.paid?
+          return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
+        else
+          order.pay
+          return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK')   
+        end  
+      else
+        Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
+        return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
+      end  
+    else
+      Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
+      return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
+    end  
+  rescue => e
+     Rails.logger.info "weixin v2 pay notify exception -> #{e.backtrace}"
+     return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')
+  end
+
   private 
     def set_order
       @order = @shop.orders.normal.find_by(id: params[:id])
