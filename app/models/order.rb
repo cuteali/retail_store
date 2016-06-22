@@ -222,7 +222,7 @@ class Order < ActiveRecord::Base
   def create_orders_shop_products(shop, products)
     products.each do |p|
       shop_product = shop.shop_products.find_by(id: p['id'])
-      orders_shop_products.where(shop_product_id: shop_product.try(:id), product_num: p['number'], product_price: shop_product.try(:price)).first_or_create
+      orders_shop_products.where(shop_id: shop_id, shop_product_id: shop_product.try(:id), product_num: p['number'], product_price: shop_product.try(:price)).first_or_create
     end
   end
 
