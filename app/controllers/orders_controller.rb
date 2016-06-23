@@ -114,26 +114,25 @@ class OrdersController < ApplicationController
   def weixin_notify
     result = Hash.from_xml(request.body.read)["xml"]
     Rails.logger.info "weixin pay notify info -> #{result}"
-    return_code = result[:return_code]
-    if return_code == "SUCCESS"
-      order = Order.find_by(order_no: params[:out_trade_no])
-      order.pend
-      result_code = result[:result_code]
-      if result_code == "SUCCESS"
-        if order.paid?
-          return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
+    if verify?(result)
+      if result[:return_code] == "SUCCESS"
+        if result[:result_code] == "SUCCESS"
+          order = Order.find_by(order_no: result[:out_trade_no])
+          if order.paid?
+            return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
+          else
+            order.pay
+            return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK')   
+          end  
         else
-          order.pay
-          return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK')   
+          Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
+          return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
         end  
       else
         Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
         return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
-      end  
-    else
-      Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
-      return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
-    end  
+      end
+    end
   rescue => e
      Rails.logger.info "weixin v2 pay notify exception -> #{e.backtrace}"
      return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')
@@ -146,5 +145,16 @@ class OrdersController < ApplicationController
 
     def order_params
       params.require(:order).permit(:receive_name, :receive_phone, :area, :detail, :order_type, :state, :delivery_at, :complete_at, :expiration_at, :remarks, :freight, orders_shop_products_attributes: [:id, :product_num, :product_price])
+    end
+
+    def verify?(params)
+      params = params.dup
+      sign = params.delete('sign') || params.delete(:sign)
+      
+      query = params.map do |key, value|
+        "#{key}=#{value}" if value != "" && !value.nil?
+      end
+
+      Weixinpay.get_sign(query, ENV['weixin_key']) == sign
     end
 end

@@ -17,6 +17,7 @@ module V1
             @order.wxpay!
             remote_ip = request.env['REMOTE_HOST'] || request.env['HTTP_X_REAL_IP'] || '139.196.166.7'
             @pay_sign = @order.pay_unifiedorder(remote_ip)
+            @order.pend if @pay_sign
             @is_expiration = @order.is_expiration
           end
         end
