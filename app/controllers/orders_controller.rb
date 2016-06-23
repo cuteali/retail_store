@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [ :alipay_notify ]
+  skip_before_action :verify_authenticity_token, only: [ :alipay_notify, :weixin_notify ]
   before_action :set_order, only: [:edit, :update, :destroy, :show, :add_order_product]
-  before_filter :authenticate_user!, except: [ :alipay_notify ]
+  before_filter :authenticate_user!, except: [ :alipay_notify, :weixin_notify ]
   
   def index
     orders = @shop.orders.normal
