@@ -112,10 +112,7 @@ class OrdersController < ApplicationController
   end
 
   def weixin_notify
-    Rails.logger.info "weixin params -> #{params}"
-    Rails.logger.info "weixin body -> #{body}"
-    HashWithIndifferentAccess.new(Hash.from_xml weixin_result)[:xml]
-    result = HashWithIndifferentAccess.new(params)[:xml]
+    result = Hash.from_xml(request.body.read)["xml"]
     Rails.logger.info "weixin pay notify info -> #{result}"
     return_code = result[:return_code]
     if return_code == "SUCCESS"
