@@ -117,7 +117,7 @@ class Order < ActiveRecord::Base
       out_trade_no: order_no, 
       total_fee: ((total_price + freight).to_f * 100).to_i, 
       spbill_create_ip: remote_ip, 
-      notify_url: Rails.application.routes.url_helpers.weixin_notify_orders_url(host: 'jinhuola.cc'), 
+      notify_url: Rails.application.routes.url_helpers.orders_weixin_notify_url(host: 'jinhuola.cc'), 
       trade_type: "APP", 
       time_start: created_at.strftime('%Y%m%d%H%M%S'),
       time_expire: expiration_at.strftime('%Y%m%d%H%M%S')

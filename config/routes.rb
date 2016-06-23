@@ -13,12 +13,13 @@ Rails.application.routes.draw do
 
   resources :orders do
     collection do
-      post :alipay_notify, :weixin_notify
+      post :alipay_notify
       post :add_order_product
       get :select_product, :change_is_receiving
     end
     delete :delete_order_product, on: :member
   end
+  match 'orders/weixin_notify', to: "orders#weixin_notify", via: [:post, :put, :get]
 
   resources :categories do
     member do
