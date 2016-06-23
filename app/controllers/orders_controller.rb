@@ -112,6 +112,7 @@ class OrdersController < ApplicationController
   end
 
   def weixin_notify
+    Rails.logger.info "weixin params -> #{params}"
     result = HashWithIndifferentAccess.new(params)[:xml]
     Rails.logger.info "weixin pay notify info -> #{result}"
     return_code = result[:return_code]
@@ -119,6 +120,7 @@ class OrdersController < ApplicationController
       result_code = result[:result_code]
       if result_code == "SUCCESS"
         order = Order.find_by(order_no: params[:out_trade_no])
+        @order.pend
         if order.paid?
           return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
         else
