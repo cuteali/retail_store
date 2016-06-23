@@ -6,7 +6,7 @@ module Weixinpay
     end	
 
     def get_sign sign_params = [], key=''
-      Digest::MD5.hexdigest(sign_params.sort.join('&') +  "&key=#{key}").upcase
+      Digest::MD5.hexdigest(sign_params.sort.compact.join('&') +  "&key=#{key}").upcase
     end
 
     def create_xml request_options = {}, sign = ''

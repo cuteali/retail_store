@@ -159,9 +159,9 @@ class Order < ActiveRecord::Base
       "appid=#{ENV['weixin_appid']}", 
       "partnerid=#{ENV['weixin_mch_id']}",
       "package=Sign=WXPay", 
-      "timeStamp=#{pay_sign_time_stamp}",
+      "timestamp=#{pay_sign_time_stamp}",
       "prepayid=#{prepay_id}",  
-      "nonceStr=#{nonce_str}"
+      "noncestr=#{nonce_str}"
     ]
     Rails.logger.info "pay_sign_params : #{pay_sign_params}"
     pay_sign = Weixinpay.get_sign(pay_sign_params, ENV['weixin_key'])
