@@ -115,10 +115,10 @@ class OrdersController < ApplicationController
     result = Hash.from_xml(request.body.read)["xml"]
     Rails.logger.info "weixin pay notify info -> #{result}"
     if verify?(result)
-      if result[:return_code] == "SUCCESS"
-        Rails.logger.info "1111111111111111111"
-        if result[:result_code] == "SUCCESS"
-          Rails.logger.info "2222222222222222"
+      return_code = result[:return_code] || result['return_code']
+      if return_code == "SUCCESS"
+        result_code = result[:result_code] || result['result_code']
+        if result_code == "SUCCESS"
           order = Order.find_by(order_no: result[:out_trade_no])
           if order.paid?
             return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
@@ -127,12 +127,10 @@ class OrdersController < ApplicationController
             return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK')   
           end  
         else
-          Rails.logger.info "33333333333333333"
           Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
           return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
         end  
       else
-        Rails.logger.info "44444444444444"
         Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
         return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
       end
