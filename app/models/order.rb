@@ -118,10 +118,13 @@ class Order < ActiveRecord::Base
       total_fee: ((total_price + freight).to_f * 100).to_i, 
       spbill_create_ip: remote_ip, 
       notify_url: Rails.application.routes.url_helpers.weixin_notify_orders_url(host: 'jinhuola.cc'), 
-      trade_type: "APP"
+      trade_type: "APP", 
+      time_start: created_at.strftime('%Y%m%d%H%M%S'),
+      time_expire: expiration_at.strftime('%Y%m%d%H%M%S')
     }
     Rails.logger.info "weixin pay request_options : #{request_options}"
     sign_params = Weixinpay.set_sign_params(request_options)
+    Rails.logger.info "sign_params : #{sign_params}"
     sign = Weixinpay.get_sign(sign_params, ENV['weixin_key'])
     Rails.logger.info "weixin pay first sign : #{sign}"
     xml = Weixinpay.create_xml(request_options, sign)
@@ -131,6 +134,7 @@ class Order < ActiveRecord::Base
 
   def response_unifiedorder(weixin_result)
     result = HashWithIndifferentAccess.new(Hash.from_xml weixin_result)[:xml]
+    Rails.logger.info "weixin_result : #{result}"
     return_code =  result[:return_code]
     if return_code == "SUCCESS"
       result_code = result[:result_code]
@@ -148,8 +152,9 @@ class Order < ActiveRecord::Base
   end  
 
   def set_pay_sign_params
-    pay_sign_nonce_str = Weixinpay.generate_noce_str
+    # pay_sign_nonce_str = Weixinpay.generate_noce_str
     pay_sign_time_stamp = Weixinpay.get_time_stamp
+    Rails.logger.info "pay_sign_time_stamp : #{pay_sign_time_stamp}"
     pay_sign_params = [
       "appid=#{ENV['weixin_appid']}", 
       "partnerid=#{ENV['weixin_mch_id']}",
@@ -158,6 +163,7 @@ class Order < ActiveRecord::Base
       "prepayid=#{prepay_id}",  
       "nonceStr=#{nonce_str}"
     ]
+    Rails.logger.info "pay_sign_params : #{pay_sign_params}"
     pay_sign = Weixinpay.get_sign(pay_sign_params, ENV['weixin_key'])
     Rails.logger.info "weixin pay sign : #{pay_sign}"
     pay_sign
