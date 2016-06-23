@@ -119,7 +119,8 @@ class OrdersController < ApplicationController
       if return_code == "SUCCESS"
         result_code = result[:result_code] || result['result_code']
         if result_code == "SUCCESS"
-          order = Order.find_by(order_no: result[:out_trade_no])
+          order = Order.find_by(order_no: result['out_trade_no'])
+          order.update_columns(trade_no: result['transaction_id'])
           if order.paid?
             return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
           else
