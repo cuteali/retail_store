@@ -116,7 +116,9 @@ class OrdersController < ApplicationController
     Rails.logger.info "weixin pay notify info -> #{result}"
     if verify?(result)
       if result[:return_code] == "SUCCESS"
+        Rails.logger.info "1111111111111111111"
         if result[:result_code] == "SUCCESS"
+          Rails.logger.info "2222222222222222"
           order = Order.find_by(order_no: result[:out_trade_no])
           if order.paid?
             return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK') 
@@ -125,10 +127,12 @@ class OrdersController < ApplicationController
             return render text: Weixinpay.notify_result(return_code: 'SUCCESS', return_msg: 'OK')   
           end  
         else
+          Rails.logger.info "33333333333333333"
           Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
           return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
         end  
       else
+        Rails.logger.info "44444444444444"
         Rails.logger.info "weixin v2 pay notify faild -> #{result}" 
         return render text: Weixinpay.notify_result(return_code: 'FAIL', return_msg: 'FAIL')   
       end
@@ -150,7 +154,7 @@ class OrdersController < ApplicationController
     def verify?(params)
       params = params.dup
       sign = params.delete('sign') || params.delete(:sign)
-      
+
       query = params.map do |key, value|
         "#{key}=#{value}" if value != "" && !value.nil?
       end
