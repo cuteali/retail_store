@@ -118,9 +118,7 @@ class Order < ActiveRecord::Base
       total_fee: ((total_price + freight).to_f * 100).to_i, 
       spbill_create_ip: remote_ip, 
       notify_url: Rails.application.routes.url_helpers.weixin_notify_orders_url(host: 'jinhuola.cc'), 
-      trade_type: "APP", 
-      time_start: created_at.strftime('%Y%m%d%H%M%S'),
-      time_expire: expiration_at.strftime('%Y%m%d%H%M%S')
+      trade_type: "APP"
     }
     Rails.logger.info "weixin pay request_options : #{request_options}"
     sign_params = Weixinpay.set_sign_params(request_options)
