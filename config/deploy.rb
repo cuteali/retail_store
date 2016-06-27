@@ -11,6 +11,8 @@ set :linked_files, %w{config/database.yml config/secrets.yml config/local_env.ym
 set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 set :unicorn_config, "#{fetch :deploy_to}/shared/config/unicorn.rb"
 set :unicorn_pid, "#{fetch :deploy_to}/shared/tmp/pids/unicorn.pid"
+set :pty,  false
+set :sidekiq_monit_use_sudo, false
 
 namespace :deploy do
   after :finishing, "deploy:cleanup"
