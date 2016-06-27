@@ -6,12 +6,12 @@ if @token
       json.id @order.id
       json.address_id @order.address_id
     end
-  elsif @stock_volume_result == 3
+  elsif @not_enough_products.present?
     json.errcode 3
-    json.errmsg '产品库存不足'
-  elsif @is_sold_off
+    json.errmsg "产品：#{@not_enough_products.join(',')} 库存不足"
+  elsif @sold_off_products.present?
     json.errcode 1
-    json.errmsg '部分产品已下架'
+    json.errmsg "产品：#{@sold_off_products.join(',')} 已下架"
   else
     json.errcode 1
     json.errmsg '订单创建失败'

@@ -21,7 +21,7 @@ module V1
         requires :rand_code, type: String
       end
       post 'sign_in', jbuilder: "v1/shoppers/sign_in" do
-        @token, @shopper = Shopper.sign_in(params[:phone], params[:rand_code])
+        @token, @shopper, @is_rand_code = Shopper.sign_in(params[:phone], params[:rand_code])
         if @token.present?
           $redis.set(@shopper.id, @token)
           @result = $redis.expire(@shopper.id, 24*3600*15)

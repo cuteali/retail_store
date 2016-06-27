@@ -13,21 +13,19 @@ module V1
         total_price
       end
 
-      def validate_stock_volume(shop, products)
-        result = 0
-        is_sold_off = false
+      def valid_product_num_and_state(shop, products)
+        not_enough_products = []
+        sold_off_products = []
         products.each do |p|
           shop_product = shop.shop_products.find_by(id: p['id'])
           if shop_product.sold_off?
-            is_sold_off = true
-            break
+            sold_off_products << shop_product.name
           end
           if shop_product.stock_volume < p["number"].to_i
-            result = 3
-            break
+            not_enough_products << shop_product.name
           end
         end
-        [result, is_sold_off]
+        [not_enough_products, sold_off_products]
       end
 
       def get_order_type_and_state(order_type)
@@ -95,8 +93,8 @@ module V1
             total_price = check_total_price(shop, product_arr)
             AppLog.info("money:#{params[:money]}")
             if total_price == params[:money].gsub(/[^\d\.]/, '').to_f
-              @stock_volume_result, @is_sold_off = validate_stock_volume(shop, product_arr)
-              if @stock_volume_result == 0 && !@is_sold_off
+              @not_enough_products, @sold_off_products = valid_product_num_and_state(shop, product_arr)
+              if @not_enough_products.blank? && @sold_off_products.blank?
                 freight = valid_send_price(shop, total_price, params[:order_type])
                 state, order_type = get_order_type_and_state(params[:order_type])
                 @order = @current_user.orders.create(shop_id: shop.id, receive_name: params[:receive_name], receive_phone: params[:receive_phone], area: params[:area], 
