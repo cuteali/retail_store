@@ -80,6 +80,6 @@ class CategoriesController < ApplicationController
     end
 
     def category_params
-      params.require(:category).permit(:shop_id, :name, :name_as, :is_app_index, :sort)
+      params.require(:category).permit(:shop_id, :name, :name_as, :is_app_index, :is_app_tag, :sort)
     end
 end

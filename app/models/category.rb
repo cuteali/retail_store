@@ -17,6 +17,7 @@ class Category < ActiveRecord::Base
 
   enum status: [ :normal, :deleted ]
   enum is_app_index: { is_index: true, not_index: false }
+  enum is_app_tag: { is_tag: true, not_tag: false }
 
   def is_app_index_to_i
     is_index? ? '1' : '0'
@@ -32,7 +33,7 @@ class Category < ActiveRecord::Base
 
   def self.init_shop_categories(shop)
     Category.base_category.normal.each do |c|
-      category = shop.categories.new(name: c.name, name_as: c.name_as, is_app_index: c.is_app_index, sort: c.sort)
+      category = shop.categories.new(name: c.name, name_as: c.name_as, is_app_index: c.is_app_index, is_app_tag: c.is_app_tag, sort: c.sort)
       begin
         category.key = c.key
         category.logo_key = c.logo_key

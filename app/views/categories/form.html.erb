@@ -46,7 +46,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3 control-label">首页展示</label>
+              <label class="col-md-3 control-label">作为APP首页分类按钮</label>
               <div class="col-md-9">
                 <div class="radio-custom radio-inline">
                   <%= f.radio_button :is_app_index, 'is_index', id: 'is_app_index1' %>
@@ -55,6 +55,20 @@
                 <div class="radio-custom radio-inline">
                   <%= f.radio_button :is_app_index, 'not_index', id: 'is_app_index2' %>
                   <label for="is_app_index2"> 否</label>
+                </div>
+                <span class="help-block">（最多可设置8个）</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">作为APP首页分类标签</label>
+              <div class="col-md-9">
+                <div class="radio-custom radio-inline">
+                  <%= f.radio_button :is_app_tag, 'is_tag', id: 'is_app_tag1' %>
+                  <label for="is_app_tag1"> 是</label>
+                </div>
+                <div class="radio-custom radio-inline">
+                  <%= f.radio_button :is_app_tag, 'not_tag', id: 'is_app_tag2' %>
+                  <label for="is_app_tag2"> 否</label>
                 </div>
               </div>
             </div>

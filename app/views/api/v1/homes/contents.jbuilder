@@ -8,7 +8,7 @@ if @shop
       json.shop_product_id advert.shop_product_id
       json.image advert.key.try(:url)
     end
-    json.categorylist(@categories) do |category|
+    json.categorylist(@button_categories) do |category|
       json.id category.id
       json.name category.name_as
       json.image category.key.try(:url)

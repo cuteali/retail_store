@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160622063934) do
+ActiveRecord::Schema.define(version: 20160629031626) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "shopper_id",    limit: 4
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20160622063934) do
     t.string   "logo_key",     limit: 255
     t.integer  "sort",         limit: 4,   default: 1,     null: false
     t.boolean  "is_app_index",             default: false, null: false
+    t.boolean  "is_app_tag",               default: false, null: false
     t.integer  "status",       limit: 1,   default: 0,     null: false
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false

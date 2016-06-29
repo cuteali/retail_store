@@ -37,8 +37,9 @@ module V1
         @shop ||= Shop.normal.first
         if @shop
           @adverts = @shop.adverts.normal
-          @categories = @shop.categories.normal.is_index.sorted
-          @products = category_products(@shop, @categories)
+          @button_categories = @shop.categories.normal.is_index.sorted
+          @tag_categories = @shop.categories.normal.is_tag.sorted
+          @products = category_products(@shop, @tag_categories)
         end
       end
 

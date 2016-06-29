@@ -43,7 +43,8 @@
                   <th>简称</th>
                   <th>首页圆图</th>
                   <th>首页长图</th>
-                  <th>首页展示</th>
+                  <th>首页按钮</th>
+                  <th>首页标签</th>
                   <th>操作</th>
                 </tr>
               </thead>   
@@ -56,6 +57,7 @@
                     <td><%= image_tag category.key.try(:url), size:"50x50" %></td>
                     <td><%= image_tag category.logo_key.try(:url), size:"80x50" %></td>
                     <td><%= category.is_index? ? '是' : '否' %></td>
+                    <td><%= category.is_tag? ? '是' : '否' %></td>
                     <td>
                       <%= link_to stick_top_category_path(category), class: "btn btn-success", title: "置顶", data: { rel: "tooltip" } do %>
                         <i class="fa fa-arrow-up"></i>
@@ -70,7 +72,7 @@
                   </tr>
                 <% end.blank? %>
                   <tr>
-                    <td colspan="7" class="green text-center">无记录</td>
+                    <td colspan="8" class="green text-center">无记录</td>
                   </tr>
                 <% end %>
               </tbody>
